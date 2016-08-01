@@ -2,6 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+
 buildscript {
     ext.kotlin_version = '1.0.3'
     repositories {
