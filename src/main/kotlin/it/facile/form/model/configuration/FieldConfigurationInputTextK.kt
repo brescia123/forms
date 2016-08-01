@@ -14,7 +14,7 @@ class FieldConfigurationInputTextK(val label: String) : FieldConfigurationK {
     }
 
     override fun getViewModelStyle(value: FieldValueK): FieldViewModelStyleK = when (value) {
-        is FieldValueK.Text -> FieldViewModelStyleK.InputText(value.text ?: "")
+        is FieldValueK.Text -> FieldViewModelStyleK.InputText(value.text)
         else -> FieldViewModelStyleK.InvalidType()
     }
 }
