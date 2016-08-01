@@ -19,7 +19,7 @@ class FormModelKTest {
     fun testObserve_noNotification_ifNotPresentInModel() {
         // Return...
         val testSubscriber = TestSubscriber<Pair<FieldPathK, FieldViewModelK>>()
-        model.observe().subscribe(testSubscriber)
+        model.observeChanges().subscribe(testSubscriber)
         storage.putValue(44, FieldValueK.Bool(true))
 
         // Assert...
@@ -30,7 +30,7 @@ class FormModelKTest {
     fun testNotifyValueChanged() {
         // Return...
         val testSubscriber = TestSubscriber<Pair<FieldPathK, FieldViewModelK>>()
-        model.observe().subscribe(testSubscriber)
+        model.observeChanges().subscribe(testSubscriber)
         storage.putValue(7, FieldValueK.Bool(true))
 
         // Assert...

@@ -4,13 +4,12 @@ import it.facile.form.viewmodel.DescribableK
 import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import it.facile.form.viewmodel.FieldViewModelStyleK
+import rx.Single
 
-class FieldConfigurationPickerK(val label: String,
-                                val possibleValues: List<DescribableK>,
-                                val placeHolder: String) : FieldConfigurationK {
-    override fun label(): String {
-        return label
-    }
+class FieldConfigurationPickerK(label: String,
+                                val possibleValuesSingle: Single<List<DescribableK>>,
+                                val placeHolder: String) : FieldConfigurationK(label) {
+    var possibleValues: List<DescribableK>? = null
 
     override fun getViewModel(value: FieldValueK, hidden: Boolean): FieldViewModelK {
         return FieldViewModelK(label, getViewModelStyle(value), hidden, null)
@@ -18,10 +17,19 @@ class FieldConfigurationPickerK(val label: String,
 
     override fun getViewModelStyle(value: FieldValueK): FieldViewModelStyleK =
             when (value) {
-                is FieldValueK.Object -> FieldViewModelStyleK.Picker(
-                        possibleValues,
-                        value.value?.describe() ?: placeHolder)
+                is FieldValueK.Object ->
+                    if (possibleValues != null)
+                        FieldViewModelStyleK.Picker(
+                                possibleValues as List<DescribableK>,
+                                value.value?.describe() ?: placeHolder)
+                    else FieldViewModelStyleK.Loading()
                 else -> FieldViewModelStyleK.InvalidType()
             }
+
+    fun observe(): Single<Unit> {
+        return possibleValuesSingle.doOnSuccess {
+            possibleValues = it
+        }.flatMap { Single.just<Unit>(null) }
+    }
 }
 

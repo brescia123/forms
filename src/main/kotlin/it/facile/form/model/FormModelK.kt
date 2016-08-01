@@ -1,15 +1,36 @@
 package it.facile.form.model
 
 import it.facile.form.FormStorageK
+import it.facile.form.model.configuration.FieldConfigurationPickerK
 import it.facile.form.viewmodel.FieldPathK
 import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import rx.Observable
+import rx.subjects.PublishSubject
 
 class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
 
-    fun observe(): Observable<Pair<FieldPathK, FieldViewModelK>> {
-        return storage.observe()
+    val notifier: PublishSubject<Int> = PublishSubject.create()
+
+    init {
+        fields().mapIndexed { i, fieldModelK ->
+            when (fieldModelK.fieldConfiguration) {
+                is FieldConfigurationPickerK -> {
+                    fieldModelK.fieldConfiguration.observe().subscribe(
+                            { notifier.onNext(fieldModelK.key) },
+                            { }
+                    )
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    fun observeChanges(): Observable<Pair<FieldPathK, FieldViewModelK>> {
+        return notifier
+                .asObservable()
+                .mergeWith(storage.observe())
                 .filter { findFieldPathByKey(it) != null }
                 .map {
                     val path = findFieldPathByKey(it)
@@ -24,6 +45,13 @@ class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
         if (contains(fieldPath) == false) return
         val key = findFieldModelByFieldPath(fieldPath).key
         storage.putValue(key, value)
+    }
+
+    fun fields(): List<FieldModelK> {
+        return pages.fold(mutableListOf<FieldModelK>(), { models, page ->
+            models.addAll(page.fields())
+            models
+        })
     }
 
     /* HELPERS */

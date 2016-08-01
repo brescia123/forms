@@ -11,6 +11,7 @@ sealed class FieldViewModelStyleK {
     class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyleK()
     class DatePicker(val dateStartLimit: Date, val dateEndLimit: Date, val selectedDate: Date) : FieldViewModelStyleK()
     class Picker(val possibleValues: List<DescribableK>, val valueText: String) : FieldViewModelStyleK()
+    class Loading() : FieldViewModelStyleK()
 
     override fun toString(): String = when (this) {
         is Empty -> "Empty"
@@ -21,6 +22,7 @@ sealed class FieldViewModelStyleK {
         is Toggle -> bool.toString()
         is DatePicker -> selectedDate.toString()
         is Picker -> valueText
+        is Loading -> "Loading"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -39,6 +41,7 @@ sealed class FieldViewModelStyleK {
                 is Picker -> other is Picker
                         && other.possibleValues.equals(possibleValues)
                         && other.valueText.equals(valueText)
+                is Loading -> true
             }
     }
 }

@@ -4,10 +4,7 @@ import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import it.facile.form.viewmodel.FieldViewModelStyleK
 
-class FieldConfigurationInputTextK(val label: String) : FieldConfigurationK {
-    override fun label(): String {
-        return label
-    }
+class FieldConfigurationInputTextK(label: String) : FieldConfigurationK(label) {
 
     override fun getViewModel(value: FieldValueK, hidden: Boolean): FieldViewModelK {
         return FieldViewModelK(label, getViewModelStyle(value), hidden, null)

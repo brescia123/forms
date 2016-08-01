@@ -15,6 +15,7 @@ import it.facile.form.viewmodel.FieldViewModelStyleK.*
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import kotlinx.android.synthetic.main.form_field_invalid_type.view.*
+import kotlinx.android.synthetic.main.form_field_loading.view.*
 import kotlinx.android.synthetic.main.form_field_text.view.*
 import kotlinx.android.synthetic.main.form_field_toggle.view.*
 import rx.Subscription
@@ -31,6 +32,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
         private val CHECKBOX_VIEW = R.layout.form_field_checkbox
         private val TOGGLE_VIEW = R.layout.form_field_toggle
         private val INVALID_TYPE_VIEW = R.layout.form_field_invalid_type
+        private val LOADING_VIEW = R.layout.form_field_loading
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolder {
@@ -42,6 +44,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
             CHECKBOX_VIEW -> ViewHolderCheckBox(v)
             TOGGLE_VIEW -> ViewHolderToggle(v)
             INVALID_TYPE_VIEW -> ViewHolderInvalidType(v)
+            LOADING_VIEW -> ViewHolderLoading(v)
             else -> ViewHolderEmpty(v)
         }
     }
@@ -57,6 +60,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
         is DatePicker -> SIMPLE_TEXT_VIEW
         is Picker -> SIMPLE_TEXT_VIEW
         is InvalidType -> INVALID_TYPE_VIEW
+        is Loading -> LOADING_VIEW
     }
 
     override fun getItemCount(): Int = viewModels.size
@@ -180,6 +184,16 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
                     itemView.setOnClickListener { view -> toggleValue.isChecked = !toggleValue.isChecked }
                 }
             }
+        }
+    }
+
+
+    /* ---------- LOADING ---------- */
+
+
+    inner class ViewHolderLoading(itemView: View) : FieldViewHolder(itemView) {
+        override fun bind(viewModel: FieldViewModelK, position: Int) {
+            itemView.loadingLabel.text = viewModel.label
         }
     }
 

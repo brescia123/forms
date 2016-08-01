@@ -4,15 +4,11 @@ import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import it.facile.form.viewmodel.FieldViewModelStyleK
 
-class FieldConfigurationBoolK(val label: String,
+class FieldConfigurationBoolK(label: String,
                               val viewStyle: ViewStyle,
-                              val boolToString: (Boolean) -> String) : FieldConfigurationK {
+                              val boolToString: (Boolean) -> String) : FieldConfigurationK(label) {
 
     enum class ViewStyle { CHECKBOX, TOGGLE }
-
-    override fun label(): String {
-        return label
-    }
 
     override fun getViewModel(value: FieldValueK, hidden: Boolean): FieldViewModelK {
         return FieldViewModelK(label, getViewModelStyle(value), hidden, null)

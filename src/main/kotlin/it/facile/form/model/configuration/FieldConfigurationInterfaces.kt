@@ -4,8 +4,9 @@ import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import it.facile.form.viewmodel.FieldViewModelStyleK
 
-interface FieldConfigurationK : FieldConfigurationViewModelGenerator, FieldConfigurationViewModelStyleGenerator {
-    fun label(): String
+abstract class FieldConfigurationK(val label: String) :
+        FieldConfigurationViewModelGenerator,
+        FieldConfigurationViewModelStyleGenerator {
 }
 
 interface FieldConfigurationViewModelGenerator {
