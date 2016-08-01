@@ -1,23 +1,24 @@
 package it.facile.form.adapters
 
 import android.os.Handler
-import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
+import it.facile.form.R
+import it.facile.form.SectionedRecyclerViewAdapterK
 import it.facile.form.viewmodel.FieldValueK
 import it.facile.form.viewmodel.FieldViewModelK
 import it.facile.form.viewmodel.SectionViewModelK
 
-class FormPageRecyclerViewAdapterK(@LayoutRes sectionLayout: Int,
-                                   sectionViewModels: List<SectionViewModelK>,
+class FormPageRecyclerViewAdapterK(sectionViewModels: List<SectionViewModelK>,
                                    fieldViewModels: List<FieldViewModelK>,
-                                   onFieldChangedListenerlist: (absolutePosition: Int, fieldValue: FieldValueK) -> Unit) : it.facile.form.SectionedRecyclerViewAdapterK(sectionLayout) {
+                                   onFieldChangedListenerList: (absolutePosition: Int, fieldValue: FieldValueK) -> Unit)
+: SectionedRecyclerViewAdapterK(R.layout.form_section_header, R.layout.form_section_first_header) {
     private val fieldsAdapter: FieldsRecyclerViewAdapterK
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
 
     init {
         setSections(sectionViewModels.toTypedArray())
-        fieldsAdapter = FieldsRecyclerViewAdapterK(fieldViewModels.toMutableList(), onFieldChangedListenerlist)
+        fieldsAdapter = FieldsRecyclerViewAdapterK(fieldViewModels.toMutableList(), onFieldChangedListenerList)
         setAdapter(fieldsAdapter)
     }
 

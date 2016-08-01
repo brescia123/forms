@@ -13,14 +13,22 @@ import it.facile.form.viewmodel.SectionViewModelK;
 public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
 
     private static final int SECTION_HEADER_VIEW_TYPE = 0;
+    private static final int SECTION_FIRST_HEADER_VIEW_TYPE = 1;
 
     private boolean valid = true;
     private int sectionLayout;
+    private Integer sectionFirstLayout = null;
     private SparseArray<SectionViewModelK> sections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
 
     public SectionedRecyclerViewAdapterK(@LayoutRes int sectionLayout) {
         this.sectionLayout = sectionLayout;
+    }
+
+    public SectionedRecyclerViewAdapterK(@LayoutRes int sectionLayout,
+                                         @LayoutRes int sectionFirstLayout) {
+        this.sectionLayout = sectionLayout;
+        this.sectionFirstLayout = sectionFirstLayout;
     }
 
     public void setAdapter(final RecyclerView.Adapter adapter) {
@@ -63,6 +71,10 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
         if (viewType == SECTION_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(sectionLayout, parent, false);
             return new SectionViewHolder(v, R.id.title);
+        } else if (viewType == SECTION_FIRST_HEADER_VIEW_TYPE) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(
+                    sectionFirstLayout != null ? sectionFirstLayout : sectionLayout, parent, false);
+            return new SectionViewHolder(v, R.id.title);
         } else {
             return adapter.onCreateViewHolder(parent, viewType - 1);
         }
@@ -94,7 +106,7 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         return isSectionHeaderPosition(position)
-                ? SECTION_HEADER_VIEW_TYPE
+                ? position == 0 ? SECTION_FIRST_HEADER_VIEW_TYPE : SECTION_HEADER_VIEW_TYPE
                 : adapter.getItemViewType(sectionedPositionToPosition(position)) + 1;
     }
 
