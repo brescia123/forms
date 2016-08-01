@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout via http://ryanharter.com/blog/2013/01/31/how-to-make-an-android-card-list/ -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle"
+               android:dither="true">
+
+            <corners android:radius="2dp"/>
+
+            <solid android:color="#ccc"/>
+
+        </shape>
+    </item>
+
+    <item android:top="2dp">
+        <shape android:shape="rectangle"
+               android:dither="true">
+
+            <solid android:color="#eeeeee"/>
+        </shape>
+    </item>
+</layer-list>

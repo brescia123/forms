@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gray_light">#DDDDDD</color>
+    <color name="gray_medium">#AAAAAA</color>
+    <color name="gray_dark">#7D7D7D</color>
+
+    <color name="overlay_dark">#28000000</color>
+</resources>

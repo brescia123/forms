@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@drawable/selectable_item_background"
+                android:orientation="vertical"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp">
+
+    <TextView
+        android:id="@+id/invalidTypelabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        tools:text="Label"/>
+
+    <TextView
+        android:id="@+id/invalidTypeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/invalidTypelabel"
+        android:layout_marginTop="2dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="14sp"
+        android:text="Invalid type"/>
+</RelativeLayout>
