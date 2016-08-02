@@ -8,8 +8,9 @@ import it.facile.form.viewmodel.FieldViewModelK
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
+class FormModelK(val storage: FormStorageK) : FieldsContainer{
 
+    val pages = arrayListOf<PageModelK>()
     val notifier: PublishSubject<Int> = PublishSubject.create()
 
     init {
@@ -47,11 +48,19 @@ class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
         storage.putValue(key, value)
     }
 
-    fun fields(): List<FieldModelK> {
+    override fun fields(): List<FieldModelK> {
         return pages.fold(mutableListOf<FieldModelK>(), { models, page ->
             models.addAll(page.fields())
             models
         })
+    }
+
+    /** Type-safe builder method to add a page */
+    fun page(title: String, init: PageModelK.() -> Unit): PageModelK {
+        val page = PageModelK(title)
+        page.init()
+        pages.add(page)
+        return page
     }
 
     /* HELPERS */
@@ -70,7 +79,13 @@ class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
         return FieldPathK.Builder.buildForKey(key, this)
     }
 
-    object Helpers {
+    companion object {
+        fun form(storage: FormStorageK, init: FormModelK.() -> Unit) : FormModelK {
+            val form = FormModelK(storage)
+            form.init()
+            return form
+        }
+
         fun buildFieldViewModels(fields: List<FieldModelK>, formStorage: FormStorageK): List<FieldViewModelK> {
             return fields.fold(mutableListOf<FieldViewModelK>(), { viewModels, field ->
                 viewModels.add(field.buildFieldViewModel(formStorage, false))
@@ -78,5 +93,4 @@ class FormModelK(val storage: FormStorageK, vararg val pages: PageModelK) {
             })
         }
     }
-
 }

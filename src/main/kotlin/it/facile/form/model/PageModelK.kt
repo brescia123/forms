@@ -3,12 +3,14 @@ package it.facile.form.model
 import it.facile.form.viewmodel.FieldPathK
 import it.facile.form.viewmodel.SectionViewModelK
 
-class PageModelK(val title: String, vararg val sections: SectionModelK) {
+class PageModelK(val title: String) : FieldsContainer {
 
-    fun fields(): List<FieldModelK> {
+    val sections = arrayListOf<SectionModelK>()
+
+    override fun fields(): List<FieldModelK> {
         return sections.fold(mutableListOf<FieldModelK>(),
                 { allFields, section ->
-                    allFields.addAll(section.fields)
+                    allFields.addAll(section.fields())
                     allFields
                 })
     }
@@ -36,5 +38,13 @@ class PageModelK(val title: String, vararg val sections: SectionModelK) {
             }
         }
         return null
+    }
+
+    /** Type-safe builder method to add a section */
+    fun section(title: String, init: SectionModelK.() -> Unit): SectionModelK {
+        val section = SectionModelK(title)
+        section.init()
+        sections.add(section)
+        return section
     }
 }
