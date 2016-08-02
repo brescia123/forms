@@ -1,13 +1,13 @@
 package it.facile.form
 
-import it.facile.form.viewmodel.FieldValueK
+import it.facile.form.viewmodel.FieldValue
 import org.junit.Assert
 import org.junit.Test
 import rx.observers.TestSubscriber
 
 class FormStorageKTest {
 
-    val storage: FormStorageK = formStorage()
+    val storage: FormStorage = formStorage()
 
     @Test
     fun testPutValue() {
@@ -16,14 +16,14 @@ class FormStorageKTest {
 
         // Return...
         storage.observe().subscribe(testSub)
-        storage.putValue(2, FieldValueK.Text())
-        storage.putValue(2, FieldValueK.Text("ok"))
-        storage.putValue(3, FieldValueK.Bool())
+        storage.putValue(2, FieldValue.Text())
+        storage.putValue(2, FieldValue.Text("ok"))
+        storage.putValue(3, FieldValue.Bool())
 
         // Assert...
         testSub.assertNoErrors()
         testSub.assertValues(2, 2, 3)
-        Assert.assertEquals(FieldValueK.Bool(), storage.getValue(3))
-        Assert.assertEquals(FieldValueK.Text("ok"), storage.getValue(2))
+        Assert.assertEquals(FieldValue.Bool(), storage.getValue(3))
+        Assert.assertEquals(FieldValue.Text("ok"), storage.getValue(2))
     }
 }

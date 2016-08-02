@@ -4,21 +4,21 @@ import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapterK
-import it.facile.form.viewmodel.FieldValueK
-import it.facile.form.viewmodel.FieldViewModelK
-import it.facile.form.viewmodel.SectionViewModelK
+import it.facile.form.viewmodel.FieldValue
+import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.viewmodel.SectionViewModel
 
-class FormPageRecyclerViewAdapterK(sectionViewModels: List<SectionViewModelK>,
-                                   fieldViewModels: List<FieldViewModelK>,
-                                   onFieldChangedListenerList: (absolutePosition: Int, fieldValue: FieldValueK) -> Unit)
+class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
+                                  fieldViewModels: List<FieldViewModel>,
+                                  onFieldChangedListenerList: (absolutePosition: Int, fieldValue: FieldValue) -> Unit)
 : SectionedRecyclerViewAdapterK(R.layout.form_section_header, R.layout.form_section_first_header) {
-    private val fieldsAdapter: FieldsRecyclerViewAdapterK
+    private val fieldsAdapter: FieldsRecyclerViewAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
 
     init {
         setSections(sectionViewModels.toTypedArray())
-        fieldsAdapter = FieldsRecyclerViewAdapterK(fieldViewModels.toMutableList(), onFieldChangedListenerList)
+        fieldsAdapter = FieldsRecyclerViewAdapter(fieldViewModels.toMutableList(), onFieldChangedListenerList)
         setAdapter(fieldsAdapter)
     }
 
@@ -28,10 +28,10 @@ class FormPageRecyclerViewAdapterK(sectionViewModels: List<SectionViewModelK>,
     }
 
     /**
-     * Update the [FieldViewModelK] at the given position taking care of notifying the changes when
+     * Update the [FieldViewModel] at the given position taking care of notifying the changes when
      * appropriate.
      */
-    fun updateField(absolutePosition: Int, viewModel: FieldViewModelK) {
+    fun updateField(absolutePosition: Int, viewModel: FieldViewModel) {
         if (absolutePosition >= fieldsAdapter.itemCount) return // No field at given position
         if (viewModel.equals(fieldsAdapter.getViewModel(absolutePosition))) return // Same view model
 

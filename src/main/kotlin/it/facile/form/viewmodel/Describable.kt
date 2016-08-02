@@ -1,5 +1,5 @@
 package it.facile.form.viewmodel
 
-interface DescribableK {
+interface Describable {
     fun describe(): String
 }

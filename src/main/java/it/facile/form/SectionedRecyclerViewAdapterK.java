@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import it.facile.form.viewmodel.SectionViewModelK;
+import it.facile.form.viewmodel.SectionViewModel;
 
 public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
 
@@ -18,7 +18,7 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
     private boolean valid = true;
     private int sectionLayout;
     private Integer sectionFirstLayout = null;
-    private SparseArray<SectionViewModelK> sections = new SparseArray<>();
+    private SparseArray<SectionViewModel> sections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
 
     public SectionedRecyclerViewAdapterK(@LayoutRes int sectionLayout) {
@@ -141,9 +141,9 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
         return sections.get(position) != null;
     }
 
-    public void setSections(SectionViewModelK[] newSectionViewModels) {
+    public void setSections(SectionViewModel[] newSectionViewModels) {
         sections.clear();
-        for (SectionViewModelK sectionViewModel : newSectionViewModels) {
+        for (SectionViewModel sectionViewModel : newSectionViewModels) {
             sections.append(sectionViewModel.getSectionedPosition(), sectionViewModel);
         }
         notifyDataSetChanged();
@@ -157,7 +157,7 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
             titleTextView = (TextView) itemView.findViewById(titleResourceId);
         }
 
-        public void bind(SectionViewModelK sectionViewModel) {
+        public void bind(SectionViewModel sectionViewModel) {
             titleTextView.setText(sectionViewModel.getTitle());
         }
     }

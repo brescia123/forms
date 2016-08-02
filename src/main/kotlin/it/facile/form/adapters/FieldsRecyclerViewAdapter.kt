@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import it.facile.form.R
-import it.facile.form.viewmodel.FieldValueK
-import it.facile.form.viewmodel.FieldViewModelK
-import it.facile.form.viewmodel.FieldViewModelStyleK.*
+import it.facile.form.viewmodel.FieldValue
+import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.viewmodel.FieldViewModelStyle.*
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import kotlinx.android.synthetic.main.form_field_invalid_type.view.*
@@ -20,8 +20,8 @@ import kotlinx.android.synthetic.main.form_field_text.view.*
 import kotlinx.android.synthetic.main.form_field_toggle.view.*
 import rx.Subscription
 
-class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
-                                 val onFieldChangedListener: (absolutePosition: Int, fieldValue: FieldValueK) -> Unit) : RecyclerView.Adapter<FieldsRecyclerViewAdapterK.FieldViewHolder>() {
+class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
+                                val onFieldChangedListener: (absolutePosition: Int, fieldValue: FieldValue) -> Unit) : RecyclerView.Adapter<FieldsRecyclerViewAdapter.FieldViewHolder>() {
 
     companion object {
         private val TAG = "FieldsRecyclerViewAdapter"
@@ -65,21 +65,21 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
 
     override fun getItemCount(): Int = viewModels.size
 
-    fun getViewModel(position: Int): FieldViewModelK = viewModels[position]
+    fun getViewModel(position: Int): FieldViewModel = viewModels[position]
 
-    fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModelK) {
+    fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel) {
         viewModels[position] = fieldViewModel
     }
 
     abstract inner class FieldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(viewModel: FieldViewModelK, position: Int)
+        abstract fun bind(viewModel: FieldViewModel, position: Int)
     }
 
 
     /* ---------- EMPTY ---------- */
 
     inner class ViewHolderEmpty(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
         }
     }
 
@@ -87,7 +87,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
     /* ---------- TEXT ---------- */
 
     inner class ViewHolderText(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.textLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -104,7 +104,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
                         AlertDialog.Builder(itemView.context).setItems(
                                 style.possibleValues.map { it.describe() }.toTypedArray(),
                                 { dialogInterface, i ->
-                                    notifyNewValue(position, FieldValueK.Object(style.possibleValues[i]))
+                                    notifyNewValue(position, FieldValue.Object(style.possibleValues[i]))
                                 })
                                 .setTitle(viewModel.label)
                                 .create().show()
@@ -120,7 +120,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
     inner class ViewHolderInputText(itemView: View) : FieldViewHolder(itemView) {
         private var subscription: Subscription? = null
 
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.inputValue.hint = viewModel.label
             val editText = itemView.inputValue.editText
             val style = viewModel.style
@@ -133,16 +133,16 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
                     // If ENTER on keyboard tapped notify new value
                     editText?.setOnKeyListener { view, keyCode, event ->
                         if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                            notifyNewValue(position, FieldValueK.Text(editText.text.toString()))
+                            notifyNewValue(position, FieldValue.Text(editText.text.toString()))
                         }
                         false
                     }
                     // If focus is lost notify new value
-                    editText?.setOnFocusChangeListener { view, b -> if (!b) notifyNewValue(position, FieldValueK.Text(editText.text.toString())) }
+                    editText?.setOnFocusChangeListener { view, b -> if (!b) notifyNewValue(position, FieldValue.Text(editText.text.toString())) }
                     // If new char typed notify new value (unsubscribe from previous subscription)
                     subscription?.unsubscribe()
                     subscription = it.facile.form.RxTextChangedWrapper.wrap(editText)?.subscribe(
-                            { charSequence -> notifyNewValue(position, FieldValueK.Text(editText?.text.toString())) },
+                            { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                             { throwable -> Log.e(TAG, throwable.message) })
                 }
             }
@@ -153,7 +153,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
     /* ---------- CHECKBOX ---------- */
 
     inner class ViewHolderCheckBox(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.checkboxLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -161,7 +161,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
                     val checkBoxValue = itemView.checkBoxValue
                     checkBoxValue.setOnCheckedChangeListener(null)
                     checkBoxValue.isChecked = style.bool
-                    checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValueK.Bool(value)) }
+                    checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
                     itemView.setOnClickListener { view -> checkBoxValue.isChecked = !checkBoxValue.isChecked }
                 }
             }
@@ -172,7 +172,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
     /* ---------- TOGGLE ---------- */
 
     inner class ViewHolderToggle(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.toggleLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -180,7 +180,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
                     val toggleValue = itemView.toggleValue
                     toggleValue.setOnCheckedChangeListener(null)
                     toggleValue.isChecked = style.bool
-                    toggleValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValueK.Bool(value)) }
+                    toggleValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
                     itemView.setOnClickListener { view -> toggleValue.isChecked = !toggleValue.isChecked }
                 }
             }
@@ -192,7 +192,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
 
 
     inner class ViewHolderLoading(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.loadingLabel.text = viewModel.label
         }
     }
@@ -201,7 +201,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
     /* ---------- INVALID TYPE ---------- */
 
     inner class ViewHolderInvalidType(itemView: View) : FieldViewHolder(itemView) {
-        override fun bind(viewModel: FieldViewModelK, position: Int) {
+        override fun bind(viewModel: FieldViewModel, position: Int) {
             itemView.invalidTypelabel.text = viewModel.label
         }
     }
@@ -209,7 +209,7 @@ class FieldsRecyclerViewAdapterK(val viewModels: MutableList<FieldViewModelK>,
 
     /* ---------- HELPER METHODS ---------- */
 
-    private fun notifyNewValue(position: Int, newValue: FieldValueK) {
+    private fun notifyNewValue(position: Int, newValue: FieldValue) {
         onFieldChangedListener(position, newValue)
     }
 }

@@ -2,16 +2,16 @@ package it.facile.form.viewmodel
 
 import java.util.*
 
-sealed class FieldViewModelStyleK {
-    object Empty : FieldViewModelStyleK()
-    class InvalidType : FieldViewModelStyleK()
-    class SimpleText(val text: String) : FieldViewModelStyleK()
-    class InputText(val text: String) : FieldViewModelStyleK()
-    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyleK()
-    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyleK()
-    class DatePicker(val dateStartLimit: Date, val dateEndLimit: Date, val selectedDate: Date) : FieldViewModelStyleK()
-    class Picker(val possibleValues: List<DescribableK>, val valueText: String) : FieldViewModelStyleK()
-    class Loading() : FieldViewModelStyleK()
+sealed class FieldViewModelStyle {
+    object Empty : FieldViewModelStyle()
+    class InvalidType : FieldViewModelStyle()
+    class SimpleText(val text: String) : FieldViewModelStyle()
+    class InputText(val text: String) : FieldViewModelStyle()
+    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
+    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
+    class DatePicker(val dateStartLimit: Date, val dateEndLimit: Date, val selectedDate: Date) : FieldViewModelStyle()
+    class Picker(val possibleValues: List<Describable>, val valueText: String) : FieldViewModelStyle()
+    class Loading() : FieldViewModelStyle()
 
     override fun toString(): String = when (this) {
         is Empty -> "Empty"

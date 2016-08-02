@@ -1,15 +1,15 @@
 package it.facile.form
 
-import it.facile.form.viewmodel.FieldValueK
+import it.facile.form.viewmodel.FieldValue
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class FormStorageK(val values: MutableMap<Int, FieldValueK>) {
+class FormStorage(val values: MutableMap<Int, FieldValue>) {
     val publishSubject: PublishSubject<Int> = PublishSubject.create()
 
-    fun getValue(key: Int) = values[key] ?: FieldValueK.Empty
+    fun getValue(key: Int) = values[key] ?: FieldValue.Empty
 
-    fun putValue(key: Int, value: FieldValueK) {
+    fun putValue(key: Int, value: FieldValue) {
         values.put(key, value)
         publishSubject.onNext(key)
     }

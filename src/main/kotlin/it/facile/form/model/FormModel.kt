@@ -1,22 +1,22 @@
 package it.facile.form.model
 
-import it.facile.form.FormStorageK
-import it.facile.form.model.configuration.FieldConfigurationPickerK
-import it.facile.form.viewmodel.FieldPathK
-import it.facile.form.viewmodel.FieldValueK
-import it.facile.form.viewmodel.FieldViewModelK
+import it.facile.form.FormStorage
+import it.facile.form.model.configuration.FieldConfigPicker
+import it.facile.form.viewmodel.FieldPath
+import it.facile.form.viewmodel.FieldValue
+import it.facile.form.viewmodel.FieldViewModel
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class FormModelK(val storage: FormStorageK) : FieldsContainer{
+class FormModel(val storage: FormStorage) : FieldsContainer{
 
-    val pages = arrayListOf<PageModelK>()
+    val pages = arrayListOf<PageModel>()
     val notifier: PublishSubject<Int> = PublishSubject.create()
 
     init {
         fields().mapIndexed { i, fieldModelK ->
             when (fieldModelK.fieldConfiguration) {
-                is FieldConfigurationPickerK -> {
+                is FieldConfigPicker -> {
                     fieldModelK.fieldConfiguration.observe().subscribe(
                             { notifier.onNext(fieldModelK.key) },
                             { }
@@ -28,7 +28,7 @@ class FormModelK(val storage: FormStorageK) : FieldsContainer{
         }
     }
 
-    fun observeChanges(): Observable<Pair<FieldPathK, FieldViewModelK>> {
+    fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> {
         return notifier
                 .asObservable()
                 .mergeWith(storage.observe())
@@ -42,22 +42,22 @@ class FormModelK(val storage: FormStorageK) : FieldsContainer{
                 }
     }
 
-    fun notifyValueChanged(fieldPath: FieldPathK, value: FieldValueK): Unit {
+    fun notifyValueChanged(fieldPath: FieldPath, value: FieldValue): Unit {
         if (contains(fieldPath) == false) return
         val key = findFieldModelByFieldPath(fieldPath).key
         storage.putValue(key, value)
     }
 
-    override fun fields(): List<FieldModelK> {
-        return pages.fold(mutableListOf<FieldModelK>(), { models, page ->
+    override fun fields(): List<FieldModel> {
+        return pages.fold(mutableListOf<FieldModel>(), { models, page ->
             models.addAll(page.fields())
             models
         })
     }
 
     /** Type-safe builder method to add a page */
-    fun page(title: String, init: PageModelK.() -> Unit): PageModelK {
-        val page = PageModelK(title)
+    fun page(title: String, init: PageModel.() -> Unit): PageModel {
+        val page = PageModel(title)
         page.init()
         pages.add(page)
         return page
@@ -65,29 +65,29 @@ class FormModelK(val storage: FormStorageK) : FieldsContainer{
 
     /* HELPERS */
 
-    private fun contains(path: FieldPathK): Boolean {
+    private fun contains(path: FieldPath): Boolean {
         return path.pageIndex < pages.size &&
                 path.sectionIndex < pages[path.pageIndex].sections.size &&
                 path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
     }
 
-    private fun findFieldModelByFieldPath(fieldPath: FieldPathK): FieldModelK {
+    private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel {
         return pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
     }
 
-    private fun findFieldPathByKey(key: Int): FieldPathK? {
-        return FieldPathK.Builder.buildForKey(key, this)
+    private fun findFieldPathByKey(key: Int): FieldPath? {
+        return FieldPath.Builder.buildForKey(key, this)
     }
 
     companion object {
-        fun form(storage: FormStorageK, init: FormModelK.() -> Unit) : FormModelK {
-            val form = FormModelK(storage)
+        fun form(storage: FormStorage, init: FormModel.() -> Unit) : FormModel {
+            val form = FormModel(storage)
             form.init()
             return form
         }
 
-        fun buildFieldViewModels(fields: List<FieldModelK>, formStorage: FormStorageK): List<FieldViewModelK> {
-            return fields.fold(mutableListOf<FieldViewModelK>(), { viewModels, field ->
+        fun buildFieldViewModels(fields: List<FieldModel>, formStorage: FormStorage): List<FieldViewModel> {
+            return fields.fold(mutableListOf<FieldViewModel>(), { viewModels, field ->
                 viewModels.add(field.buildFieldViewModel(formStorage, false))
                 viewModels
             })

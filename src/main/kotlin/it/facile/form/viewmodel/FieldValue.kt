@@ -1,10 +1,10 @@
 package it.facile.form.viewmodel
 
-sealed class FieldValueK {
-    object Empty : FieldValueK()
-    class Text(val text: String = "") : FieldValueK()
-    class Bool(val bool: Boolean = false) : FieldValueK()
-    class Object(val value: DescribableK? = null) : FieldValueK()
+sealed class FieldValue {
+    object Empty : FieldValue()
+    class Text(val text: String = "") : FieldValue()
+    class Bool(val bool: Boolean = false) : FieldValue()
+    class Object(val value: Describable? = null) : FieldValue()
 
     override fun toString(): String = when (this) {
         is Text -> text.toString()

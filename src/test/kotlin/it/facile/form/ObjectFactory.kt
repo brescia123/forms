@@ -1,62 +1,62 @@
 package it.facile.form
 
-import it.facile.form.model.FieldModelK
-import it.facile.form.model.FormModelK
-import it.facile.form.model.PageModelK
-import it.facile.form.model.SectionModelK
-import it.facile.form.model.configuration.FieldConfigurationBoolK
-import it.facile.form.model.configuration.FieldConfigurationInputTextK
-import it.facile.form.model.configuration.FieldConfigurationPickerK
-import it.facile.form.viewmodel.DescribableK
-import it.facile.form.viewmodel.FieldValueK
+import it.facile.form.model.FieldModel
+import it.facile.form.model.FormModel
+import it.facile.form.model.PageModel
+import it.facile.form.model.SectionModel
+import it.facile.form.model.configuration.FieldConfigBool
+import it.facile.form.model.configuration.FieldConfigInputText
+import it.facile.form.model.configuration.FieldConfigPicker
+import it.facile.form.viewmodel.Describable
+import it.facile.form.viewmodel.FieldValue
 
-fun formModel(storage: FormStorageK): FormModelK {
+fun formModel(storage: FormStorage): FormModel {
     val objects = listOf(DummyDescribableK("Ciao"), DummyDescribableK("Ciao2"))
     val objectSingle = listOf(DummyDescribableK("CiaoSingle"))
-    return FormModelK(
+    return FormModel(
             storage,
-            PageModelK(
+            PageModel(
                     "Page1",
-                    SectionModelK(
+                    SectionModel(
                             "Section1",
-                            FieldModelK(2, FieldConfigurationPickerK("Label 2", objects, "Select a value")),
-                            FieldModelK(3, FieldConfigurationInputTextK("Label 3")),
-                            FieldModelK(4, FieldConfigurationBoolK("Label 4", FieldConfigurationBoolK.ViewStyle.CHECKBOX) { bool -> "unimplemented" })),
-                    SectionModelK(
+                            FieldModel(2, FieldConfigPicker("Label 2", objects, "Select a value")),
+                            FieldModel(3, FieldConfigInputText("Label 3")),
+                            FieldModel(4, FieldConfigBool("Label 4", FieldConfigBool.ViewStyle.CHECKBOX) { bool -> "unimplemented" })),
+                    SectionModel(
                             "Section2",
-                            FieldModelK(5, FieldConfigurationInputTextK("Label 5")),
-                            FieldModelK(6, FieldConfigurationBoolK("Label 6", FieldConfigurationBoolK.ViewStyle.TOGGLE) { bool -> "unimplemented" }),
-                            FieldModelK(7, FieldConfigurationBoolK("Label 7", FieldConfigurationBoolK.ViewStyle.CHECKBOX) { bool -> "unimplemented" })),
-                    SectionModelK(
+                            FieldModel(5, FieldConfigInputText("Label 5")),
+                            FieldModel(6, FieldConfigBool("Label 6", FieldConfigBool.ViewStyle.TOGGLE) { bool -> "unimplemented" }),
+                            FieldModel(7, FieldConfigBool("Label 7", FieldConfigBool.ViewStyle.CHECKBOX) { bool -> "unimplemented" })),
+                    SectionModel(
                             "Section3",
-                            FieldModelK(8, FieldConfigurationBoolK("Label 8", FieldConfigurationBoolK.ViewStyle.CHECKBOX) { bool -> "unimplemented" }),
-                            FieldModelK(9, FieldConfigurationBoolK("Label 9", FieldConfigurationBoolK.ViewStyle.CHECKBOX) { bool -> "unimplemented" }),
-                            FieldModelK(10, FieldConfigurationBoolK("Label 10", FieldConfigurationBoolK.ViewStyle.TOGGLE) { bool -> "unimplemented" }),
-                            FieldModelK(11, FieldConfigurationPickerK("Label 11", objectSingle, "Select a value")))),
-            PageModelK(
+                            FieldModel(8, FieldConfigBool("Label 8", FieldConfigBool.ViewStyle.CHECKBOX) { bool -> "unimplemented" }),
+                            FieldModel(9, FieldConfigBool("Label 9", FieldConfigBool.ViewStyle.CHECKBOX) { bool -> "unimplemented" }),
+                            FieldModel(10, FieldConfigBool("Label 10", FieldConfigBool.ViewStyle.TOGGLE) { bool -> "unimplemented" }),
+                            FieldModel(11, FieldConfigPicker("Label 11", objectSingle, "Select a value")))),
+            PageModel(
                     "Page2",
-                    SectionModelK(
+                    SectionModel(
                             "Section1",
-                            FieldModelK(12, FieldConfigurationInputTextK("Label 12")),
-                            FieldModelK(13, FieldConfigurationInputTextK("Label 13"))
+                            FieldModel(12, FieldConfigInputText("Label 12")),
+                            FieldModel(13, FieldConfigInputText("Label 13"))
                     )
             ))
 }
 
-fun formStorage(): FormStorageK = FormStorageK(mutableMapOf(
-        2 to FieldValueK.Object(),
-        3 to FieldValueK.Text("Previous value"),
-        4 to FieldValueK.Bool(true),
-        5 to FieldValueK.Text(),
-        6 to FieldValueK.Bool(),
-        7 to FieldValueK.Bool(true),
-        8 to FieldValueK.Empty,
-        9 to FieldValueK.Bool(true),
-        10 to FieldValueK.Bool(true),
-        11 to FieldValueK.Object()
+fun formStorage(): FormStorage = FormStorage(mutableMapOf(
+        2 to FieldValue.Object(),
+        3 to FieldValue.Text("Previous value"),
+        4 to FieldValue.Bool(true),
+        5 to FieldValue.Text(),
+        6 to FieldValue.Bool(),
+        7 to FieldValue.Bool(true),
+        8 to FieldValue.Empty,
+        9 to FieldValue.Bool(true),
+        10 to FieldValue.Bool(true),
+        11 to FieldValue.Object()
 ))
 
-class DummyDescribableK(val title: String) : DescribableK {
+class DummyDescribableK(val title: String) : Describable {
     override fun describe(): String {
         return title
     }

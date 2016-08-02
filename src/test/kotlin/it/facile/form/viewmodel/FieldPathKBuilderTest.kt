@@ -12,9 +12,9 @@ class FieldPathKBuilderTest {
     @Test
     fun testBuildForKey() {
         // Return...
-        val fieldPath = FieldPathK.Builder.buildForKey(3, formModel)
-        val fieldPath2 = FieldPathK.Builder.buildForKey(10, formModel)
-        val fieldPath3 = FieldPathK.Builder.buildForKey(13, formModel)
+        val fieldPath = FieldPath.Builder.buildForKey(3, formModel)
+        val fieldPath2 = FieldPath.Builder.buildForKey(10, formModel)
+        val fieldPath3 = FieldPath.Builder.buildForKey(13, formModel)
 
         // Assert...
         Assert.assertEquals(0, fieldPath!!.pageIndex)
@@ -31,7 +31,7 @@ class FieldPathKBuilderTest {
     @Test
     fun testBuildForKey_whenNotInFormModel() {
         // Return...
-        val fieldPath = FieldPathK.Builder.buildForKey(33, formModel)
+        val fieldPath = FieldPath.Builder.buildForKey(33, formModel)
 
         // Assert...
         assertNull(fieldPath)
