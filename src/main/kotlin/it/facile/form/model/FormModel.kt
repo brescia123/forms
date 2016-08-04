@@ -29,7 +29,7 @@ class FormModel(val storage: FormStorage) : FieldsContainer {
                 .map {
                     val path = findFieldPathByKey(it)
                     path?.let {
-                        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage, false)
+                        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
                         Pair(it, viewModel)
                     }
                 }
@@ -90,7 +90,7 @@ class FormModel(val storage: FormStorage) : FieldsContainer {
 
         fun buildFieldViewModels(fields: List<FieldModel>, formStorage: FormStorage): List<FieldViewModel> {
             return fields.fold(mutableListOf<FieldViewModel>(), { viewModels, field ->
-                viewModels.add(field.buildFieldViewModel(formStorage, false))
+                viewModels.add(field.buildFieldViewModel(formStorage))
                 viewModels
             })
         }
