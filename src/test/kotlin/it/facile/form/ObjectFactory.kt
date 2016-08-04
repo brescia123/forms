@@ -50,7 +50,7 @@ fun formStorage(): FormStorage = FormStorage(mutableMapOf(
         5 to FieldValue.Text(),
         6 to FieldValue.Bool(),
         7 to FieldValue.Bool(true),
-        8 to FieldValue.Empty,
+        8 to FieldValue.Missing,
         9 to FieldValue.Bool(true),
         10 to FieldValue.Bool(true),
         11 to FieldValue.Object()

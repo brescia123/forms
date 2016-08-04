@@ -7,7 +7,7 @@ import rx.subjects.PublishSubject
 class FormStorage(val values: MutableMap<Int, FieldValue>) {
     val publishSubject: PublishSubject<Int> = PublishSubject.create()
 
-    fun getValue(key: Int) = values[key] ?: FieldValue.Empty
+    fun getValue(key: Int) = values[key] ?: FieldValue.Missing
 
     fun putValue(key: Int, value: FieldValue) {
         values.put(key, value)
