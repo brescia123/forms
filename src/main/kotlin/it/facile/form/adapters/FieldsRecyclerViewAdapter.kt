@@ -73,7 +73,17 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
     }
 
     abstract inner class FieldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(viewModel: FieldViewModel, position: Int)
+        open fun bind(viewModel: FieldViewModel, position: Int) {
+            val param = itemView.layoutParams as RecyclerView.LayoutParams
+            if (viewModel.hidden) {
+                param.height = 0
+            } else {
+                param.height = getHeight()
+            }
+            itemView.layoutParams = param
+        }
+
+        abstract fun getHeight(): Int
     }
 
 
@@ -81,6 +91,11 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderEmpty(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
+        }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
         }
     }
 
@@ -89,6 +104,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderText(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.textLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -113,6 +129,10 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
                 }
             }
         }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
+        }
     }
 
 
@@ -122,6 +142,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
         private var subscription: Subscription? = null
 
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.inputValue.hint = viewModel.label
             val editText = itemView.inputValue.editText
             val style = viewModel.style
@@ -148,6 +169,10 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
                 }
             }
         }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
+        }
     }
 
 
@@ -155,6 +180,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderCheckBox(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.checkboxLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -167,6 +193,10 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
                 }
             }
         }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
+        }
     }
 
 
@@ -174,6 +204,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderToggle(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.toggleLabel.text = viewModel.label
             val style = viewModel.style
             when (style) {
@@ -186,6 +217,10 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
                 }
             }
         }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
+        }
     }
 
 
@@ -194,7 +229,12 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderLoading(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.loadingLabel.text = viewModel.label
+        }
+
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
         }
     }
 
@@ -203,7 +243,12 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     inner class ViewHolderInvalidType(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
+            super.bind(viewModel, position)
             itemView.invalidTypelabel.text = viewModel.label
+        }
+        
+        override fun getHeight(): Int {
+            return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
         }
     }
 
