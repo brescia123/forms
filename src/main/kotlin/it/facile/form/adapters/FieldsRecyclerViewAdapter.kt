@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import it.facile.form.R
+import it.facile.form.RxTextChangedWrapper
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle.*
@@ -141,7 +142,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
                     editText?.setOnFocusChangeListener { view, b -> if (!b) notifyNewValue(position, FieldValue.Text(editText.text.toString())) }
                     // If new char typed notify new value (unsubscribe from previous subscription)
                     subscription?.unsubscribe()
-                    subscription = it.facile.form.RxTextChangedWrapper.wrap(editText)?.subscribe(
+                    subscription = RxTextChangedWrapper.wrap(editText)?.subscribe(
                             { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                             { throwable -> Log.e(TAG, throwable.message) })
                 }

@@ -8,7 +8,7 @@ import rx.Single
 
 class FieldConfigPicker(label: String,
                         val possibleValuesSingle: Single<List<Describable>>,
-                        val placeHolder: String) : FieldConfig(label) {
+                        val placeHolder: String) : FieldConfig(label), DeferredConfig {
     var possibleValues: List<Describable>? = null
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
@@ -26,7 +26,7 @@ class FieldConfigPicker(label: String,
                 else -> FieldViewModelStyle.InvalidType()
             }
 
-    fun observe(): Single<Unit> {
+    override fun observe(): Single<Unit> {
         return possibleValuesSingle.doOnSuccess {
             possibleValues = it
         }.flatMap { Single.just<Unit>(null) }

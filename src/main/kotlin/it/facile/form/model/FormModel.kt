@@ -1,43 +1,36 @@
 package it.facile.form.model
 
+import android.util.Log
 import it.facile.form.FormStorage
-import it.facile.form.model.configuration.FieldConfigPicker
+import it.facile.form.model.configuration.DeferredConfig
 import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class FormModel(val storage: FormStorage) : FieldsContainer{
+class FormModel(val storage: FormStorage) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
     val notifier: PublishSubject<Int> = PublishSubject.create()
 
-    init {
-        fields().mapIndexed { i, fieldModelK ->
-            when (fieldModelK.fieldConfiguration) {
-                is FieldConfigPicker -> {
-                    fieldModelK.fieldConfiguration.observe().subscribe(
-                            { notifier.onNext(fieldModelK.key) },
-                            { }
-                    )
-                }
-                else -> {
-                }
-            }
-        }
+    override fun fields(): List<FieldModel> {
+        return pages.fold(mutableListOf<FieldModel>(), { models, page ->
+            models.addAll(page.fields())
+            models
+        })
     }
 
     fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> {
         return notifier
                 .asObservable()
                 .mergeWith(storage.observe())
-                .filter { findFieldPathByKey(it) != null }
+                .filter { contains(it) }
                 .map {
                     val path = findFieldPathByKey(it)
                     path?.let {
-                        val viewModel = findFieldModelByFieldPath(path).buildFieldViewModel(storage, false)
-                        Pair(path, viewModel)
+                        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage, false)
+                        Pair(it, viewModel)
                     }
                 }
     }
@@ -46,13 +39,6 @@ class FormModel(val storage: FormStorage) : FieldsContainer{
         if (contains(fieldPath) == false) return
         val key = findFieldModelByFieldPath(fieldPath).key
         storage.putValue(key, value)
-    }
-
-    override fun fields(): List<FieldModel> {
-        return pages.fold(mutableListOf<FieldModel>(), { models, page ->
-            models.addAll(page.fields())
-            models
-        })
     }
 
     /** Type-safe builder method to add a page */
@@ -71,6 +57,10 @@ class FormModel(val storage: FormStorage) : FieldsContainer{
                 path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
     }
 
+    private fun contains(key: Int): Boolean {
+        return findFieldPathByKey(key) != null
+    }
+
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel {
         return pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
     }
@@ -79,10 +69,22 @@ class FormModel(val storage: FormStorage) : FieldsContainer{
         return FieldPath.Builder.buildForKey(key, this)
     }
 
+    private fun observeDeferredConfigs() {
+        fields().map { fieldModel ->
+            if (fieldModel.fieldConfiguration is DeferredConfig) {
+                fieldModel.fieldConfiguration.observe().subscribe(
+                        { notifier.onNext(fieldModel.key) },
+                        { Log.e("FormModel", it.message)}
+                )
+            }
+        }
+    }
+
     companion object {
-        fun form(storage: FormStorage, init: FormModel.() -> Unit) : FormModel {
+        fun form(storage: FormStorage, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage)
             form.init()
+            form.observeDeferredConfigs()
             return form
         }
 
