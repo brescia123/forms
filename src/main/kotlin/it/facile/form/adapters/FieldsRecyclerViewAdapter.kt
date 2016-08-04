@@ -133,7 +133,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
                     // If ENTER on keyboard tapped notify new value
                     editText?.setOnKeyListener { view, keyCode, event ->
-                        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                             notifyNewValue(position, FieldValue.Text(editText.text.toString()))
                         }
                         false
