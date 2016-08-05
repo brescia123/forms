@@ -13,29 +13,18 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
 
     val pages = arrayListOf<PageModel>()
 
-    override fun fields(): List<FieldModel> {
-        return pages.fold(mutableListOf<FieldModel>(), { models, page ->
-            models.addAll(page.fields())
-            models
-        })
-    }
+    override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
+        models.addAll(page.fields())
+        models
+    })
 
-    fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> {
-        return storage.observe()
-                .filter { contains(it) }
-                .doOnNext {
-                    val key = it
-                    actions[key]?.forEach { it.execute(key, storage.getValue(key), storage) } // Execute all actions
-                }
-                .map {
-                    val key = it
-                    findFieldPathByKey(it)?.let {
-                        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
-                        Log.d(TAG, "FieldModel ($key) -> $it - $viewModel")
-                        Pair(it, viewModel)
-                    }
-                }
-    }
+    fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> = storage.observe()
+            .filter { contains(it) } // Filter if the model does not contain the field key
+            .doOnNext { executeFieldAction(it) }
+            .map { keyToFieldPathAndViewModel(it) }
+            .doOnError { Log.e(TAG, it.message) }
+            .retry() // Resubscribe if some errors occurs to continue the flow of notifications
+            .map { it } // Used to deal with nullable kotlin types in rxJava
 
     fun notifyValueChanged(path: FieldPath, value: FieldValue): Unit {
         if (contains(path) == false || value.equals(findFieldModelByFieldPath(path))) return
@@ -51,36 +40,36 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
         return page
     }
 
-    /* HELPERS */
+    private fun keyToFieldPathAndViewModel(key: Int): Pair<FieldPath, FieldViewModel>? = findFieldPathByKey(key)?.let {
+        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
+        Log.d(TAG, "FieldModel ($key) -> $it - $viewModel")
+        Pair(it, viewModel)
+    } ?: null
 
-    private fun contains(path: FieldPath): Boolean {
-        return path.pageIndex < pages.size &&
-                path.sectionIndex < pages[path.pageIndex].sections.size &&
-                path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
-    }
+    private fun executeFieldAction(key: Int) =
+            actions[key]?.forEach { it.execute(key, storage.getValue(key), storage) }
 
-    private fun contains(key: Int): Boolean {
-        return findFieldPathByKey(key) != null
-    }
 
-    private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel {
-        return pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
-    }
+    private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
+            path.sectionIndex < pages[path.pageIndex].sections.size &&
+            path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
 
-    private fun findFieldPathByKey(key: Int): FieldPath? {
-        return FieldPath.Builder.buildForKey(key, this)
-    }
+    private fun contains(key: Int): Boolean = findFieldPathByKey(key) != null
 
-    private fun observeDeferredConfigs() {
-        fields().map { fieldModel ->
-            if (fieldModel.fieldConfiguration is DeferredConfig) {
-                fieldModel.fieldConfiguration.observe().subscribe(
-                        { storage.notify(fieldModel.key) },
-                        { Log.e("FormModel", it.message) }
-                )
+    private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
+            pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
+
+    private fun findFieldPathByKey(key: Int): FieldPath? = FieldPath.Builder.buildForKey(key, this)
+
+    private fun observeDeferredConfigs() =
+            fields().map { fieldModel ->
+                if (fieldModel.fieldConfiguration is DeferredConfig) {
+                    fieldModel.fieldConfiguration.observe().subscribe(
+                            { storage.notify(fieldModel.key) },
+                            { Log.e("FormModel", it.message) }
+                    )
+                }
             }
-        }
-    }
 
     companion object {
         private val TAG: String = "FormModel"
