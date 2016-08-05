@@ -2,7 +2,6 @@ package it.facile.form.adapters
 
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapterK
 import it.facile.form.viewmodel.FieldValue
@@ -42,7 +41,6 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
         setSection(sectionViewModel)
 
-        Log.d("FormPageAdapter", "updating field at absolute position $absolutePosition......")
         recyclerViews.map {
             val view = it.layoutManager.findViewByPosition(sectionedPosition)
             if (!(view?.hasFocus() ?: true) || isHidingOrShowing) { // If the view has focus don't reload it
@@ -53,7 +51,6 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
                     notifyItemChanged(sectionedPosition)
                     notifyItemChanged(sectionViewModel.sectionedPosition)
                 }
-                Log.d("FormPageAdapter", "notifying item at absolute position $absolutePosition changed. - \n $viewModel")
             }
         }
     }

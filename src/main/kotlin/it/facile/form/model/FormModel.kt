@@ -28,8 +28,10 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
                     actions[key]?.forEach { it.execute(key, storage.getValue(key), storage) } // Execute all actions
                 }
                 .map {
+                    val key = it
                     findFieldPathByKey(it)?.let {
                         val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
+                        Log.d(TAG, "FieldModel ($key) -> $it - $viewModel")
                         Pair(it, viewModel)
                     }
                 }
@@ -81,6 +83,8 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
     }
 
     companion object {
+        private val TAG: String = "FormModel"
+
         fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()

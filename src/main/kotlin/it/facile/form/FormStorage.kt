@@ -1,6 +1,5 @@
 package it.facile.form
 
-import android.util.Log
 import it.facile.form.viewmodel.FieldValue
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -22,7 +21,6 @@ class FormStorage(val values: MutableMap<Int, Pair<FieldValue, Boolean>>) {
         pair?.let {
             values.put(key, it.first to hidden)
             publishSubject.onNext(key)
-            Log.d("FormStorage", "changed visibility $key to ${if(hidden) "invisible" else "visible"}")
         }
     }
 
