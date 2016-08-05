@@ -7,12 +7,11 @@ import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import rx.Observable
-import rx.subjects.PublishSubject
+import java.util.*
 
-class FormModel(val storage: FormStorage) : FieldsContainer {
+class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAction>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
-    val notifier: PublishSubject<Int> = PublishSubject.create()
 
     override fun fields(): List<FieldModel> {
         return pages.fold(mutableListOf<FieldModel>(), { models, page ->
@@ -22,22 +21,23 @@ class FormModel(val storage: FormStorage) : FieldsContainer {
     }
 
     fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> {
-        return notifier
-                .asObservable()
-                .mergeWith(storage.observe())
+        return storage.observe()
                 .filter { contains(it) }
+                .doOnNext {
+                    val key = it
+                    actions[key]?.forEach { it.execute(key, storage.getValue(key), storage) } // Execute all actions
+                }
                 .map {
-                    val path = findFieldPathByKey(it)
-                    path?.let {
+                    findFieldPathByKey(it)?.let {
                         val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
                         Pair(it, viewModel)
                     }
                 }
     }
 
-    fun notifyValueChanged(fieldPath: FieldPath, value: FieldValue): Unit {
-        if (contains(fieldPath) == false) return
-        val key = findFieldModelByFieldPath(fieldPath).key
+    fun notifyValueChanged(path: FieldPath, value: FieldValue): Unit {
+        if (contains(path) == false || value.equals(findFieldModelByFieldPath(path))) return
+        val key = findFieldModelByFieldPath(path).key
         storage.putValue(key, value)
     }
 
@@ -73,16 +73,16 @@ class FormModel(val storage: FormStorage) : FieldsContainer {
         fields().map { fieldModel ->
             if (fieldModel.fieldConfiguration is DeferredConfig) {
                 fieldModel.fieldConfiguration.observe().subscribe(
-                        { notifier.onNext(fieldModel.key) },
-                        { Log.e("FormModel", it.message)}
+                        { storage.notify(fieldModel.key) },
+                        { Log.e("FormModel", it.message) }
                 )
             }
         }
     }
 
     companion object {
-        fun form(storage: FormStorage, init: FormModel.() -> Unit): FormModel {
-            val form = FormModel(storage)
+        fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
+            val form = FormModel(storage, actions)
             form.init()
             form.observeDeferredConfigs()
             return form
