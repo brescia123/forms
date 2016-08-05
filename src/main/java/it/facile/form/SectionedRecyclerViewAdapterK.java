@@ -159,6 +159,17 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
 
         public void bind(SectionViewModel sectionViewModel) {
             titleTextView.setText(sectionViewModel.getTitle());
+            RecyclerView.LayoutParams param = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+            if (sectionViewModel.getHidden()) {
+                param.height = 0;
+            } else {
+                param.height = getHeight();
+            }
+            itemView.setLayoutParams(param);
+        }
+
+        public int getHeight() {
+            return (int) itemView.getResources().getDimension(R.dimen.field_height_small);
         }
     }
 }

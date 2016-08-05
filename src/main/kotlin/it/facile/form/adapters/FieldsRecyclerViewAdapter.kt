@@ -68,22 +68,15 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     fun getViewModel(position: Int): FieldViewModel = viewModels[position]
 
-    fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel) {
-        viewModels[position] = fieldViewModel
-    }
+    fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel): FieldViewModel = viewModels.set(position, fieldViewModel)
 
-    abstract inner class FieldViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    
+    /* --------- VIEWHOLDERS ---------- */
+
+    abstract inner class FieldViewHolder(view: View) : ViewModelHolder(view) {
         open fun bind(viewModel: FieldViewModel, position: Int) {
-            val param = itemView.layoutParams as RecyclerView.LayoutParams
-            if (viewModel.hidden) {
-                param.height = 0
-            } else {
-                param.height = getHeight()
-            }
-            itemView.layoutParams = param
+            hide(viewModel)
         }
-
-        abstract fun getHeight(): Int
     }
 
 
@@ -225,7 +218,6 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
 
     /* ---------- LOADING ---------- */
-
 
     inner class ViewHolderLoading(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
