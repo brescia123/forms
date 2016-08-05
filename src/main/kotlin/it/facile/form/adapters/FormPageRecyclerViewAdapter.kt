@@ -15,7 +15,6 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
     private val fieldsAdapter: FieldsRecyclerViewAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
-
     init {
         setSections(sectionViewModels.toTypedArray())
         fieldsAdapter = FieldsRecyclerViewAdapter(fieldViewModels.toMutableList(), onFieldChangedListenerList)
@@ -36,6 +35,7 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
         if (viewModel.equals(fieldsAdapter.getViewModel(absolutePosition))) return // Same view model
 
         val isHidingOrShowing = viewModel.hidden != fieldsAdapter.getViewModel(absolutePosition).hidden
+        val isSectionViewModelUpdated = !sectionViewModel.equals(sections[sectionViewModel.sectionedPosition])
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
@@ -46,10 +46,10 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
             if (!(view?.hasFocus() ?: true) || isHidingOrShowing) { // If the view has focus don't reload it
                 if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
                     deferredNotifyItemChanged(sectionedPosition)
-                    deferredNotifyItemChanged(sectionViewModel.sectionedPosition)
+                    if (isSectionViewModelUpdated) deferredNotifyItemChanged(sectionViewModel.sectionedPosition)
                 } else {
                     notifyItemChanged(sectionedPosition)
-                    notifyItemChanged(sectionViewModel.sectionedPosition)
+                    if (isSectionViewModelUpdated) notifyItemChanged(sectionViewModel.sectionedPosition)
                 }
             }
         }

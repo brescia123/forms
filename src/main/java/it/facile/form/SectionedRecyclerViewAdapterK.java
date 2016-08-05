@@ -149,6 +149,10 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public SparseArray<SectionViewModel> getSections() {
+        return sections;
+    }
+
     public void setSection(SectionViewModel sectionViewModel) {
         sections.put(sectionViewModel.getSectionedPosition(), sectionViewModel);
     }
