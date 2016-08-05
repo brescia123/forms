@@ -1,5 +1,6 @@
 package it.facile.form.viewmodel
 
-interface Describable {
+interface DescribableWithKey {
     fun describe(): String
+    fun key(): Int
 }

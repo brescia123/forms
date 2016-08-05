@@ -7,7 +7,7 @@ import it.facile.form.model.SectionModel
 import it.facile.form.model.configuration.FieldConfigBool
 import it.facile.form.model.configuration.FieldConfigInputText
 import it.facile.form.model.configuration.FieldConfigPicker
-import it.facile.form.viewmodel.Describable
+import it.facile.form.viewmodel.DescribableWithKey
 import it.facile.form.viewmodel.FieldValue
 
 fun formModel(storage: FormStorage): FormModel {
@@ -56,7 +56,7 @@ fun formStorage(): FormStorage = FormStorage(mutableMapOf(
         11 to FieldValue.Object()
 ))
 
-class DummyDescribableK(val title: String) : Describable {
+class DummyDescribableK(val title: String) : DescribableWithKey {
     override fun describe(): String {
         return title
     }

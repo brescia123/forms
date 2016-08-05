@@ -10,7 +10,7 @@ sealed class FieldViewModelStyle {
     class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
     class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
     class DatePicker(val dateStartLimit: Date, val dateEndLimit: Date, val selectedDate: Date) : FieldViewModelStyle()
-    class Picker(val possibleValues: List<Describable>, val valueText: String) : FieldViewModelStyle()
+    class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle()
     class Loading() : FieldViewModelStyle()
 
     override fun toString(): String = when (this) {

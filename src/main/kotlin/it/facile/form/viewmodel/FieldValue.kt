@@ -4,7 +4,7 @@ sealed class FieldValue {
     object Missing : FieldValue()
     class Text(val text: String = "") : FieldValue()
     class Bool(val bool: Boolean = false) : FieldValue()
-    class Object(val value: Describable? = null) : FieldValue()
+    class Object(val value: DescribableWithKey? = null) : FieldValue()
 
     override fun toString(): String = when (this) {
         is Text -> text.toString()

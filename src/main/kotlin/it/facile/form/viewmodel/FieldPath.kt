@@ -2,7 +2,7 @@ package it.facile.form.viewmodel
 
 import it.facile.form.model.FormModel
 
-class FieldPath(val fieldIndex: Int, val sectionIndex: Int, val pageIndex: Int) {
+class FieldPath private constructor(val fieldIndex: Int, val sectionIndex: Int, val pageIndex: Int) {
     object Builder {
         fun buildForKey(key: Int, formModel: FormModel): FieldPath? {
             var pageIndex = 0
