@@ -31,20 +31,24 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
      * Update the [FieldViewModel] at the given position taking care of notifying the changes when
      * appropriate.
      */
-    fun updateField(absolutePosition: Int, viewModel: FieldViewModel) {
+    fun updateField(absolutePosition: Int, viewModel: FieldViewModel, sectionViewModel: SectionViewModel) {
         if (absolutePosition >= fieldsAdapter.itemCount) return // No field at given position
         if (viewModel.equals(fieldsAdapter.getViewModel(absolutePosition))) return // Same view model
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
+        setSection(sectionViewModel)
 
         recyclerViews.map {
             val view = it.layoutManager.findViewByPosition(sectionedPosition)
             if (!(view?.hasFocus() ?: true)) { // If the view has focus don't reload it
-                if (it.isComputingLayout) // Defer view update if RecyclerView is computing layout
+                if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
                     deferredNotifyItemChanged(sectionedPosition)
-                else
+                    deferredNotifyItemChanged(sectionViewModel.sectionedPosition)
+                } else {
                     notifyItemChanged(sectionedPosition)
+                    notifyItemChanged(sectionViewModel.sectionedPosition)
+                }
             }
         }
     }

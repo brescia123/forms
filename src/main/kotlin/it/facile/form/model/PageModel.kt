@@ -1,5 +1,6 @@
 package it.facile.form.model
 
+import it.facile.form.FormStorage
 import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.SectionViewModel
 
@@ -17,16 +18,25 @@ class PageModel(val title: String) : FieldsContainer {
 
     fun getFieldModelByAbsolutePosition(absolutePosition: Int): FieldModel = fields()[absolutePosition]
 
-    fun buildSectionViewModels(): List<SectionViewModel> {
+    fun buildSectionViewModels(storage: FormStorage): List<SectionViewModel> {
         return sections.foldIndexed(Pair(0, mutableListOf<SectionViewModel>()),
                 { index, offsetSectionPair, section ->
-                    offsetSectionPair.second.add(SectionViewModel(
-                            firstPosition = offsetSectionPair.first,
-                            sectionedPosition = offsetSectionPair.first + index,
-                            title = section.title))
+                    offsetSectionPair.second.add(buildSectionViewModel(index, storage))
                     val newOffset = offsetSectionPair.first + section.fields.size
                     Pair(newOffset, offsetSectionPair.second)
                 }).second
+    }
+
+    fun buildSectionViewModel(index: Int, storage: FormStorage): SectionViewModel {
+        val offset = sections.subList(0, index).fold(0,
+                { offset, section ->
+                    offset + section.fields.size
+                })
+        return SectionViewModel(
+                firstPosition = offset,
+                sectionedPosition = offset + index,
+                title = sections[index].title,
+                hidden = sections[index].fields.filter { !storage.isHidden(it.key) }.size == 0)
     }
 
     fun buildAbsoluteFieldPositionFromFieldPath(fieldPath: FieldPath): Int? {

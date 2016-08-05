@@ -149,6 +149,10 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void setSection(SectionViewModel sectionViewModel) {
+        sections.put(sectionViewModel.getSectionedPosition(), sectionViewModel);
+    }
+
     private class SectionViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTextView;
 
