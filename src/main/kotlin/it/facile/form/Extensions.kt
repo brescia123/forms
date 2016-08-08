@@ -25,7 +25,7 @@ object Dates {
     fun create(year: Int = -1, month: Int = -1, day: Int = -1): Date {
         cal.time = Date()
         if (year > -1) cal.set(Calendar.YEAR, year)
-        if (month > -1) cal.set(Calendar.MONTH, month)
+        if (month > -1) cal.set(Calendar.MONTH, month - 1)
         if (day > -1) cal.set(Calendar.DAY_OF_MONTH, day)
         return cal.time
     }
