@@ -47,7 +47,7 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
     } ?: null
 
     private fun executeFieldAction(key: Int) =
-            actions[key]?.forEach { it.execute(key, storage.getValue(key), storage) }
+            actions[key]?.forEach { it.execute(storage.getValue(key), storage) }
 
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
@@ -77,6 +77,7 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
         fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
+            form.fields().map { form.executeFieldAction(it.key) }
             form.observeDeferredConfigs()
             return form
         }
