@@ -10,7 +10,7 @@ import rx.Single
 
 class FieldConfigPicker(label: String,
                         val possibleValuesSingle: Single<List<DescribableWithKey>>,
-                        val placeHolder: String) : FieldConfig(label), DeferredConfig {
+                        val placeHolder: String = "Select a value") : FieldConfig(label), DeferredConfig {
     var possibleValues: List<DescribableWithKey>? = null
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
