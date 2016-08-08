@@ -9,7 +9,7 @@ sealed class FieldViewModelStyle {
     class InputText(val text: String) : FieldViewModelStyle()
     class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
     class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
-    class DatePicker(val dateStartLimit: Date, val dateEndLimit: Date, val selectedDate: Date) : FieldViewModelStyle()
+    class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle()
     class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle()
     class Loading() : FieldViewModelStyle()
 
@@ -20,7 +20,7 @@ sealed class FieldViewModelStyle {
         is InputText -> text
         is Checkbox -> bool.toString()
         is Toggle -> bool.toString()
-        is DatePicker -> selectedDate.toString()
+        is DatePicker -> dateText
         is Picker -> valueText
         is Loading -> "Loading"
     }
@@ -36,8 +36,9 @@ sealed class FieldViewModelStyle {
                 is Toggle -> other is Toggle && other.bool == bool
                 is DatePicker -> other is DatePicker
                         && other.selectedDate.equals(selectedDate)
-                        && other.dateEndLimit.equals(dateEndLimit)
-                        && other.dateStartLimit.equals(dateStartLimit)
+                        && other.maxDate.equals(maxDate)
+                        && other.minDate.equals(minDate)
+                        && other.dateText.equals(dateText)
                 is Picker -> other is Picker
                         && other.possibleValues.equals(possibleValues)
                         && other.valueText.equals(valueText)

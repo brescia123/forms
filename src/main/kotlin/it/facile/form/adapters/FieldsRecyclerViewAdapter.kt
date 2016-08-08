@@ -1,5 +1,6 @@
 package it.facile.form.adapters
 
+import android.app.DatePickerDialog
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -7,10 +8,9 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import it.facile.form.R
-import it.facile.form.RxTextChangedWrapper
+import it.facile.form.*
 import it.facile.form.viewmodel.FieldValue
+import it.facile.form.viewmodel.FieldValue.DateValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle.*
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
@@ -70,7 +70,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
 
     fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel): FieldViewModel = viewModels.set(position, fieldViewModel)
 
-    
+
     /* --------- VIEWHOLDERS ---------- */
 
     abstract inner class FieldViewHolder(view: View) : ViewModelHolder(view) {
@@ -103,9 +103,20 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
             when (style) {
                 is SimpleText -> itemView.textValue.text = style.text
                 is DatePicker -> {
-                    itemView.textValue.text = style.selectedDate.toString()
+                    val date = style.selectedDate
+                    itemView.textValue.text = style.dateText
                     itemView.setOnClickListener {
-                        Toast.makeText(itemView.context, "TODO", Toast.LENGTH_SHORT).show()
+                        val datePickerDialog = DatePickerDialog(
+                                itemView.context,
+                                { datePicker, year, month, day ->
+                                    notifyNewValue(position, DateValue(Dates.create(year, month, day)))
+                                },
+                                date.year(),
+                                date.month(),
+                                date.dayOfMonth())
+                        datePickerDialog.datePicker.minDate = style.minDate.time
+                        datePickerDialog.datePicker.maxDate = style.maxDate.time
+                        datePickerDialog.show()
                     }
                 }
                 is Picker -> {
@@ -238,7 +249,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
             super.bind(viewModel, position)
             itemView.invalidTypelabel.text = viewModel.label
         }
-        
+
         override fun getHeight(): Int {
             return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
         }
