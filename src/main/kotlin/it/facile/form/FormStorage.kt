@@ -9,7 +9,7 @@ class FormStorage(val values: MutableMap<Int, Pair<FieldValue, Boolean>>) {
 
     fun getValue(key: Int): FieldValue = values[key]?.first ?: FieldValue.Missing
 
-    fun isHidden(key: Int): Boolean = values[key]?.second ?: true
+    fun isHidden(key: Int): Boolean = values[key]?.second ?: false
 
     fun putValue(key: Int, value: FieldValue, hidden: Boolean = isHidden(key)) {
         values.put(key, value to hidden)

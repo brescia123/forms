@@ -2,6 +2,8 @@ package it.facile.form.model.configuration
 
 import it.facile.form.viewmodel.DescribableWithKey
 import it.facile.form.viewmodel.FieldValue
+import it.facile.form.viewmodel.FieldValue.Missing
+import it.facile.form.viewmodel.FieldValue.Object
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
 import rx.Single
@@ -17,11 +19,11 @@ class FieldConfigPicker(label: String,
 
     override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle =
             when (value) {
-                is FieldValue.Object ->
+                is Object, Missing ->
                     if (possibleValues != null)
                         FieldViewModelStyle.Picker(
                                 possibleValues as List<DescribableWithKey>,
-                                value.value?.describe() ?: placeHolder)
+                                (value as? Object)?.value?.describe() ?: placeHolder)
                     else FieldViewModelStyle.Loading()
                 else -> FieldViewModelStyle.InvalidType()
             }
