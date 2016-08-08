@@ -190,6 +190,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
             when (style) {
                 is Checkbox -> {
                     val checkBoxValue = itemView.checkBoxValue
+                    itemView.checkboxSecondLabel.text = style.boolText
                     checkBoxValue.setOnCheckedChangeListener(null)
                     checkBoxValue.isChecked = style.bool
                     checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
@@ -214,6 +215,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
             when (style) {
                 is Toggle -> {
                     val toggleValue = itemView.toggleValue
+                    itemView.toggleSecondLabel.text = style.boolText
                     toggleValue.setOnCheckedChangeListener(null)
                     toggleValue.isChecked = style.bool
                     toggleValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
