@@ -32,6 +32,11 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
         storage.putValue(key, value)
     }
 
+    fun notifyValueChanged(key: Int, value: FieldValue): Unit {
+        if (contains(key) == false) return
+        storage.putValue(key, value)
+    }
+
     /** Type-safe builder method to add a page */
     fun page(title: String, init: PageModel.() -> Unit): PageModel {
         val page = PageModel(title)

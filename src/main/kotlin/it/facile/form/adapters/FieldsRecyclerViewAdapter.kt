@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import it.facile.form.*
+import it.facile.form.model.configuration.CustomPickerId
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldValue.DateValue
 import it.facile.form.viewmodel.FieldViewModel
@@ -19,10 +20,11 @@ import kotlinx.android.synthetic.main.form_field_invalid_type.view.*
 import kotlinx.android.synthetic.main.form_field_loading.view.*
 import kotlinx.android.synthetic.main.form_field_text.view.*
 import kotlinx.android.synthetic.main.form_field_toggle.view.*
+import rx.Observable
 import rx.Subscription
+import rx.subjects.PublishSubject
 
-class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
-                                val onFieldChangedListener: (absolutePosition: Int, fieldValue: FieldValue) -> Unit) : RecyclerView.Adapter<FieldsRecyclerViewAdapter.FieldViewHolder>() {
+class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : RecyclerView.Adapter<FieldsRecyclerViewAdapter.FieldViewHolder>() {
 
     companion object {
         private val TAG = "FieldsRecyclerViewAdapter"
@@ -35,6 +37,9 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
         private val INVALID_TYPE_VIEW = R.layout.form_field_invalid_type
         private val LOADING_VIEW = R.layout.form_field_loading
     }
+
+    val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>> = PublishSubject.create()
+    val customPickersClickSubject: PublishSubject<Pair<CustomPickerId, (FieldValue) -> Unit>> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -58,6 +63,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
         is InputText -> INPUT_TEXT_VIEW
         is Checkbox -> CHECKBOX_VIEW
         is Toggle -> TOGGLE_VIEW
+        is CustomPicker -> SIMPLE_TEXT_VIEW
         is DatePicker -> SIMPLE_TEXT_VIEW
         is Picker -> SIMPLE_TEXT_VIEW
         is InvalidType -> INVALID_TYPE_VIEW
@@ -71,7 +77,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
     fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel): FieldViewModel = viewModels.set(position, fieldViewModel)
 
 
-    /* --------- VIEWHOLDERS ---------- */
+    /* ========== VIEWHOLDERS ========== */
 
     abstract inner class FieldViewHolder(view: View) : ViewModelHolder(view) {
         open fun bind(viewModel: FieldViewModel, position: Int) {
@@ -99,9 +105,17 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
         override fun bind(viewModel: FieldViewModel, position: Int) {
             super.bind(viewModel, position)
             itemView.textLabel.text = viewModel.label
+            itemView.setOnClickListener(null)
             val style = viewModel.style
             when (style) {
                 is SimpleText -> itemView.textValue.text = style.text
+                is CustomPicker -> {
+                    itemView.textValue.text = style.valueText
+                    itemView.setOnClickListener {
+                        customPickersClickSubject.onNext(
+                                style.identifier to { value -> notifyNewValue(position, value) })
+                    }
+                }
                 is DatePicker -> {
                     val date = style.selectedDate
                     itemView.textValue.text = style.dateText
@@ -261,6 +275,10 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>,
     /* ---------- HELPER METHODS ---------- */
 
     private fun notifyNewValue(position: Int, newValue: FieldValue) {
-        onFieldChangedListener(position, newValue)
+        valueChangesSubject.onNext(position to newValue)
     }
+
+    fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = valueChangesSubject.asObservable()
+
+    fun observeCustomPickers(): Observable<Pair<CustomPickerId, (FieldValue) -> Unit>> = customPickersClickSubject.asObservable()
 }

@@ -4,20 +4,21 @@ import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapterK
+import it.facile.form.model.configuration.CustomPickerId
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.SectionViewModel
+import rx.Observable
 
 class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
-                                  fieldViewModels: List<FieldViewModel>,
-                                  onFieldChangedListenerList: (absolutePosition: Int, fieldValue: FieldValue) -> Unit)
+                                  fieldViewModels: List<FieldViewModel>)
 : SectionedRecyclerViewAdapterK(R.layout.form_section_header, R.layout.form_section_first_header) {
     private val fieldsAdapter: FieldsRecyclerViewAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
     init {
         setSections(sectionViewModels.toTypedArray())
-        fieldsAdapter = FieldsRecyclerViewAdapter(fieldViewModels.toMutableList(), onFieldChangedListenerList)
+        fieldsAdapter = FieldsRecyclerViewAdapter(fieldViewModels.toMutableList())
         setAdapter(fieldsAdapter)
     }
 
@@ -54,6 +55,9 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
             }
         }
     }
+    fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = fieldsAdapter.observeValueChanges()
+
+    fun observeCustomPickers(): Observable<Pair<CustomPickerId, (FieldValue) -> Unit>> = fieldsAdapter.observeCustomPickers()
 
     private fun deferredNotifyItemChanged(sectionedPosition: Int) {
         Handler().post { notifyItemChanged(sectionedPosition) }
