@@ -86,12 +86,5 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
             form.observeDeferredConfigs()
             return form
         }
-
-        fun buildFieldViewModels(fields: List<FieldModel>, formStorage: FormStorage): List<FieldViewModel> {
-            return fields.fold(mutableListOf<FieldViewModel>(), { viewModels, field ->
-                viewModels.add(field.buildFieldViewModel(formStorage))
-                viewModels
-            })
-        }
     }
 }

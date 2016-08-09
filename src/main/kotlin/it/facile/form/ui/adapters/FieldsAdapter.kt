@@ -1,4 +1,4 @@
-package it.facile.form.adapters
+package it.facile.form.ui.adapters
 
 import android.app.DatePickerDialog
 import android.support.v7.app.AlertDialog
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import it.facile.form.*
 import it.facile.form.model.configuration.CustomPickerId
+import it.facile.form.ui.ViewModelHolder
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldValue.DateValue
 import it.facile.form.viewmodel.FieldViewModel
@@ -24,7 +25,9 @@ import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
 
-class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : RecyclerView.Adapter<FieldsRecyclerViewAdapter.FieldViewHolder>() {
+class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
+                    val onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit)
+: RecyclerView.Adapter<FieldsAdapter.FieldViewHolder>() {
 
     companion object {
         private val TAG = "FieldsRecyclerViewAdapter"
@@ -39,7 +42,6 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : R
     }
 
     val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>> = PublishSubject.create()
-    val customPickersClickSubject: PublishSubject<Pair<CustomPickerId, (FieldValue) -> Unit>> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -112,8 +114,9 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : R
                 is CustomPicker -> {
                     itemView.textValue.text = style.valueText
                     itemView.setOnClickListener {
-                        customPickersClickSubject.onNext(
-                                style.identifier to { value -> notifyNewValue(position, value) })
+                        onCustomPickerClicked(
+                                style.identifier,
+                                { notifyNewValue(position, it) })
                     }
                 }
                 is DatePicker -> {
@@ -123,7 +126,7 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : R
                         val datePickerDialog = DatePickerDialog(
                                 itemView.context,
                                 { datePicker, year, month, day ->
-                                    notifyNewValue(position, DateValue(Dates.create(year, month, day)))
+                                    notifyNewValue(position, FieldValue.DateValue(Dates.create(year, month, day)))
                                 },
                                 date.year(),
                                 date.month(),
@@ -280,5 +283,4 @@ class FieldsRecyclerViewAdapter(val viewModels: MutableList<FieldViewModel>) : R
 
     fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = valueChangesSubject.asObservable()
 
-    fun observeCustomPickers(): Observable<Pair<CustomPickerId, (FieldValue) -> Unit>> = customPickersClickSubject.asObservable()
 }

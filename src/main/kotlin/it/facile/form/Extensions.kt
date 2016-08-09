@@ -1,5 +1,7 @@
 package it.facile.form
 
+import it.facile.form.model.FieldModel
+import it.facile.form.viewmodel.FieldViewModel
 import java.text.DateFormat
 import java.util.*
 
@@ -50,4 +52,11 @@ fun Date.dayOfMonth(): Int {
 
 fun Date.format(formatter: DateFormat): String {
     return formatter.format(this)
+}
+
+fun buildFieldViewModels(fields: List<FieldModel>, formStorage: FormStorage): List<FieldViewModel> {
+    return fields.fold(mutableListOf<FieldViewModel>(), { viewModels, field ->
+        viewModels.add(field.buildFieldViewModel(formStorage))
+        viewModels
+    })
 }

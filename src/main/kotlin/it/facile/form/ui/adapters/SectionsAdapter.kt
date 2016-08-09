@@ -1,25 +1,26 @@
-package it.facile.form.adapters
+package it.facile.form.ui.adapters
 
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import it.facile.form.R
-import it.facile.form.SectionedRecyclerViewAdapterK
+import it.facile.form.SectionedRecyclerViewAdapter
 import it.facile.form.model.configuration.CustomPickerId
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.SectionViewModel
 import rx.Observable
 
-class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
-                                  fieldViewModels: List<FieldViewModel>)
-: SectionedRecyclerViewAdapterK(R.layout.form_section_header, R.layout.form_section_first_header) {
-    private val fieldsAdapter: FieldsRecyclerViewAdapter
+class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
+                      fieldViewModels: List<FieldViewModel>,
+                      onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit)
+: SectionedRecyclerViewAdapter(R.layout.form_section_header, R.layout.form_section_first_header) {
+    private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
     init {
         setSections(sectionViewModels.toTypedArray())
-        fieldsAdapter = FieldsRecyclerViewAdapter(fieldViewModels.toMutableList())
-        setAdapter(fieldsAdapter)
+        fieldsAdapter = FieldsAdapter(fieldViewModels.toMutableList(), onCustomPickerClicked)
+        adapter = fieldsAdapter
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -56,8 +57,6 @@ class FormPageRecyclerViewAdapter(sectionViewModels: List<SectionViewModel>,
         }
     }
     fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = fieldsAdapter.observeValueChanges()
-
-    fun observeCustomPickers(): Observable<Pair<CustomPickerId, (FieldValue) -> Unit>> = fieldsAdapter.observeCustomPickers()
 
     private fun deferredNotifyItemChanged(sectionedPosition: Int) {
         Handler().post { notifyItemChanged(sectionedPosition) }

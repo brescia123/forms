@@ -1,4 +1,4 @@
-package it.facile.form.adapters
+package it.facile.form.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.View

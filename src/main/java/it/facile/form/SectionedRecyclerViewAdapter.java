@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import it.facile.form.viewmodel.SectionViewModel;
 
-public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
+public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private static final int SECTION_HEADER_VIEW_TYPE = 0;
     private static final int SECTION_FIRST_HEADER_VIEW_TYPE = 1;
@@ -21,12 +21,12 @@ public class SectionedRecyclerViewAdapterK extends RecyclerView.Adapter {
     private SparseArray<SectionViewModel> sections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
 
-    public SectionedRecyclerViewAdapterK(@LayoutRes int sectionLayout) {
+    public SectionedRecyclerViewAdapter(@LayoutRes int sectionLayout) {
         this.sectionLayout = sectionLayout;
     }
 
-    public SectionedRecyclerViewAdapterK(@LayoutRes int sectionLayout,
-                                         @LayoutRes int sectionFirstLayout) {
+    public SectionedRecyclerViewAdapter(@LayoutRes int sectionLayout,
+                                        @LayoutRes int sectionFirstLayout) {
         this.sectionLayout = sectionLayout;
         this.sectionFirstLayout = sectionFirstLayout;
     }
