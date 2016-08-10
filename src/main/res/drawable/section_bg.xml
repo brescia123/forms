@@ -16,7 +16,7 @@
         <shape android:shape="rectangle"
                android:dither="true">
 
-            <solid android:color="#eeeeee"/>
+            <solid android:color="@color/section_bg"/>
         </shape>
     </item>
 </layer-list>
