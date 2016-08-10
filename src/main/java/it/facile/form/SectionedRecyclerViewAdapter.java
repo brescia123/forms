@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import it.facile.form.viewmodel.SectionViewModel;
-
 public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
 
     private static final int SECTION_HEADER_VIEW_TYPE = 0;
@@ -18,7 +16,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     private boolean valid = true;
     private int sectionLayout;
     private Integer sectionFirstLayout = null;
-    private SparseArray<SectionViewModel> sections = new SparseArray<>();
+    private SparseArray<PositionAwareSectionViewModel> awareSections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
 
     public SectionedRecyclerViewAdapter(@LayoutRes int sectionLayout) {
@@ -83,7 +81,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (isSectionHeaderPosition(position)) {
-            ((SectionViewHolder) holder).bind(sections.get(position));
+            ((SectionViewHolder) holder).bind(awareSections.get(position));
         } else {
             adapter.onBindViewHolder(holder, sectionedPositionToPosition(position));
         }
@@ -92,14 +90,14 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return valid
-                ? adapter.getItemCount() + sections.size()
+                ? adapter.getItemCount() + awareSections.size()
                 : 0;
     }
 
     @Override
     public long getItemId(int position) {
         return isSectionHeaderPosition(position)
-                ? Integer.MAX_VALUE - sections.indexOfKey(position)
+                ? Integer.MAX_VALUE - awareSections.indexOfKey(position)
                 : adapter.getItemId(sectionedPositionToPosition(position));
     }
 
@@ -112,8 +110,8 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public int positionToSectionedPosition(int position) {
         int offset = 0;
-        for (int i = 0; i < sections.size(); i++) {
-            if (sections.valueAt(i).getFirstPosition() > position) {
+        for (int i = 0; i < awareSections.size(); i++) {
+            if (awareSections.valueAt(i).getFirstPosition() > position) {
                 break;
             }
             offset++;
@@ -128,8 +126,8 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
         }
 
         int offset = 0;
-        for (int i = 0; i < sections.size(); i++) {
-            if (sections.valueAt(i).getSectionedPosition() > sectionedPosition) {
+        for (int i = 0; i < awareSections.size(); i++) {
+            if (awareSections.valueAt(i).getSectionedPosition() > sectionedPosition) {
                 break;
             }
             --offset;
@@ -138,23 +136,23 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     }
 
     public boolean isSectionHeaderPosition(int position) {
-        return sections.get(position) != null;
+        return awareSections.get(position) != null;
     }
 
-    public void setSections(SectionViewModel[] newSectionViewModels) {
-        sections.clear();
-        for (SectionViewModel sectionViewModel : newSectionViewModels) {
-            sections.append(sectionViewModel.getSectionedPosition(), sectionViewModel);
+    public void setAwareSections(PositionAwareSectionViewModel[] newSectionViewModels) {
+        awareSections.clear();
+        for (PositionAwareSectionViewModel sectionViewModel : newSectionViewModels) {
+            awareSections.append(sectionViewModel.getSectionedPosition(), sectionViewModel);
         }
         notifyDataSetChanged();
     }
 
-    public SparseArray<SectionViewModel> getSections() {
-        return sections;
+    public SparseArray<PositionAwareSectionViewModel> getAwareSections() {
+        return awareSections;
     }
 
-    public void setSection(SectionViewModel sectionViewModel) {
-        sections.put(sectionViewModel.getSectionedPosition(), sectionViewModel);
+    public void setAwareSection(PositionAwareSectionViewModel sectionViewModel) {
+        awareSections.put(sectionViewModel.getSectionedPosition(), sectionViewModel);
     }
 
     private class SectionViewHolder extends RecyclerView.ViewHolder {
@@ -165,10 +163,10 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
             titleTextView = (TextView) itemView.findViewById(titleResourceId);
         }
 
-        public void bind(SectionViewModel sectionViewModel) {
+        public void bind(PositionAwareSectionViewModel sectionViewModel) {
             titleTextView.setText(sectionViewModel.getTitle());
             RecyclerView.LayoutParams param = (RecyclerView.LayoutParams) itemView.getLayoutParams();
-            if (sectionViewModel.getHidden()) {
+            if (sectionViewModel.isHidden()) {
                 param.height = 0;
             } else {
                 param.height = getHeight();
@@ -178,6 +176,59 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
 
         public int getHeight() {
             return (int) itemView.getResources().getDimension(R.dimen.field_height_small);
+        }
+    }
+
+    public class PositionAwareSectionViewModel {
+        private int firstPosition;
+        private int sectionedPosition;
+        private String title;
+        private boolean hidden;
+
+        public PositionAwareSectionViewModel(int firstPosition, int sectionedPosition, String title, boolean hidden) {
+            this.firstPosition = firstPosition;
+            this.sectionedPosition = sectionedPosition;
+            this.title = title;
+            this.hidden = hidden;
+        }
+
+        public int getFirstPosition() {
+            return firstPosition;
+        }
+
+        public int getSectionedPosition() {
+            return sectionedPosition;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public boolean isHidden() {
+            return hidden;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PositionAwareSectionViewModel that = (PositionAwareSectionViewModel) o;
+
+            if (firstPosition != that.firstPosition) return false;
+            if (sectionedPosition != that.sectionedPosition) return false;
+            if (hidden != that.hidden) return false;
+            return title != null ? title.equals(that.title) : that.title == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = firstPosition;
+            result = 31 * result + sectionedPosition;
+            result = 31 * result + (title != null ? title.hashCode() : 0);
+            result = 31 * result + (hidden ? 1 : 0);
+            return result;
         }
     }
 }

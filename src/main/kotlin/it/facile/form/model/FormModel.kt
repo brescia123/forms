@@ -64,7 +64,7 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
 
-    private fun findFieldPathByKey(key: Int): FieldPath? = FieldPath.Builder.buildForKey(key, this)
+    private fun findFieldPathByKey(key: Int): FieldPath? = FieldPath.buildForKey(key, this)
 
     private fun observeDeferredConfigs() =
             fields().map { fieldModel ->

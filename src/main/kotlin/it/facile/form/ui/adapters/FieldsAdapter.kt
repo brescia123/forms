@@ -10,9 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import it.facile.form.*
 import it.facile.form.model.configuration.CustomPickerId
-import it.facile.form.ui.ViewModelHolder
+import it.facile.form.ui.adapters.ViewModelHolder
 import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldValue.DateValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle.*
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*

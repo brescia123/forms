@@ -1,10 +1,8 @@
 package it.facile.form.viewmodel
 
-data class SectionViewModel(val firstPosition: Int,
-                            val sectionedPosition: Int,
-                            val title: String,
-                            val hidden: Boolean) : ViewModel {
+data class SectionViewModel(val title: String,
+                            val fields: List<FieldViewModel>) : ViewModel {
     override fun isHidden(): Boolean {
-        return hidden
+        return fields.filter { !it.isHidden() }.size == 0
     }
 }

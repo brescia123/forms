@@ -2,8 +2,11 @@ package it.facile.form.viewmodel
 
 import it.facile.form.model.FormModel
 
-class FieldPath private constructor(val fieldIndex: Int, val sectionIndex: Int, val pageIndex: Int) {
-    object Builder {
+data class FieldPathIndex(val fieldIndex: Int)
+data class FieldPathSection(val fieldIndex: Int, val sectionIndex: Int)
+data class FieldPath(val fieldIndex: Int, val sectionIndex: Int, val pageIndex: Int) {
+    companion object {
+
         fun buildForKey(key: Int, formModel: FormModel): FieldPath? {
             var pageIndex = 0
             for (page in formModel.pages) {
