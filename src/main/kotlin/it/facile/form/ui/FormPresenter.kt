@@ -32,4 +32,16 @@ class FormPresenter(val formModel: FormModel,
     override fun detach() {
         super.detach()
     }
+
+    private fun buildAbsoluteFieldPositionFromFieldPath(fieldPath: FieldPath, formModel: FormModel): Int? {
+        var absolutePosition = 0
+        val sections = formModel.pages[fieldPath.pageIndex].sections
+        for (i in 0..sections.size - 1) {
+            for (j in 0..sections[i].fields.size - 1) {
+                if (i == fieldPath.sectionIndex && j == fieldPath.fieldIndex) return absolutePosition
+                absolutePosition++
+            }
+        }
+        return null
+    }
 }

@@ -4,7 +4,7 @@ import it.facile.form.FormStorage
 import it.facile.form.model.configuration.FieldConfig
 import it.facile.form.viewmodel.SectionViewModel
 
-class SectionModel internal constructor (val title: String) : FieldsContainer {
+data class SectionModel internal constructor (val title: String) : FieldsContainer {
 
     val fields = arrayListOf<FieldModel>()
 
