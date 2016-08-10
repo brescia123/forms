@@ -1,7 +1,6 @@
 package it.facile.form.model
 
 import android.util.Log
-import it.facile.form.FieldPathWithViewModel
 import it.facile.form.FormStorage
 import it.facile.form.model.configuration.DeferredConfig
 import it.facile.form.viewmodel.FieldPath
@@ -18,10 +17,14 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
         models
     })
 
-    fun observeChanges(): Observable<FieldPathWithViewModel> = storage.observe()
+    fun getPage(path: FieldPath): PageModel = pages[path.pageIndex]
+    fun getSection(path: FieldPath): SectionModel = pages[path.pageIndex].sections[path.sectionIndex]
+    fun getField(path: FieldPath): FieldModel = pages[path.pageIndex].sections[path.sectionIndex].fields[path.fieldIndex]
+
+    fun observeChanges(): Observable<FieldPath> = storage.observe()
             .filter { contains(it) } // Filter if the model does not contain the field key
             .doOnNext { executeFieldAction(it) }
-            .map { keyToFieldPathAndViewModel(it) }
+            .map { findFieldPathByKey(it) }
             .doOnError { Log.e(TAG, it.message) }
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
             .map { it } // Used to deal with nullable kotlin types in rxJava
@@ -32,11 +35,6 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
         storage.putValue(key, value)
     }
 
-    fun notifyValueChanged(key: Int, value: FieldValue): Unit {
-        if (contains(key) == false) return
-        storage.putValue(key, value)
-    }
-
     /** Type-safe builder method to add a page */
     fun page(title: String, init: PageModel.() -> Unit): PageModel {
         val page = PageModel(title)
@@ -44,12 +42,6 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
         pages.add(page)
         return page
     }
-
-    private fun keyToFieldPathAndViewModel(key: Int): FieldPathWithViewModel? = findFieldPathByKey(key)?.let {
-        val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
-        Log.d(TAG, "FieldModel ($key) -> $it - $viewModel")
-        it.facile.form.FieldPathViewModel(it, viewModel)
-    } ?: null
 
     private fun executeFieldAction(key: Int) =
             actions[key]?.forEach { it.execute(storage.getValue(key), storage) }
