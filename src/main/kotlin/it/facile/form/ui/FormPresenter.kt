@@ -2,6 +2,7 @@ package it.facile.form.ui
 
 import it.facile.form.FormStorage
 import it.facile.form.model.FormModel
+import it.facile.form.viewmodel.FieldPath
 
 class FormPresenter(val formModel: FormModel,
                     val storage: FormStorage) : Presenter<FormView>() {
@@ -12,17 +13,20 @@ class FormPresenter(val formModel: FormModel,
 
     override fun attach(view: FormView) {
         super.attach(view)
-        view.init(formModel.pages.map { it.buildPageViewModel(storage) })  // I
+        view.init(formModel.pages.map { it.buildPageViewModel(storage) })  // Init view with viewModels
+
+        // Observe value from view (FieldPathValue)
         view.observeValueChanges().retry().subscribe(
-                { formModel.notifyValueChanged(it.first, it.second) },
+                { formModel.notifyValueChanged(it.path, it.value) },
                 { view.logE(TAG, it.message) })
+
+        // Observe viewModel from model (FieldPathViewModel)
         formModel.observeChanges().subscribe(
                 {
-                    val (fieldPath, fieldViewModel) = it
-                    val absolutePosition = formModel.pages[fieldPath.pageIndex].buildAbsoluteFieldPositionFromFieldPath(fieldPath)
+                    val absolutePosition = buildAbsoluteFieldPositionFromFieldPath(it.path, formModel)
                     if (absolutePosition != null) {
-                        val sectionViewModel = formModel.pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].buildSectionViewModel(storage)
-                        view.updateField(fieldPath.pageIndex, absolutePosition, fieldViewModel, sectionViewModel)
+                        val sectionViewModel = formModel.pages[it.path.pageIndex].sections[it.path.sectionIndex].buildSectionViewModel(storage)
+                        view.updateField(it.path.pageIndex, absolutePosition, it.viewModel, sectionViewModel)
                     }
                 },
                 { view.logE(TAG, it.message) }

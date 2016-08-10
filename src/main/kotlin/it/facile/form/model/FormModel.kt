@@ -1,15 +1,15 @@
 package it.facile.form.model
 
 import android.util.Log
+import it.facile.form.FieldPathWithViewModel
 import it.facile.form.FormStorage
 import it.facile.form.model.configuration.DeferredConfig
 import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
 import rx.Observable
 import java.util.*
 
-class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAction>>) : FieldsContainer {
+data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAction>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
 
@@ -18,7 +18,7 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
         models
     })
 
-    fun observeChanges(): Observable<Pair<FieldPath, FieldViewModel>> = storage.observe()
+    fun observeChanges(): Observable<FieldPathWithViewModel> = storage.observe()
             .filter { contains(it) } // Filter if the model does not contain the field key
             .doOnNext { executeFieldAction(it) }
             .map { keyToFieldPathAndViewModel(it) }
@@ -45,10 +45,10 @@ class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAc
         return page
     }
 
-    private fun keyToFieldPathAndViewModel(key: Int): Pair<FieldPath, FieldViewModel>? = findFieldPathByKey(key)?.let {
+    private fun keyToFieldPathAndViewModel(key: Int): FieldPathWithViewModel? = findFieldPathByKey(key)?.let {
         val viewModel = findFieldModelByFieldPath(it).buildFieldViewModel(storage)
         Log.d(TAG, "FieldModel ($key) -> $it - $viewModel")
-        Pair(it, viewModel)
+        it.facile.form.FieldPathViewModel(it, viewModel)
     } ?: null
 
     private fun executeFieldAction(key: Int) =

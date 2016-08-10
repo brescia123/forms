@@ -4,22 +4,22 @@ import it.facile.form.viewmodel.FieldValue
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class FormStorage(val values: MutableMap<Int, Pair<FieldValue, Boolean>>) {
+class FormStorage(val values: MutableMap<Int, FieldValueWithVisibility>) {
     val publishSubject: PublishSubject<Int> = PublishSubject.create()
 
-    fun getValue(key: Int): FieldValue = values[key]?.first ?: FieldValue.Missing
+    fun getValue(key: Int): FieldValue = values[key]?.value ?: FieldValue.Missing
 
-    fun isHidden(key: Int): Boolean = values[key]?.second ?: false
+    fun isHidden(key: Int): Boolean = values[key]?.hidden ?: false
 
     fun putValue(key: Int, value: FieldValue, hidden: Boolean = isHidden(key)) {
-        values.put(key, value to hidden)
+        values.put(key, FieldValueWithVisibility(value, hidden))
         publishSubject.onNext(key)
     }
 
     fun setVisibility(key: Int, hidden: Boolean) {
         val pair = values[key]
         pair?.let {
-            values.put(key, it.first to hidden)
+            values.put(key, FieldValueWithVisibility(it.value, hidden))
             publishSubject.onNext(key)
         }
     }
