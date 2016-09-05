@@ -8,7 +8,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
-                android:background="@drawable/selectable_item_background">
+                android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/toggleLabel"
