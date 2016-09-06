@@ -5,10 +5,7 @@ import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
 import rx.Single
 
-abstract class FieldConfig(val label: String) :
-        ViewModelGenerator,
-        ViewModelStyleGenerator {
-}
+abstract class FieldConfig(val label: String) : ViewModelGenerator, ViewModelStyleGenerator {}
 
 interface ViewModelGenerator {
     fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel
@@ -19,5 +16,5 @@ interface ViewModelStyleGenerator {
 }
 
 interface DeferredConfig {
-    fun observe() : Single<Unit>
+    fun observe(): Single<Unit>
 }
