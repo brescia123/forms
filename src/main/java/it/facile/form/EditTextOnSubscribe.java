@@ -11,9 +11,11 @@ import rx.android.MainThreadSubscription;
 public class EditTextOnSubscribe implements Observable.OnSubscribe<CharSequence> {
 
     private final EditText editText;
+    private boolean initialVal;
 
-    public EditTextOnSubscribe(EditText editText) {
+    public EditTextOnSubscribe(EditText editText, boolean initialVal) {
         this.editText = editText;
+        this.initialVal = initialVal;
     }
 
     @Override
@@ -48,6 +50,6 @@ public class EditTextOnSubscribe implements Observable.OnSubscribe<CharSequence>
             }
         });
 
-        subscriber.onNext(editText.getText());
+        if (initialVal) subscriber.onNext(editText.getText());
     }
 }

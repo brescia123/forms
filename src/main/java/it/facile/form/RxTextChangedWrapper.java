@@ -5,8 +5,8 @@ import android.widget.EditText;
 import rx.Observable;
 
 public class RxTextChangedWrapper {
-    public static Observable<CharSequence> wrap(EditText editText) {
+    public static Observable<CharSequence> wrap(EditText editText, boolean initialVal) {
         if (editText == null) return null;
-        return Observable.create(new EditTextOnSubscribe(editText));
+        return Observable.create(new EditTextOnSubscribe(editText, initialVal));
     }
 }
