@@ -358,7 +358,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     /** Return the position of the first error, -1 if no error are present */
     fun firstErrorPosition(): Int {
-        for ((index, viewModel) in viewModels.withIndex()) {
+        for ((index, viewModel) in viewModels.visibleFields().withIndex()) {
             if (viewModel.error != null) {
                 return index
             }
@@ -368,7 +368,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     fun errorPositions(): MutableList<Int> {
         val positions = mutableListOf<Int>()
-        for ((index, viewModel) in viewModels.withIndex()) {
+        for ((index, viewModel) in viewModels.visibleFields().withIndex()) {
             if (viewModel.error != null) {
                 positions.add(index)
             }
@@ -384,4 +384,8 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
             !viewModel.style.textDescription.equals(editText?.text.toString())
+
+    fun MutableList<FieldViewModel>.visibleFields() : List<FieldViewModel> {
+        return filter { !it.hidden }
+    }
 }
