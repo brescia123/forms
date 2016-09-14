@@ -3,30 +3,19 @@ package it.facile.form.viewmodel
 import it.facile.form.model.configuration.CustomPickerId
 import java.util.*
 
-sealed class FieldViewModelStyle {
-    object Empty : FieldViewModelStyle()
-    class InvalidType : FieldViewModelStyle()
-    class SimpleText(val text: String) : FieldViewModelStyle()
-    class InputText(val text: String) : FieldViewModelStyle()
-    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
-    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle()
-    class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle()
-    class CustomPicker(val identifier: CustomPickerId, val valueText: String) : FieldViewModelStyle()
-    class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle()
-    class Loading() : FieldViewModelStyle()
+sealed class FieldViewModelStyle(val textDescription: String) {
+    object Empty : FieldViewModelStyle("Empty")
+    class InvalidType : FieldViewModelStyle("Invalid type")
+    class SimpleText(val text: String) : FieldViewModelStyle(text)
+    class InputText(val text: String) : FieldViewModelStyle(text)
+    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText)
+    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText)
+    class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle(dateText)
+    class CustomPicker(val identifier: CustomPickerId, val valueText: String) : FieldViewModelStyle(valueText)
+    class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle(valueText)
+    class Loading() : FieldViewModelStyle("Loading")
 
-    override fun toString(): String = when (this) {
-        is Empty -> "Empty"
-        is InvalidType -> "Invalid type"
-        is SimpleText -> text
-        is InputText -> text
-        is Checkbox -> bool.toString()
-        is Toggle -> bool.toString()
-        is DatePicker -> dateText
-        is CustomPicker -> valueText
-        is Picker -> valueText
-        is Loading -> "Loading"
-    }
+    override fun toString(): String = textDescription
 
     override fun equals(other: Any?): Boolean {
         return if (other == null) false
@@ -51,4 +40,18 @@ sealed class FieldViewModelStyle {
             is Loading -> true
         }
     }
+
+    override fun hashCode(): Int = when (this) {
+        is Empty -> textDescription.hashCode()
+        is InvalidType -> textDescription.hashCode()
+        is SimpleText -> textDescription.hashCode() * 31 + text.hashCode()
+        is InputText-> textDescription.hashCode() * 31 + text.hashCode()
+        is Checkbox-> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()
+        is Toggle-> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()
+        is DatePicker-> (((textDescription.hashCode() * 31 + minDate.hashCode()) * 31 + maxDate.hashCode()) * 31 + selectedDate.hashCode()) * 31 + dateText.hashCode()
+        is CustomPicker-> (textDescription.hashCode() * 31 + identifier.hashCode()) * 31 + valueText.hashCode()
+        is Picker-> (textDescription.hashCode() * 31 + possibleValues.hashCode()) * 31 + valueText.hashCode()
+        is Loading -> textDescription.hashCode()
+    }
 }
+
