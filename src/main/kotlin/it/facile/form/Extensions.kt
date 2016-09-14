@@ -3,6 +3,7 @@ package it.facile.form
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.widget.TextView
 import java.text.DateFormat
 import java.util.*
@@ -54,6 +55,22 @@ fun Date.dayOfMonth(): Int {
 
 fun Date.format(formatter: DateFormat): String {
     return formatter.format(this)
+}
+
+
+
+/* ---------- View extensions utilities ---------- */
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
 }
 
 
