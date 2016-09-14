@@ -3,6 +3,7 @@ package it.facile.form
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import java.text.DateFormat
@@ -20,6 +21,29 @@ fun <T1, T2> Map<T1, T2>.equalMap(other: Map<T1, T2>): Boolean {
     }
     return true
 }
+
+/* ---------- Log extensions ---------- */
+
+inline fun <reified T: Any> T.logD(text: String) {
+    Log.d(T::class.java.simpleName, text)
+}
+
+inline fun <reified T: Any> T.logE(text: String) {
+    Log.e(T::class.java.simpleName, text)
+}
+
+inline fun <reified T: Any> T.logI(text: String) {
+    Log.i(T::class.java.simpleName, text)
+}
+
+inline fun <reified T: Any> T.logV(text: String) {
+    Log.v(T::class.java.simpleName, text)
+}
+
+inline fun <reified T: Any> T.logW(text: String) {
+    Log.w(T::class.java.simpleName, text)
+}
+
 
 
 /* ---------- Date extensions utilities ---------- */
