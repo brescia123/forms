@@ -1,5 +1,9 @@
 package it.facile.form
 
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.support.v7.widget.RecyclerView
+import android.widget.TextView
 import java.text.DateFormat
 import java.util.*
 
@@ -50,4 +54,32 @@ fun Date.dayOfMonth(): Int {
 
 fun Date.format(formatter: DateFormat): String {
     return formatter.format(this)
+}
+
+
+/* ---------- TextView extensions utilities ---------- */
+
+fun TextView.setCompoundDrawables(left: Drawable? = null,
+                                  top: Drawable? = null,
+                                  right: Drawable? = null,
+                                  bottom: Drawable? = null) {
+    this.setCompoundDrawables(left, top, right, bottom)
+}
+
+
+/* ---------- Handler extensions utilities ---------- */
+
+fun Handler.postDelayed(delayMillis: Long, r: () -> Unit) {
+    postDelayed(r, delayMillis)
+}
+
+
+/* ---------- Adapter extensions utilities ---------- */
+
+/**
+ * Notifies an item change with some delay. Useful to update the adapter
+ * when the RecyclerView is computing layout
+ * */
+fun RecyclerView.Adapter<*>.deferredNotifyItemChanged(position: Int) {
+    Handler().postDelayed(50) { this.notifyItemChanged(position) }
 }
