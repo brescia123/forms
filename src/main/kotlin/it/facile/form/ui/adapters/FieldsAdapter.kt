@@ -1,16 +1,22 @@
 package it.facile.form.ui.adapters
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import it.facile.form.*
 import it.facile.form.model.configuration.CustomPickerId
-import it.facile.form.ui.adapters.ViewModelHolder
 import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle.*
@@ -41,6 +47,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
     }
 
     val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>> = PublishSubject.create()
+    var errorsShouldBeVisible = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -82,8 +89,26 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     abstract inner class FieldViewHolder(view: View) : ViewModelHolder(view) {
         open fun bind(viewModel: FieldViewModel, position: Int) {
-            hide(viewModel)
+            hide(viewModel.isHidden())
+            if (this is FieldViewHolderWithError) {
+                showError(itemView, viewModel, errorsShouldBeVisible)
+                //if (isErrorOutdated(itemView, viewModel) and errorsShouldBeVisible) animateError(itemView)
+            }
+
         }
+    }
+
+    interface FieldViewHolderWithError {
+
+        fun animateError(itemView: View) {
+            val loadAnimation = AnimationUtils.loadAnimation(itemView.context, R.anim.vibrate)
+            itemView.animation = loadAnimation
+            loadAnimation.start()
+        }
+
+        fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean)
+
+        fun isErrorOutdated(itemView: View, viewModel: FieldViewModel): Boolean
     }
 
 
@@ -102,16 +127,16 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     /* ---------- TEXT ---------- */
 
-    inner class ViewHolderText(itemView: View) : FieldViewHolder(itemView) {
+    inner class ViewHolderText(itemView: View) : FieldViewHolder(itemView), FieldViewHolderWithError {
         override fun bind(viewModel: FieldViewModel, position: Int) {
             super.bind(viewModel, position)
-            itemView.textLabel.text = viewModel.label
-            itemView.setOnClickListener(null)
             val style = viewModel.style
+            itemView.textLabel.text = viewModel.label
+            itemView.textValue.text = viewModel.style.textDescription
+            itemView.textError.text = viewModel.error
+            itemView.setOnClickListener(null) // Remove old listener
             when (style) {
-                is SimpleText -> itemView.textValue.text = style.text
                 is CustomPicker -> {
-                    itemView.textValue.text = style.valueText
                     itemView.setOnClickListener {
                         onCustomPickerClicked(
                                 style.identifier,
@@ -120,7 +145,6 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
                 }
                 is DatePicker -> {
                     val date = style.selectedDate
-                    itemView.textValue.text = style.dateText
                     itemView.setOnClickListener {
                         val datePickerDialog = DatePickerDialog(
                                 itemView.context,
@@ -136,7 +160,6 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
                     }
                 }
                 is Picker -> {
-                    itemView.textValue.text = style.valueText
                     itemView.setOnClickListener {
                         AlertDialog.Builder(itemView.context).setItems(
                                 style.possibleValues.map { it.describe() }.toTypedArray(),
@@ -150,49 +173,90 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
             }
         }
 
-        override fun getHeight(): Int {
-            return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
+        override fun getHeight(): Int = itemView.resources.getDimension(R.dimen.field_height_big).toInt()
+
+        override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
+            if (show && viewModel.error != null) {
+                itemView.textValue.hide()
+                itemView.textError.show()
+            } else {
+                itemView.textValue.show()
+                itemView.textError.hide()
+            }
         }
+
+        override fun isErrorOutdated(itemView: View, viewModel: FieldViewModel): Boolean =
+                itemView.textError.text.toString() != viewModel.error
     }
 
 
     /* ---------- INPUT TEXT ---------- */
 
-    inner class ViewHolderInputText(itemView: View) : FieldViewHolder(itemView) {
-        private var subscription: Subscription? = null
+    inner class ViewHolderInputText(itemView: View) : FieldViewHolder(itemView), FieldViewHolderWithError {
+        var subscription: Subscription? = null
 
         override fun bind(viewModel: FieldViewModel, position: Int) {
             super.bind(viewModel, position)
-            itemView.inputValue.hint = viewModel.label
-            val editText = itemView.inputValue.editText
             val style = viewModel.style
+            val editText = itemView.inputValue.editText
+            itemView.inputValue.hint = viewModel.label
+            if (isTextChanged(viewModel, editText)) editText?.setText(style.textDescription)
+            editText?.setOnFocusChangeListener(null)
+            editText?.setOnKeyListener(null)
+            subscription?.unsubscribe()
             when (style) {
                 is InputText -> {
-                    editText?.setText(style.text)
-
                     // Listen for new values:
 
                     // If ENTER on keyboard tapped notify new value
                     editText?.setOnKeyListener { view, keyCode, event ->
                         if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                            notifyNewValue(position, FieldValue.Text(editText.text.toString()))
+                            logD("Pressed Enter button")
+                            editText.clearFocus()
                         }
                         false
                     }
+
+                    editText?.setOnEditorActionListener { view, i, keyEvent ->
+                        if (i == EditorInfo.IME_ACTION_DONE) {
+                            logD("Pressed Done button")
+                            editText.clearFocus()
+                        }
+                        false
+                    }
+
                     // If focus is lost notify new value
-                    editText?.setOnFocusChangeListener { view, b -> if (!b) notifyNewValue(position, FieldValue.Text(editText.text.toString())) }
-                    // If new char typed notify new value (unsubscribe from previous subscription)
-                    subscription?.unsubscribe()
-                    subscription = RxTextChangedWrapper.wrap(editText)?.subscribe(
-                            { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
+                    editText?.setOnFocusChangeListener { view, b ->
+                        if (!b) {
+                            val text = editText.text.toString()
+                            logD("Notify position=$position, val=$text cause focus lost")
+                            notifyNewValue(position, FieldValue.Text(text))
+                        }
+                    }
+
+                    // If new char typed notify new value
+                    subscription = RxTextChangedWrapper.wrap(editText, false)?.subscribe(
+                            { charSequence ->
+                                val p = position
+                                val text = editText?.text.toString()
+                                logD("Notify position=$p, val=$text cause new char entered")
+                                notifyNewValue(p, FieldValue.Text(text))
+                            },
                             { throwable -> Log.e(TAG, throwable.message) })
                 }
             }
         }
 
         override fun getHeight(): Int {
-            return itemView.resources.getDimension(R.dimen.field_height_big).toInt()
+            return itemView.resources.getDimension(R.dimen.field_height_input_text).toInt()
         }
+
+        override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
+            itemView.inputValue.error = if (show) viewModel.error else null
+        }
+
+        override fun isErrorOutdated(itemView: View, viewModel: FieldViewModel): Boolean =
+                viewModel.error != itemView.inputValue.error.toString()
     }
 
 
@@ -201,12 +265,12 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
     inner class ViewHolderCheckBox(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
             super.bind(viewModel, position)
-            itemView.checkboxLabel.text = viewModel.label
             val style = viewModel.style
+            itemView.checkboxLabel.text = viewModel.label
+            itemView.checkboxSecondLabel.text = style.textDescription
             when (style) {
                 is Checkbox -> {
                     val checkBoxValue = itemView.checkBoxValue
-                    itemView.checkboxSecondLabel.text = style.boolText
                     checkBoxValue.setOnCheckedChangeListener(null)
                     checkBoxValue.isChecked = style.bool
                     checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
@@ -226,16 +290,16 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
     inner class ViewHolderToggle(itemView: View) : FieldViewHolder(itemView) {
         override fun bind(viewModel: FieldViewModel, position: Int) {
             super.bind(viewModel, position)
-            itemView.toggleLabel.text = viewModel.label
             val style = viewModel.style
+            itemView.toggleLabel.text = viewModel.label
+            itemView.toggleSecondLabel.text = style.textDescription
             when (style) {
                 is Toggle -> {
-                    val toggleValue = itemView.toggleValue
-                    itemView.toggleSecondLabel.text = style.boolText
-                    toggleValue.setOnCheckedChangeListener(null)
-                    toggleValue.isChecked = style.bool
-                    toggleValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
-                    itemView.setOnClickListener { view -> toggleValue.isChecked = !toggleValue.isChecked }
+                    val toggleView = itemView.toggleView
+                    toggleView.setOnCheckedChangeListener(null)
+                    toggleView.isChecked = style.bool
+                    toggleView.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
+                    itemView.setOnClickListener { view -> toggleView.isChecked = !toggleView.isChecked }
                 }
             }
         }
@@ -280,6 +344,44 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
         valueChangesSubject.onNext(position to newValue)
     }
 
+    fun getThemeAccentColor(context: Context): Int {
+        val value = TypedValue()
+        context.theme.resolveAttribute(R.attr.colorAccent, value, true)
+        return value.data
+    }
+
     fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = valueChangesSubject.asObservable()
 
+    fun toggleErrorsVisibility() {
+        errorsShouldBeVisible = errorsShouldBeVisible.not()
+    }
+
+    /** Return the position of the first error, -1 if no error are present */
+    fun firstErrorPosition(): Int {
+        for ((index, viewModel) in viewModels.withIndex()) {
+            if (viewModel.error != null) {
+                return index
+            }
+        }
+        return -1
+    }
+
+    fun errorPositions(): MutableList<Int> {
+        val positions = mutableListOf<Int>()
+        for ((index, viewModel) in viewModels.withIndex()) {
+            if (viewModel.error != null) {
+                positions.add(index)
+            }
+        }
+        return positions
+    }
+
+    fun hasErrors() = firstErrorPosition() >= 0
+
+    fun TextView.setTextAppearanceCompat(resId: Int) {
+        TextViewCompat.setTextAppearance(this, resId)
+    }
+
+    fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
+            !viewModel.style.textDescription.equals(editText?.text.toString())
 }

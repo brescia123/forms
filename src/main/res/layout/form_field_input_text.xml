@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:background="?attr/selectableItemBackground"
+                android:layout_height="84dp"
                 android:orientation="vertical"
                 android:paddingEnd="12dp"
                 android:paddingLeft="12dp"
@@ -18,17 +17,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         tools:hint="Label">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="15dp"
             android:inputType="text"
             android:maxLines="1"
             tools:text="Value"/>

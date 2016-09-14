@@ -14,11 +14,11 @@ class FieldConfigPickerDate(label: String,
                             val minDate: Date = Dates.create(1900, 1, 1),
                             val maxDate: Date = Dates.create(2100, 12, 31),
                             val dateFormatter: DateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM),
-                            val placeholder: String = "Select a date")
-: FieldConfig(label) {
+                            val placeholder: String = "Select a date",
+                            val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, null)
+        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(rules, value))
     }
 
     override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle =

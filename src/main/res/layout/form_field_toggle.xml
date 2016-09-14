@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                xmlns:tools="http://schemas.android.com/tools"
+                android:background="?attr/selectableItemBackground"
                 android:orientation="vertical"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingStart="16dp"
-                android:background="?attr/selectableItemBackground">
+                android:paddingStart="16dp">
 
     <TextView
         android:id="@+id/toggleLabel"
@@ -17,13 +17,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        tools:text="Label"
         android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        tools:text="Label"/>
 
 
     <android.support.v7.widget.SwitchCompat
-        android:id="@+id/toggleValue"
+        android:id="@+id/toggleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -34,8 +34,8 @@
         android:id="@+id/toggleSecondLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/toggleValue"
         android:layout_toStartOf="@+id/toggleValue"
         android:textAppearance="?android:attr/textAppearanceSmall"

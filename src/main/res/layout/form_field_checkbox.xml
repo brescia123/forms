@@ -34,9 +34,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/checkBoxValue"
         android:layout_toStartOf="@+id/checkBoxValue"
-        android:layout_marginRight="5dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="Second Text"/>
 </RelativeLayout>

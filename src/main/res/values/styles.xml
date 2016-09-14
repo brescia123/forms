@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="reference" name="accentColor"/>
+
+    <style name="FieldTextValueAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FieldTextValueErrorAppearance" parent="FieldTextValueAppearance">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+
+</resources>

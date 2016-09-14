@@ -37,6 +37,6 @@ interface FieldRulesValidator {
 }
 
 interface FieldRule {
-    /** Return a if the value satisfies the rule and the error message to use if it doesn't */
+    /** Return if the value satisfies the rule and the error message to use if it doesn't */
     fun verify(value: FieldValue): Pair<Boolean, String>
 }

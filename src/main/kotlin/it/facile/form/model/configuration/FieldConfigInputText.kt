@@ -6,12 +6,13 @@ import it.facile.form.viewmodel.FieldValue.Text
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
 
-class FieldConfigInputText(label: String) : FieldConfig(label) {
+class FieldConfigInputText(label: String,
+                           val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
 
     val defaultTextIfMissing = ""
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, null)
+        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(rules, value))
     }
 
     override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle = when (value) {
