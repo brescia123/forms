@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="section_height_small">14dp</dimen>
+    <dimen name="section_height_medium">48dp</dimen>
+
     <dimen name="field_height_small">42dp</dimen>
     <dimen name="field_height_medium">56dp</dimen>
     <dimen name="field_height_big">72dp</dimen>

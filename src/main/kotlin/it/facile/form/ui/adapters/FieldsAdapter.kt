@@ -179,9 +179,11 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
             if (show && viewModel.error != null) {
                 itemView.textValue.hide()
                 itemView.textError.show()
+                itemView.imageError.show()
             } else {
                 itemView.textValue.show()
                 itemView.textError.hide()
+                itemView.imageError.hide()
             }
         }
 

@@ -2,13 +2,20 @@
 <resources>
     <attr format="reference" name="accentColor"/>
 
-    <style name="FieldTextValueAppearance" parent="TextAppearance.AppCompat">
+    <style name="TextAppearance.FieldValue" parent="TextAppearance.AppCompat">
         <item name="android:textColor">?attr/colorAccent</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="FieldTextValueErrorAppearance" parent="FieldTextValueAppearance">
+    <style name="TextAppearance.FieldValue.Error" parent="TextAppearance.FieldValue">
         <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="TextAppearance.SectionHeader" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
 </resources>

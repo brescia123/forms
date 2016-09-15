@@ -2,20 +2,14 @@
 <!-- Layout via http://ryanharter.com/blog/2013/01/31/how-to-make-an-android-card-list/ -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="rectangle"
-               android:dither="true">
-
-            <corners android:radius="2dp"/>
-
+        <shape android:shape="rectangle">
             <solid android:color="#ccc"/>
-
         </shape>
     </item>
 
-    <item android:top="2dp">
-        <shape android:shape="rectangle"
-               android:dither="true">
-
+    <item android:top="2dp"
+        android:bottom="0.5dp">
+        <shape android:shape="rectangle">
             <solid android:color="@color/section_bg"/>
         </shape>
     </item>

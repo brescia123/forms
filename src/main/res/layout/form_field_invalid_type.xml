@@ -30,6 +30,14 @@
         android:layout_below="@+id/invalidTypelabel"
         android:layout_marginTop="2dp"
         android:text="Invalid type"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="14sp"/>
+        android:textAppearance="@style/TextAppearance.FieldValue.Error"/>
+
+    <ImageView
+        android:id="@+id/imageInvalidType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_invalid_type_red"/>
 </RelativeLayout>
