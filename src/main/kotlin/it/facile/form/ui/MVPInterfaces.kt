@@ -19,8 +19,6 @@ abstract class Presenter<T : View> {
 }
 
 interface View {
-    fun logD(tag: String, message: String?)
-    fun logE(tag: String, message: String?)
 }
 
 interface FormView : View {

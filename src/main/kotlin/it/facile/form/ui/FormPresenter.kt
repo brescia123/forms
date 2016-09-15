@@ -1,15 +1,12 @@
 package it.facile.form.ui
 
 import it.facile.form.FormStorage
+import it.facile.form.logE
 import it.facile.form.model.FormModel
 import rx.subscriptions.CompositeSubscription
 
 class FormPresenter(val formModel: FormModel,
                     val storage: FormStorage) : Presenter<FormView>() {
-
-    companion object {
-        val TAG = "FormPresenter"
-    }
 
     private val subscriptions by lazy { CompositeSubscription() }
 
@@ -21,7 +18,7 @@ class FormPresenter(val formModel: FormModel,
         subscriptions.add(
                 view.observeValueChanges().retry().subscribe(
                         { formModel.notifyValueChanged(it.path, it.value) },
-                        { view.logE(TAG, it.message) }))
+                        { logE(it.message) }))
 
 
         // Observe paths from model (FieldPath)
@@ -32,7 +29,7 @@ class FormPresenter(val formModel: FormModel,
                             val sectionViewModel = formModel.getSection(it).buildSectionViewModel(storage)
                             view.updateField(it, fieldViewModel, sectionViewModel)
                         },
-                        { view.logE(TAG, it.message) }))
+                        { logE(it.message) }))
 
     }
 

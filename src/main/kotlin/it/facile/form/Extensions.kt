@@ -24,24 +24,24 @@ fun <T1, T2> Map<T1, T2>.equalMap(other: Map<T1, T2>): Boolean {
 
 /* ---------- Log extensions ---------- */
 
-inline fun <reified T: Any> T.logD(text: String) {
-    Log.d(T::class.java.simpleName, text)
+inline fun <reified T: Any> T.logD(text: Any?) {
+    Log.d(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logE(text: String) {
-    Log.e(T::class.java.simpleName, text)
+inline fun <reified T: Any> T.logE(text: Any?) {
+    Log.e(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logI(text: String) {
-    Log.i(T::class.java.simpleName, text)
+inline fun <reified T: Any> T.logI(text: Any?) {
+    Log.i(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logV(text: String) {
-    Log.v(T::class.java.simpleName, text)
+inline fun <reified T: Any> T.logV(text: Any?) {
+    Log.v(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logW(text: String) {
-    Log.w(T::class.java.simpleName, text)
+inline fun <reified T: Any> T.logW(text: Any?) {
+    Log.w(T::class.java.simpleName, text.toString())
 }
 
 
