@@ -2,6 +2,7 @@ package it.facile.form.model
 
 import android.util.Log
 import it.facile.form.FormStorage
+import it.facile.form.logE
 import it.facile.form.model.configuration.DeferredConfig
 import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.FieldValue
@@ -25,9 +26,10 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
             .filter { contains(it) } // Filter if the model does not contain the field key
             .doOnNext { executeFieldAction(it) }
             .map { findFieldPathByKey(it) }
-            .doOnError { Log.e(TAG, it.message) }
+            .flatMap { Observable.from(it) } // Emit for every FieldPath related to the field key
+            .doOnError { logE(it.message) }
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
-            .map { it } // Used to deal with nullable kotlin types in rxJava
+            .map { it } // Used to deal with nullable Kotlin types in rxJava
 
     fun notifyValueChanged(path: FieldPath, value: FieldValue): Unit {
         if (contains(path) == false || value.equals(findFieldModelByFieldPath(path))) return
@@ -56,7 +58,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
 
-    private fun findFieldPathByKey(key: Int): FieldPath? = FieldPath.buildForKey(key, this)
+    private fun findFieldPathByKey(key: Int): List<FieldPath> = FieldPath.buildForKey(key, this)
 
     private fun observeDeferredConfigs() =
             fields().map { fieldModel ->
@@ -69,8 +71,6 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
             }
 
     companion object {
-        private val TAG: String = "FormModel"
-
         fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
