@@ -12,11 +12,11 @@ import rx.Single
 class FieldConfigPicker(label: String,
                         val possibleValuesSingle: Single<List<DescribableWithKey>>,
                         val placeHolder: String = "Select a value",
-                        val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator, DeferredConfig {
+                        override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator, DeferredConfig {
     var possibleValues: List<DescribableWithKey>? = null
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(rules, value))
+        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(value))
     }
 
     override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle =

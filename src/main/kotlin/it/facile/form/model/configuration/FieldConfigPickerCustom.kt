@@ -9,10 +9,10 @@ import it.facile.form.viewmodel.FieldViewModelStyle
 class FieldConfigPickerCustom(label: String,
                               val id: CustomPickerId,
                               val placeHolder: String = "Select a value",
-                              val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
+                              override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
 
     override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(rules, value))
+        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(value))
     }
 
     override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle = when (value) {

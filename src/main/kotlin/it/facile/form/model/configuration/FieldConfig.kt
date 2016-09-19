@@ -26,8 +26,9 @@ interface ViewModelStyleGenerator {
 /* ---------- Rules ---------- */
 
 interface FieldRulesValidator {
+    val rules: List<FieldRule>
     /** Return an error message if the value doesn't satisfy at least one rule, null otherwise */
-    fun isValid(rules: List<FieldRule>, value: FieldValue): String? {
+    fun isValid(value: FieldValue): String? {
         rules.map {
             val verify = it.verify(value)
             if (!verify.first) return verify.second
