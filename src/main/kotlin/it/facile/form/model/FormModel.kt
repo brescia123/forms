@@ -1,6 +1,5 @@
 package it.facile.form.model
 
-import android.util.Log
 import it.facile.form.FormStorage
 import it.facile.form.logE
 import it.facile.form.model.configuration.DeferredConfig
@@ -53,7 +52,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
             path.sectionIndex < pages[path.pageIndex].sections.size &&
             path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
 
-    private fun contains(key: Int): Boolean = findFieldPathByKey(key) != null
+    private fun contains(key: Int): Boolean = findFieldPathByKey(key).size > 0
 
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
@@ -65,7 +64,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
                 if (fieldModel.fieldConfiguration is DeferredConfig) {
                     fieldModel.fieldConfiguration.observe().subscribe(
                             { storage.notify(fieldModel.key) },
-                            { Log.e("FormModel", it.message) }
+                            { logE(it.message) }
                     )
                 }
             }
