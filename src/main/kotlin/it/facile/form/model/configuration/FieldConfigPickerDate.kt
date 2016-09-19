@@ -11,8 +11,8 @@ import java.text.DateFormat
 import java.util.*
 
 class FieldConfigPickerDate(label: String,
-                            val minDate: Date = Dates.create(1900, 1, 1),
-                            val maxDate: Date = Dates.create(2100, 12, 31),
+                            val minDate: Date = Dates.create(1900, 0, 1),
+                            val maxDate: Date = Dates.create(2100, 11, 31),
                             val dateFormatter: DateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM),
                             val placeholder: String = "Select a date",
                             val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
