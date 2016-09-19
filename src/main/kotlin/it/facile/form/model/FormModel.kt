@@ -62,10 +62,10 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
     private fun observeDeferredConfigs() =
             fields().map { fieldModel ->
                 if (fieldModel.fieldConfiguration is DeferredConfig) {
-                    fieldModel.fieldConfiguration.observe().subscribe(
-                            { storage.notify(fieldModel.key) },
-                            { logE(it.message) }
-                    )
+                    fieldModel.fieldConfiguration.observe()
+                            .doOnError { logE(it.message) }
+                            .doOnCompleted { storage.notify(fieldModel.key) }
+                            .subscribe()
                 }
             }
 

@@ -6,6 +6,7 @@ import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldValue.Object
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
+import rx.Completable
 import rx.Single
 
 class FieldConfigPicker(label: String,
@@ -29,10 +30,10 @@ class FieldConfigPicker(label: String,
                 else -> FieldViewModelStyle.InvalidType()
             }
 
-    override fun observe(): Single<Unit> {
+    override fun observe(): Completable {
         return possibleValuesSingle.doOnSuccess {
             possibleValues = it
-        }.flatMap { Single.just<Unit>(null) }
+        }.toCompletable()
     }
 }
 
