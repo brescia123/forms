@@ -16,14 +16,6 @@ class FormStorage(val values: MutableMap<Int, FieldValueWithVisibility>) {
         publishSubject.onNext(key)
     }
 
-    fun setVisibility(key: Int, hidden: Boolean) {
-        val pair = values[key]
-        pair?.let {
-            values.put(key, FieldValueWithVisibility(it.value, hidden))
-            publishSubject.onNext(key)
-        }
-    }
-
     fun observe(): Observable<Int> = publishSubject.asObservable()
 
     fun notify(key: Int) = publishSubject.onNext(key)

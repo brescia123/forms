@@ -100,9 +100,9 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
     fun firstErrorPosition() = positionToSectionedPosition(fieldsAdapter.firstErrorPosition())
 
     /** Returns whether the adapter is currently showing errors */
-    fun areErrorsVisible() = fieldsAdapter.errorsShouldBeVisible
+    fun areErrorsVisible() = fieldsAdapter.areErrorsVisible()
 
-    /** Returns whether the adapter contains at least one error */
+    /** Returns whether the adapter contains at least one visible field with an error */
     fun hasErrors() = fieldsAdapter.hasErrors()
 
 

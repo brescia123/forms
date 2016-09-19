@@ -26,8 +26,8 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
         private val LOADING_VIEW = R.layout.form_field_loading
     }
 
-    val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>> = PublishSubject.create()
-    var errorsShouldBeVisible = false
+    private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>> = PublishSubject.create()
+    private var errorsShouldBeVisible = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolderBase {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -60,18 +60,23 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     override fun getItemCount(): Int = viewModels.size
 
+
+    /* ---------- PUBLIC METHODS ---------- */
+
     fun getViewModel(position: Int): FieldViewModel = viewModels[position]
 
     fun setFieldViewModel(position: Int, fieldViewModel: FieldViewModel): FieldViewModel = viewModels.set(position, fieldViewModel)
-
-
-    /* ---------- HELPER METHODS ---------- */
 
     fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = valueChangesSubject.asObservable()
 
     fun toggleErrorsVisibility() {
         errorsShouldBeVisible = !errorsShouldBeVisible
     }
+
+    fun areErrorsVisible() = errorsShouldBeVisible
+
+    /** Returns whether the adapter contains at least one visible field with an error */
+    fun hasErrors() = firstErrorPosition() >= 0
 
     /** Return the position of the first error, -1 if no error are present */
     fun firstErrorPosition(): Int {
@@ -93,9 +98,10 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
         return positions
     }
 
-    fun hasErrors() = firstErrorPosition() >= 0
 
-    fun MutableList<FieldViewModel>.visibleFields(): List<FieldViewModel> {
+    /* ---------- HELPER METHODS ---------- */
+
+    private fun MutableList<FieldViewModel>.visibleFields(): List<FieldViewModel> {
         return filter { !it.hidden }
     }
 }
