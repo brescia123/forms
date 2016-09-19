@@ -124,3 +124,18 @@ fun Handler.postDelayed(delayMillis: Long, r: () -> Unit) {
 fun RecyclerView.Adapter<*>.deferredNotifyItemChanged(position: Int) {
     Handler().postDelayed(50) { this.notifyItemChanged(position) }
 }
+
+
+/* ---------- Regex extensions utilities ---------- */
+
+/** Returns if the CharSequence matches all the given regexes */
+fun CharSequence.matchesAll(vararg regexs: Regex): Boolean {
+    regexs.map { if (!matches(it)) return false }
+    return true
+}
+
+/** Returns if the CharSequence matches at least one of the given regexes */
+fun CharSequence.matchesAtLeastOne(vararg regexs: Regex): Boolean {
+    regexs.map { if (matches(it)) return true }
+    return false
+}
