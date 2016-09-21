@@ -1,12 +1,13 @@
 package it.facile.form.model.configuration
 
 import it.facile.form.Dates
+import it.facile.form.FormStorage
 import it.facile.form.format
-import it.facile.form.viewmodel.FieldValue
 import it.facile.form.viewmodel.FieldValue.DateValue
 import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
+import it.facile.form.viewmodel.FieldViewModelStyle.DatePicker
 import java.text.DateFormat
 import java.util.*
 
@@ -17,20 +18,25 @@ class FieldConfigPickerDate(label: String,
                             val placeholder: String = "Select a date",
                             override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
 
-    override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, isValid(value))
+    override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
+        val value = storage.getValue(key)
+        return FieldViewModel(
+                label,
+                getViewModelStyle(key, storage),
+                storage.isHidden(key),
+                isValid(value))
     }
 
-    override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle =
-            when (value) {
-                is DateValue, Missing -> {
-                    val selectedDate = (value as? DateValue)?.date
-                    FieldViewModelStyle.DatePicker(
-                            minDate,
-                            maxDate,
-                            selectedDate = selectedDate ?: Dates.today(),
-                            dateText = selectedDate?.format(dateFormatter) ?: placeholder)
-                }
-                else -> FieldViewModelStyle.InvalidType()
-            }
+    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+        val value = storage.getValue(key)
+        return when (value) {
+            is DateValue -> DatePicker(minDate, maxDate,
+                        selectedDate = value.date,
+                        dateText = value.date.format(dateFormatter))
+            is Missing -> DatePicker(minDate, maxDate,
+                    selectedDate = Dates.today(),
+                    dateText = placeholder)
+            else -> FieldViewModelStyle.InvalidType()
+        }
+    }
 }

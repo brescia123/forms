@@ -1,6 +1,6 @@
 package it.facile.form.model.configuration
 
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.FormStorage
 import it.facile.form.viewmodel.FieldValue.Bool
 import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldViewModel
@@ -14,18 +14,25 @@ class FieldConfigBool(label: String,
 
     val defaultIfMissing = false
 
-    override fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel {
-        return FieldViewModel(label, getViewModelStyle(value), hidden, null)
+    override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
+        return FieldViewModel(
+                label,
+                getViewModelStyle(key, storage),
+                storage.isHidden(key),
+                null)
     }
 
-    override fun getViewModelStyle(value: FieldValue): FieldViewModelStyle = when (value) {
-        is Bool, Missing -> {
-            val bool = (value as? Bool)?.bool ?: defaultIfMissing
-            when (viewStyle) {
-                ViewStyle.CHECKBOX -> FieldViewModelStyle.Checkbox(bool, boolToString(bool))
-                ViewStyle.TOGGLE -> FieldViewModelStyle.Toggle(bool, boolToString(bool))
-            }
+    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+        val value = storage.getValue(key)
+        return when (value) {
+            is Bool -> chooseViewModelStyle(value.bool)
+            is Missing -> chooseViewModelStyle(defaultIfMissing)
+            else -> FieldViewModelStyle.InvalidType()
         }
-        else -> FieldViewModelStyle.InvalidType()
+    }
+
+    private fun chooseViewModelStyle(bool: Boolean) = when (viewStyle) {
+        ViewStyle.CHECKBOX -> FieldViewModelStyle.Checkbox(bool, boolToString(bool))
+        ViewStyle.TOGGLE -> FieldViewModelStyle.Toggle(bool, boolToString(bool))
     }
 }

@@ -16,11 +16,11 @@ interface DeferredConfig {
 /* ---------- View Models ---------- */
 
 interface ViewModelGenerator {
-    fun getViewModel(value: FieldValue, hidden: Boolean): FieldViewModel
+    fun getViewModel(key: Int, storage: FormStorage): FieldViewModel
 }
 
 interface ViewModelStyleGenerator {
-    fun getViewModelStyle(value: FieldValue): FieldViewModelStyle
+    fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle
 }
 
 /* ---------- Rules ---------- */

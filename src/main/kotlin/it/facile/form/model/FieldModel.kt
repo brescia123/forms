@@ -6,6 +6,6 @@ import it.facile.form.viewmodel.FieldViewModel
 
 data class FieldModel(val key: Int, val fieldConfiguration: FieldConfig) {
     fun buildFieldViewModel(storage: FormStorage): FieldViewModel {
-        return fieldConfiguration.getViewModel(storage.getValue(key), storage.isHidden(key))
+        return fieldConfiguration.getViewModel(key, storage)
     }
 }

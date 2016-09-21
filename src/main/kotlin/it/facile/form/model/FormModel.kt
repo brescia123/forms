@@ -69,11 +69,15 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
                 }
             }
 
+    private fun executeAllFieldsActions() {
+        fields().map { executeFieldAction(it.key) }
+    }
+
     companion object {
         fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
-            form.fields().map { form.executeFieldAction(it.key) }
+            form.executeAllFieldsActions()
             form.observeDeferredConfigs()
             return form
         }
