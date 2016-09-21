@@ -11,6 +11,21 @@ sealed class FieldPossibleValues() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
-    class RetrieveError(val errorMessage: String) :  FieldPossibleValues()
+
+    class RetrieveError(val errorMessage: String) : FieldPossibleValues()
+
+    override fun equals(other: Any?): Boolean =
+            if (other == null) false
+            else when (this) {
+                is Available -> other is Available && other.list == this.list
+                is ToBeRetrieved -> false
+                is RetrieveError -> other is RetrieveError && other.errorMessage == this.errorMessage
+            }
+
+    override fun hashCode(): Int = when (this) {
+        is ToBeRetrieved -> possibleValuesSingle.hashCode() * 31
+        is Available -> list.hashCode() * 31
+        is RetrieveError -> errorMessage.hashCode() * 31
+    }
 }
 
