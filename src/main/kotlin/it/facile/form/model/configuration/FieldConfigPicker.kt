@@ -11,7 +11,7 @@ import it.facile.form.viewmodel.FieldViewModelStyle.*
 import rx.Subscription
 
 class FieldConfigPicker(label: String,
-                        val possibleValuesGenerator: (FormStorage, Int) -> FieldPossibleValues,
+                        val possibleValues: FieldPossibleValues,
                         val placeHolder: String = "Select a value",
                         override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
 
@@ -23,6 +23,9 @@ class FieldConfigPicker(label: String,
                     getViewModelStyle(key, storage),
                     storage.isHidden(key),
                     isValid(storage.getValue(key)))
+
+
+    val possibleValuesGenerator: (FormStorage, Int) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }
 
     override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
