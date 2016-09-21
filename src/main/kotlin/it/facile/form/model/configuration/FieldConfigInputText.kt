@@ -5,7 +5,7 @@ import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldValue.Text
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
-import it.facile.form.viewmodel.FieldViewModelStyle.Exception
+import it.facile.form.viewmodel.FieldViewModelStyle.ExceptionText
 import it.facile.form.viewmodel.FieldViewModelStyle.InputText
 
 class FieldConfigInputText(label: String,
@@ -26,7 +26,7 @@ class FieldConfigInputText(label: String,
         return when (value) {
             is Text -> InputText(value.text)
             is Missing -> InputText("")
-            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
+            else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 }

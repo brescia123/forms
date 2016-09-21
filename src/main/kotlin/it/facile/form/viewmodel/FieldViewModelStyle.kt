@@ -5,7 +5,7 @@ import java.util.*
 
 sealed class FieldViewModelStyle(val textDescription: String) {
     object Empty : FieldViewModelStyle("Empty")
-    class Exception(val text: String) : FieldViewModelStyle(text)
+    class ExceptionText(val text: String) : FieldViewModelStyle(text)
     class SimpleText(val text: String) : FieldViewModelStyle(text)
     class InputText(val text: String) : FieldViewModelStyle(text)
     class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText)
@@ -21,7 +21,7 @@ sealed class FieldViewModelStyle(val textDescription: String) {
         return if (other == null) false
         else when (this) {
             is Empty -> other is Empty
-            is Exception -> other is Exception
+            is ExceptionText -> other is ExceptionText
             is SimpleText -> other is SimpleText && other.text.equals(text)
             is InputText -> other is InputText && other.text.equals(text)
             is Checkbox -> other is Checkbox && other.bool == bool
@@ -43,7 +43,7 @@ sealed class FieldViewModelStyle(val textDescription: String) {
 
     override fun hashCode(): Int = when (this) {
         is Empty -> textDescription.hashCode()
-        is Exception -> textDescription.hashCode()
+        is ExceptionText -> textDescription.hashCode()
         is SimpleText -> textDescription.hashCode() * 31 + text.hashCode()
         is InputText-> textDescription.hashCode() * 31 + text.hashCode()
         is Checkbox-> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()

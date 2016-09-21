@@ -36,7 +36,7 @@ class FieldConfigPickerDate(label: String,
             is Missing -> DatePicker(minDate, maxDate,
                     selectedDate = Dates.today(),
                     dateText = placeholder)
-            else -> FieldViewModelStyle.Exception(FieldViewModelStyle.INVALID_TYPE)
+            else -> FieldViewModelStyle.ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 }

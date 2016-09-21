@@ -54,7 +54,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
         is CustomPicker -> SIMPLE_TEXT_VIEW
         is DatePicker -> SIMPLE_TEXT_VIEW
         is Picker -> SIMPLE_TEXT_VIEW
-        is Exception -> INVALID_TYPE_VIEW
+        is ExceptionText -> INVALID_TYPE_VIEW
         is Loading -> LOADING_VIEW
     }
 

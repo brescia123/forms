@@ -28,7 +28,7 @@ class FieldConfigBool(label: String,
         return when (value) {
             is Bool -> chooseViewModelStyle(value.bool)
             is Missing -> chooseViewModelStyle(defaultIfMissing)
-            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
+            else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 
