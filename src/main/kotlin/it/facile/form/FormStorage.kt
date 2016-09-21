@@ -1,20 +1,20 @@
 package it.facile.form
 
-import it.facile.form.viewmodel.DescribableWithKey
+import it.facile.form.viewmodel.FieldPossibleValues
 import it.facile.form.viewmodel.FieldValue
 import rx.Observable
 import rx.subjects.PublishSubject
 
 class FormStorage(defaultEntries: MutableMap<Int, Entry>) {
     private val publishSubject: PublishSubject<Int> = PublishSubject.create()
-    private val possibleValuesMap = mutableMapOf<Int, List<DescribableWithKey>>()
+    private val possibleValuesMap = mutableMapOf<Int, FieldPossibleValues>()
     val values = defaultEntries
 
     fun getValue(key: Int): FieldValue = values[key]?.value ?: FieldValue.Missing
 
     fun isHidden(key: Int): Boolean = values[key]?.hidden ?: false
 
-    fun getPossibleValues(key: Int): List<DescribableWithKey>? = possibleValuesMap[key]
+    fun getPossibleValues(key: Int): FieldPossibleValues? = possibleValuesMap[key]
 
     /** Set the new selected value for the given key, eventually modify the field visibility and notify the change */
     fun putValue(key: Int, value: FieldValue, hidden: Boolean = isHidden(key)) {
@@ -28,7 +28,7 @@ class FormStorage(defaultEntries: MutableMap<Int, Entry>) {
     }
 
     /** Add custom possible values for a particular key, clear the selected value and notify the change */
-    fun putPossibleValues(key: Int, possibleValues: List<DescribableWithKey>) {
+    fun putPossibleValues(key: Int, possibleValues: FieldPossibleValues) {
         possibleValuesMap.put(key, possibleValues)
         clearValue(key)
     }
@@ -41,6 +41,11 @@ class FormStorage(defaultEntries: MutableMap<Int, Entry>) {
     /** Clear possible values for the given key and notify the change */
     fun clearPossibleValues(key: Int) {
         possibleValuesMap.remove(key)
+    }
+
+    fun clearKey(key: Int) {
+        clearPossibleValues(key)
+        clearValue(key)
     }
 
     fun observe(): Observable<Int> = publishSubject.asObservable()

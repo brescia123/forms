@@ -20,8 +20,8 @@ sealed class FieldViewModelStyle(val textDescription: String) {
     override fun equals(other: Any?): Boolean {
         return if (other == null) false
         else when (this) {
-            is Empty -> true
-            is InvalidType -> true
+            is Empty -> other is Empty
+            is InvalidType -> other is InvalidType
             is SimpleText -> other is SimpleText && other.text.equals(text)
             is InputText -> other is InputText && other.text.equals(text)
             is Checkbox -> other is Checkbox && other.bool == bool
@@ -37,7 +37,7 @@ sealed class FieldViewModelStyle(val textDescription: String) {
             is Picker -> other is Picker
                     && other.possibleValues.equals(possibleValues)
                     && other.valueText.equals(valueText)
-            is Loading -> true
+            is Loading -> other is Loading
         }
     }
 

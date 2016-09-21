@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import rx.Single
 import java.text.DateFormat
 import java.util.*
 
@@ -24,26 +25,25 @@ fun <T1, T2> Map<T1, T2>.equalMap(other: Map<T1, T2>): Boolean {
 
 /* ---------- Log extensions ---------- */
 
-inline fun <reified T: Any> T.logD(text: Any?) {
+inline fun <reified T : Any> T.logD(text: Any?) {
     Log.d(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logE(text: Any?) {
+inline fun <reified T : Any> T.logE(text: Any?) {
     Log.e(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logI(text: Any?) {
+inline fun <reified T : Any> T.logI(text: Any?) {
     Log.i(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logV(text: Any?) {
+inline fun <reified T : Any> T.logV(text: Any?) {
     Log.v(T::class.java.simpleName, text.toString())
 }
 
-inline fun <reified T: Any> T.logW(text: Any?) {
+inline fun <reified T : Any> T.logW(text: Any?) {
     Log.w(T::class.java.simpleName, text.toString())
 }
-
 
 
 /* ---------- Date extensions utilities ---------- */
@@ -80,7 +80,6 @@ fun Date.dayOfMonth(): Int {
 fun Date.format(formatter: DateFormat): String {
     return formatter.format(this)
 }
-
 
 
 /* ---------- View extensions utilities ---------- */
@@ -139,3 +138,6 @@ fun CharSequence.matchesAtLeastOne(vararg regexs: Regex): Boolean {
     regexs.map { if (matches(it)) return true }
     return false
 }
+
+
+fun <T> T.toSingle(): Single<T> = Single.just(this)

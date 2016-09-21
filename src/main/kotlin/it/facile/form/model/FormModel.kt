@@ -2,7 +2,6 @@ package it.facile.form.model
 
 import it.facile.form.FormStorage
 import it.facile.form.logE
-import it.facile.form.model.configuration.DeferredConfig
 import it.facile.form.viewmodel.FieldPath
 import it.facile.form.viewmodel.FieldValue
 import rx.Observable
@@ -59,16 +58,6 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
 
     private fun findFieldPathByKey(key: Int): List<FieldPath> = FieldPath.buildForKey(key, this)
 
-    private fun observeDeferredConfigs() =
-            fields().map { fieldModel ->
-                if (fieldModel.fieldConfiguration is DeferredConfig) {
-                    fieldModel.fieldConfiguration.observe()
-                            .doOnError { logE(it.message) }
-                            .doOnCompleted { storage.notify(fieldModel.key) }
-                            .subscribe()
-                }
-            }
-
     private fun executeAllFieldsActions() {
         fields().map { executeFieldAction(it.key) }
     }
@@ -78,7 +67,6 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
             val form = FormModel(storage, actions)
             form.init()
             form.executeAllFieldsActions()
-            form.observeDeferredConfigs()
             return form
         }
     }
