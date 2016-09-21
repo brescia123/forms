@@ -3,13 +3,18 @@ package it.facile.form.ui.adapters.FieldViewHolders
 import android.view.View
 import it.facile.form.R
 import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_invalid_type.view.*
 
-class FieldViewHolderInvalidType(itemView: View) : FieldViewHolderBase(itemView), CanBeHidden {
+class FieldViewHolderException(itemView: View) : FieldViewHolderBase(itemView), CanBeHidden {
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
-        itemView.invalidTypelabel.text = viewModel.label
+        itemView.exceptionLabel.text = viewModel.label
+        val style = viewModel.style
+        when (style) {
+            is FieldViewModelStyle.Exception -> itemView.exceptionValue.text = style.text
+        }
     }
 
     override fun getHeight(): Int {

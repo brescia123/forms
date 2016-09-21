@@ -37,7 +37,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
             INPUT_TEXT_VIEW -> FieldViewHolderInputText(v, valueChangesSubject)
             CHECKBOX_VIEW -> FieldViewHolderCheckBox(v, valueChangesSubject)
             TOGGLE_VIEW -> FieldViewHolderToggle(v, valueChangesSubject)
-            INVALID_TYPE_VIEW -> FieldViewHolderInvalidType(v)
+            INVALID_TYPE_VIEW -> FieldViewHolderException(v)
             LOADING_VIEW -> FieldViewHolderLoading(v)
             else -> FieldViewHolderEmpty(v)
         }
@@ -54,7 +54,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
         is CustomPicker -> SIMPLE_TEXT_VIEW
         is DatePicker -> SIMPLE_TEXT_VIEW
         is Picker -> SIMPLE_TEXT_VIEW
-        is InvalidType -> INVALID_TYPE_VIEW
+        is Exception -> INVALID_TYPE_VIEW
         is Loading -> LOADING_VIEW
     }
 

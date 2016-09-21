@@ -5,6 +5,8 @@ import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldValue.Text
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
+import it.facile.form.viewmodel.FieldViewModelStyle.Exception
+import it.facile.form.viewmodel.FieldViewModelStyle.InputText
 
 class FieldConfigInputText(label: String,
                            override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
@@ -22,9 +24,9 @@ class FieldConfigInputText(label: String,
     override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
-            is Text -> FieldViewModelStyle.InputText(value.text)
-            is Missing -> FieldViewModelStyle.InputText("")
-            else -> FieldViewModelStyle.InvalidType()
+            is Text -> InputText(value.text)
+            is Missing -> InputText("")
+            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 }

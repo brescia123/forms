@@ -11,6 +11,6 @@ sealed class FieldPossibleValues() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
-    class RetrieveError(val message: String) :  FieldPossibleValues()
+    class RetrieveError(val errorMessage: String) :  FieldPossibleValues()
 }
 

@@ -5,7 +5,7 @@ import java.util.*
 
 sealed class FieldViewModelStyle(val textDescription: String) {
     object Empty : FieldViewModelStyle("Empty")
-    class InvalidType : FieldViewModelStyle("Invalid type")
+    class Exception(val text: String) : FieldViewModelStyle(text)
     class SimpleText(val text: String) : FieldViewModelStyle(text)
     class InputText(val text: String) : FieldViewModelStyle(text)
     class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText)
@@ -21,7 +21,7 @@ sealed class FieldViewModelStyle(val textDescription: String) {
         return if (other == null) false
         else when (this) {
             is Empty -> other is Empty
-            is InvalidType -> other is InvalidType
+            is Exception -> other is Exception
             is SimpleText -> other is SimpleText && other.text.equals(text)
             is InputText -> other is InputText && other.text.equals(text)
             is Checkbox -> other is Checkbox && other.bool == bool
@@ -43,7 +43,7 @@ sealed class FieldViewModelStyle(val textDescription: String) {
 
     override fun hashCode(): Int = when (this) {
         is Empty -> textDescription.hashCode()
-        is InvalidType -> textDescription.hashCode()
+        is Exception -> textDescription.hashCode()
         is SimpleText -> textDescription.hashCode() * 31 + text.hashCode()
         is InputText-> textDescription.hashCode() * 31 + text.hashCode()
         is Checkbox-> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()
@@ -52,6 +52,10 @@ sealed class FieldViewModelStyle(val textDescription: String) {
         is CustomPicker-> (textDescription.hashCode() * 31 + identifier.hashCode()) * 31 + valueText.hashCode()
         is Picker-> (textDescription.hashCode() * 31 + possibleValues.hashCode()) * 31 + valueText.hashCode()
         is Loading -> textDescription.hashCode()
+    }
+
+    companion object {
+        val INVALID_TYPE = "Invalid type"
     }
 }
 

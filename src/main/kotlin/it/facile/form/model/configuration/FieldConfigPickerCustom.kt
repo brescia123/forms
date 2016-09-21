@@ -6,6 +6,7 @@ import it.facile.form.viewmodel.FieldValue.Object
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
 import it.facile.form.viewmodel.FieldViewModelStyle.CustomPicker
+import it.facile.form.viewmodel.FieldViewModelStyle.Exception
 
 class FieldConfigPickerCustom(label: String,
                               val id: CustomPickerId,
@@ -26,7 +27,7 @@ class FieldConfigPickerCustom(label: String,
         return when (value) {
             is Object -> CustomPicker(identifier = id, valueText = value.value.describe())
             is Missing -> CustomPicker(identifier = id, valueText = placeHolder)
-            else -> FieldViewModelStyle.InvalidType()
+            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 }

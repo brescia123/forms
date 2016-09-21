@@ -5,6 +5,7 @@ import it.facile.form.viewmodel.FieldValue.Bool
 import it.facile.form.viewmodel.FieldValue.Missing
 import it.facile.form.viewmodel.FieldViewModel
 import it.facile.form.viewmodel.FieldViewModelStyle
+import it.facile.form.viewmodel.FieldViewModelStyle.*
 
 class FieldConfigBool(label: String,
                       val viewStyle: ViewStyle,
@@ -27,12 +28,12 @@ class FieldConfigBool(label: String,
         return when (value) {
             is Bool -> chooseViewModelStyle(value.bool)
             is Missing -> chooseViewModelStyle(defaultIfMissing)
-            else -> FieldViewModelStyle.InvalidType()
+            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 
     private fun chooseViewModelStyle(bool: Boolean) = when (viewStyle) {
-        ViewStyle.CHECKBOX -> FieldViewModelStyle.Checkbox(bool, boolToString(bool))
-        ViewStyle.TOGGLE -> FieldViewModelStyle.Toggle(bool, boolToString(bool))
+        ViewStyle.CHECKBOX -> Checkbox(bool, boolToString(bool))
+        ViewStyle.TOGGLE -> Toggle(bool, boolToString(bool))
     }
 }

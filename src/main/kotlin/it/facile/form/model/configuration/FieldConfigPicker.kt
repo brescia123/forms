@@ -29,7 +29,7 @@ class FieldConfigPicker(label: String,
         return when (value) {
             is Object -> chooseViewModelStyle(storage, key, value.value.describe())
             is Missing -> chooseViewModelStyle(storage, key, placeHolder)
-            else -> InvalidType()
+            else -> Exception(FieldViewModelStyle.INVALID_TYPE)
         }
     }
 
@@ -45,7 +45,7 @@ class FieldConfigPicker(label: String,
                 )
                 Loading()
             }
-            is RetrieveError -> InvalidType()
+            is RetrieveError -> Exception(possibleValues.errorMessage)
         }
     }
 }
