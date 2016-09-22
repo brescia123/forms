@@ -9,6 +9,9 @@ import it.facile.form.RxTextChangedWrapper
 import it.facile.form.logD
 import it.facile.form.logE
 import it.facile.form.storage.FieldValue
+import it.facile.form.ui.CanBeHidden
+import it.facile.form.ui.CanNotifyNewValues
+import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_input_text.view.*

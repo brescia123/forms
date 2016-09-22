@@ -2,6 +2,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
 import it.facile.form.R
+import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.viewmodel.FieldViewModel
 
 class FieldViewHolderEmpty(itemView: View) : FieldViewHolderBase(itemView), CanBeHidden {

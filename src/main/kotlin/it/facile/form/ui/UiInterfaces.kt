@@ -35,7 +35,7 @@ interface CanBeHidden {
     fun getHeight(): Int
 }
 
-interface ViewModel : Visitable {
+interface ViewModel {
     fun isHidden(): Boolean
 }
 
