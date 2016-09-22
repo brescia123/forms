@@ -8,9 +8,9 @@ import it.facile.form.R
 import it.facile.form.RxTextChangedWrapper
 import it.facile.form.logD
 import it.facile.form.logE
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.FieldViewModelStyle
+import it.facile.form.storage.FieldValue
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import rx.Subscription
 import rx.subjects.PublishSubject

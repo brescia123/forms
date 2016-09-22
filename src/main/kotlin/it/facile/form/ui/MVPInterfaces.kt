@@ -1,10 +1,10 @@
 package it.facile.form.ui
 
-import it.facile.form.FieldPathWithValue
-import it.facile.form.viewmodel.FieldPath
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.PageViewModel
-import it.facile.form.viewmodel.SectionViewModel
+import it.facile.form.ui.FieldPathWithValue
+import it.facile.form.ui.viewmodel.FieldPath
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.PageViewModel
+import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 
 abstract class Presenter<T : View> {

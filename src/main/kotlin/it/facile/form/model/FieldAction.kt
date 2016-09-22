@@ -1,7 +1,7 @@
 package it.facile.form.model
 
-import it.facile.form.FormStorage
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FieldValue
 
 class FieldAction(val action: (FieldValue, FormStorage) -> Unit) {
     fun execute(value: FieldValue, storage: FormStorage) {

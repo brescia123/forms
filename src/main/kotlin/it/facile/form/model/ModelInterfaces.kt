@@ -1,13 +1,18 @@
-package it.facile.form.model.configuration
+package it.facile.form.model
 
-import it.facile.form.FormStorage
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.FieldViewModelStyle
+import it.facile.form.storage.FormStorage
+import it.facile.form.model.models.FieldModel
+import it.facile.form.storage.FieldValue
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewModelStyle
 
 /* ---------- Configurations ---------- */
 
 abstract class FieldConfig(val label: String) : ViewModelGenerator, ViewModelStyleGenerator {}
+
+interface FieldsContainer {
+    fun fields(): List<FieldModel>
+}
 
 /* ---------- View Models ---------- */
 interface ViewModelGenerator {
@@ -35,4 +40,7 @@ interface FieldRulesValidator {
 interface FieldRule {
     /** Return if the value satisfies the rule and the error message to use if it doesn't */
     fun verify(value: FieldValue): Pair<Boolean, String>
+}
+
+interface CustomPickerId {
 }

@@ -1,4 +1,4 @@
-package it.facile.form.viewmodel
+package it.facile.form.ui.viewmodel
 
 data class SectionViewModel(val title: String,
                             val fields: List<FieldViewModel>) : ViewModel {

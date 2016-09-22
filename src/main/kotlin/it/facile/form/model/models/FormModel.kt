@@ -1,9 +1,11 @@
-package it.facile.form.model
+package it.facile.form.model.models
 
-import it.facile.form.FormStorage
 import it.facile.form.logE
-import it.facile.form.viewmodel.FieldPath
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.model.FieldAction
+import it.facile.form.model.FieldsContainer
+import it.facile.form.storage.FieldValue
+import it.facile.form.storage.FormStorage
+import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import java.util.*
 

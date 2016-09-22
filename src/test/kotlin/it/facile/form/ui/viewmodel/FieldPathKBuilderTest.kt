@@ -1,4 +1,4 @@
-package it.facile.form.viewmodel
+package it.facile.form.ui.viewmodel
 
 import it.facile.form.formStorage
 import org.junit.Assert

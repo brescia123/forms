@@ -4,11 +4,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import it.facile.form.R
-import it.facile.form.model.configuration.CustomPickerId
+import it.facile.form.model.CustomPickerId
+import it.facile.form.storage.FieldValue
 import it.facile.form.ui.adapters.FieldViewHolders.*
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.FieldViewModelStyle.*
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -81,9 +81,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
     /** Return the position of the first error, -1 if no error are present */
     fun firstErrorPosition(): Int {
         for ((index, viewModel) in viewModels.visibleFields().withIndex()) {
-            if (viewModel.error != null) {
-                return index
-            }
+            if (viewModel.error != null) return index
         }
         return -1
     }

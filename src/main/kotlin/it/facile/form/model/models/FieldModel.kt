@@ -1,8 +1,8 @@
-package it.facile.form.model
+package it.facile.form.model.models
 
-import it.facile.form.FormStorage
-import it.facile.form.model.configuration.FieldConfig
-import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.model.FieldConfig
+import it.facile.form.storage.FormStorage
+import it.facile.form.ui.viewmodel.FieldViewModel
 
 data class FieldModel(val key: Int, val fieldConfiguration: FieldConfig) {
     fun buildFieldViewModel(storage: FormStorage): FieldViewModel {

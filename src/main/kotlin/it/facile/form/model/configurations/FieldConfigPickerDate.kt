@@ -1,13 +1,15 @@
-package it.facile.form.model.configuration
+package it.facile.form.model.configurations
 
-import it.facile.form.Dates
-import it.facile.form.FormStorage
-import it.facile.form.format
-import it.facile.form.viewmodel.FieldValue.DateValue
-import it.facile.form.viewmodel.FieldValue.Missing
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.FieldViewModelStyle
-import it.facile.form.viewmodel.FieldViewModelStyle.DatePicker
+import it.facile.form.*
+import it.facile.form.model.FieldConfig
+import it.facile.form.model.FieldRule
+import it.facile.form.model.FieldRulesValidator
+import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FieldValue.DateValue
+import it.facile.form.storage.FieldValue.Missing
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewModelStyle
+import it.facile.form.ui.viewmodel.FieldViewModelStyle.DatePicker
 import java.text.DateFormat
 import java.util.*
 

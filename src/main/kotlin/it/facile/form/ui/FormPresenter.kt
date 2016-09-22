@@ -1,8 +1,8 @@
 package it.facile.form.ui
 
-import it.facile.form.FormStorage
 import it.facile.form.logE
-import it.facile.form.model.FormModel
+import it.facile.form.model.models.FormModel
+import it.facile.form.storage.FormStorage
 import rx.subscriptions.CompositeSubscription
 
 class FormPresenter(val formModel: FormModel,

@@ -1,10 +1,11 @@
-package it.facile.form
+package it.facile.form.storage
 
-import it.facile.form.viewmodel.FieldPossibleValues
-import it.facile.form.viewmodel.FieldPossibleValues.Available
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldValue.Missing
-import it.facile.form.viewmodel.FieldValue.Object
+import it.facile.form.Entry
+import it.facile.form.storage.FieldPossibleValues
+import it.facile.form.storage.FieldPossibleValues.Available
+import it.facile.form.storage.FieldValue
+import it.facile.form.storage.FieldValue.Missing
+import it.facile.form.storage.FieldValue.Object
 import rx.Observable
 import rx.subjects.PublishSubject
 

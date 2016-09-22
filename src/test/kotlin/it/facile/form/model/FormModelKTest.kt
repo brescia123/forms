@@ -1,11 +1,12 @@
 package it.facile.form.model
 
-import it.facile.form.FormStorage
+import it.facile.form.storage.FormStorage
 import it.facile.form.formModel
 import it.facile.form.formStorage
-import it.facile.form.viewmodel.FieldPath
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.model.models.FormModel
+import it.facile.form.ui.viewmodel.FieldPath
+import it.facile.form.storage.FieldValue
+import it.facile.form.ui.viewmodel.FieldViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.observers.TestSubscriber

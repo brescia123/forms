@@ -2,8 +2,8 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
+import it.facile.form.storage.FieldValue
+import it.facile.form.ui.viewmodel.FieldViewModel
 
 /** Represent a Field that can show an error state */
 interface CanShowError {

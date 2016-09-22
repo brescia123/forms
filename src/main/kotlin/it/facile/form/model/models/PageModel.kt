@@ -1,7 +1,8 @@
-package it.facile.form.model
+package it.facile.form.model.models
 
-import it.facile.form.FormStorage
-import it.facile.form.viewmodel.PageViewModel
+import it.facile.form.storage.FormStorage
+import it.facile.form.model.FieldsContainer
+import it.facile.form.ui.viewmodel.PageViewModel
 
 data class PageModel internal constructor(val title: String) : FieldsContainer {
 

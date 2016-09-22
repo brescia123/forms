@@ -1,4 +1,4 @@
-package it.facile.form.viewmodel
+package it.facile.form.ui.viewmodel
 
 data class FieldViewModel(val label: String,
                           val style: FieldViewModelStyle,

@@ -1,4 +1,4 @@
-package it.facile.form.viewmodel
+package it.facile.form.storage
 
 import rx.Single
 import rx.android.schedulers.AndroidSchedulers

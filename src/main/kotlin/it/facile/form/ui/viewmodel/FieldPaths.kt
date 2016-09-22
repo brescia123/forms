@@ -1,6 +1,6 @@
-package it.facile.form.viewmodel
+package it.facile.form.ui.viewmodel
 
-import it.facile.form.model.FormModel
+import it.facile.form.model.models.FormModel
 
 data class FieldPathIndex(val fieldIndex: Int)
 data class FieldPathSection(val fieldIndex: Int, val sectionIndex: Int)

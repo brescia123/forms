@@ -1,7 +1,7 @@
-package it.facile.form.model.configuration
+package it.facile.form
 
-import it.facile.form.matchesAtLeastOne
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.model.FieldRule
+import it.facile.form.storage.FieldValue
 
 private const val MISSING_ERROR_MESSAGE = "Field should not be empty"
 

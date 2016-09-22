@@ -1,8 +1,9 @@
-package it.facile.form.model
+package it.facile.form.model.models
 
-import it.facile.form.FormStorage
-import it.facile.form.model.configuration.FieldConfig
-import it.facile.form.viewmodel.SectionViewModel
+import it.facile.form.storage.FormStorage
+import it.facile.form.model.FieldConfig
+import it.facile.form.model.FieldsContainer
+import it.facile.form.ui.viewmodel.SectionViewModel
 
 data class SectionModel internal constructor (val title: String) : FieldsContainer {
 

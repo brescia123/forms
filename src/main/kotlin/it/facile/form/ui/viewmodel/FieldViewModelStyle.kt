@@ -1,6 +1,7 @@
-package it.facile.form.viewmodel
+package it.facile.form.ui.viewmodel
 
-import it.facile.form.model.configuration.CustomPickerId
+import it.facile.form.model.CustomPickerId
+import it.facile.form.storage.DescribableWithKey
 import java.util.*
 
 sealed class FieldViewModelStyle(val textDescription: String) {

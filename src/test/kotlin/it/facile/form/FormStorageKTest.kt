@@ -1,6 +1,7 @@
 package it.facile.form
 
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FieldValue
 import org.junit.Assert
 import org.junit.Test
 import rx.observers.TestSubscriber

@@ -5,11 +5,11 @@ import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapter
 import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
-import it.facile.form.model.configuration.CustomPickerId
-import it.facile.form.viewmodel.FieldPathSection
-import it.facile.form.viewmodel.FieldValue
-import it.facile.form.viewmodel.FieldViewModel
-import it.facile.form.viewmodel.SectionViewModel
+import it.facile.form.model.CustomPickerId
+import it.facile.form.ui.viewmodel.FieldPathSection
+import it.facile.form.storage.FieldValue
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,

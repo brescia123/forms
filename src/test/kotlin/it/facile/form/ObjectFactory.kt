@@ -1,14 +1,15 @@
 package it.facile.form
 
-import it.facile.form.model.FieldModel
-import it.facile.form.model.FormModel
-import it.facile.form.model.PageModel
-import it.facile.form.model.SectionModel
-import it.facile.form.model.configuration.FieldConfigBool
-import it.facile.form.model.configuration.FieldConfigInputText
-import it.facile.form.model.configuration.FieldConfigPicker
-import it.facile.form.viewmodel.DescribableWithKey
-import it.facile.form.viewmodel.FieldValue
+import it.facile.form.model.models.FieldModel
+import it.facile.form.model.models.FormModel
+import it.facile.form.model.models.PageModel
+import it.facile.form.model.models.SectionModel
+import it.facile.form.model.configurations.FieldConfigBool
+import it.facile.form.model.configurations.FieldConfigInputText
+import it.facile.form.model.configurations.FieldConfigPicker
+import it.facile.form.storage.FormStorage
+import it.facile.form.storage.DescribableWithKey
+import it.facile.form.storage.FieldValue
 
 fun formModel(storage: FormStorage): FormModel {
     val objects = listOf(DummyDescribableK("Ciao"), DummyDescribableK("Ciao2"))
