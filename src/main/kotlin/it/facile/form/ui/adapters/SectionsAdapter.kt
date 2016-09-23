@@ -7,7 +7,6 @@ import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.adapters.FieldViewHolderFactory
 import it.facile.form.ui.FieldViewTypeFactory
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
@@ -51,14 +50,14 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
             logD("Not updating because position is out of bound")
             return
         } // No field at given position
-        if (viewModel.equals(oldViewModel)) {
+        if (viewModel == oldViewModel) {
             logD("Not updating because viewModels are the same")
             return
         } // Same view model
 
         val sectionIndex = absolutePosition.calculateSectionIndex()
-        val isSectionViewModelChanged = !sectionViewModel.equals(sectionViewModels[sectionIndex!!])
-        val isViewModelChanged = !viewModel.equals(oldViewModel)
+        val isSectionViewModelChanged = sectionViewModel != sectionViewModels[sectionIndex!!]
+        val isViewModelChanged = viewModel != oldViewModel
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)

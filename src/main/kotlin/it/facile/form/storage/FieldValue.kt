@@ -21,10 +21,10 @@ sealed class FieldValue {
         return if (other == null) false
         else when (this) {
             is Missing -> true
-            is Text -> other is Text && text.equals(other.text)
+            is Text -> other is Text && text == other.text
             is Bool -> other is Bool && bool == other.bool
-            is DateValue -> other is Object && date.equals(other.value)
-            is Object -> other is Object && value.equals(other.value)
+            is DateValue -> other is Object && date == other.value
+            is Object -> other is Object && value == other.value
         }
     }
 

@@ -92,6 +92,6 @@ class FieldViewHolderInputText(itemView: View,
             viewModel.error != itemView.inputValue.error.toString()
 
     private fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
-            !viewModel.style.textDescription.equals(editText?.text.toString())
+            viewModel.style.textDescription != editText?.text.toString()
 
 }

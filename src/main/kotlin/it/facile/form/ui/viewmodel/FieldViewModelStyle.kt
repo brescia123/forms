@@ -26,21 +26,21 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
         else when (this) {
             is Empty -> other is Empty
             is ExceptionText -> other is ExceptionText
-            is SimpleText -> other is SimpleText && other.text.equals(text)
-            is InputText -> other is InputText && other.text.equals(text)
+            is SimpleText -> other is SimpleText && other.text == text
+            is InputText -> other is InputText && other.text == text
             is Checkbox -> other is Checkbox && other.bool == bool
             is Toggle -> other is Toggle && other.bool == bool
             is CustomPicker -> other is CustomPicker
-                    && other.identifier.equals(identifier)
-                    && other.valueText.equals(valueText)
+                    && other.identifier == identifier
+                    && other.valueText == valueText
             is DatePicker -> other is DatePicker
-                    && other.selectedDate.equals(selectedDate)
-                    && other.maxDate.equals(maxDate)
-                    && other.minDate.equals(minDate)
-                    && other.dateText.equals(dateText)
+                    && other.selectedDate == selectedDate
+                    && other.maxDate == maxDate
+                    && other.minDate == minDate
+                    && other.dateText == dateText
             is Picker -> other is Picker
-                    && other.possibleValues.equals(possibleValues)
-                    && other.valueText.equals(valueText)
+                    && other.possibleValues == possibleValues
+                    && other.valueText == valueText
             is Loading -> other is Loading
         }
     }
