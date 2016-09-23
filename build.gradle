@@ -10,7 +10,10 @@ allprojects {
 
 
 buildscript {
-    ext.kotlin_version = '1.0.3'
+
+    ext.kotlin_version = '1.0.4'
+    ext.support_version = '24.2.1'
+
     repositories {
         jcenter()
     }
@@ -43,17 +46,15 @@ android {
 }
 
 dependencies {
-    def SUPPORT_VERSION = '24.2.1'
-    def KOTLIN_VERSION = '1.0.3'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.9.5"
 
-    compile "com.android.support:design:$SUPPORT_VERSION"
-    compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support:recyclerview-v7:$support_version"
 
     compile "io.reactivex:rxjava:1.1.6"
     compile "io.reactivex:rxandroid:1.2.1"
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
