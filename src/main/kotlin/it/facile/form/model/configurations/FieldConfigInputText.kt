@@ -20,7 +20,7 @@ class FieldConfigInputText(label: String,
                 label,
                 getViewModelStyle(key, storage),
                 storage.isHidden(key),
-                isValid(value))
+                isValid(value, storage))
     }
 
 

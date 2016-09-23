@@ -2,7 +2,9 @@ package it.facile.form.model.models
 
 import it.facile.form.logE
 import it.facile.form.model.FieldAction
+import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
+import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldPath
@@ -12,6 +14,7 @@ import java.util.*
 data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAction>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
+    val interestedKeys: MutableMap<Int, MutableList<Int>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
         models.addAll(page.fields())
@@ -25,6 +28,11 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
     fun observeChanges(): Observable<FieldPath> = storage.observe()
             .filter { contains(it) } // Filter if the model does not contain the field key
             .doOnNext { executeFieldAction(it) }
+            .flatMap {
+                val observable1 = Observable.just(it)
+                val observable2 = Observable.from(interestedKeys[it] ?: emptyList())
+                observable1.mergeWith(observable2)
+            }
             .map { findFieldPathByKey(it) }
             .flatMap { Observable.from(it) } // Emit for every FieldPath related to the field key
             .doOnError { logE(it.message) }
@@ -32,7 +40,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
             .map { it } // Used to deal with nullable Kotlin types in rxJava
 
     fun notifyValueChanged(path: FieldPath, value: FieldValue): Unit {
-        if (contains(path) == false || value.equals(findFieldModelByFieldPath(path))) return
+        if (not(contains(path))) return // The model does not contain the given path
         val key = findFieldModelByFieldPath(path).key
         storage.putValue(key, value)
     }
@@ -62,6 +70,22 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
 
     private fun executeAllFieldsActions() {
         fields().map { executeFieldAction(it.key) }
+    }
+
+    private fun observeActionsKeys(): MutableMap<Int, MutableList<Int>> {
+        val interested: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+        for ((toBeNotifiedKey, config) in fields()) {
+            if (config is FieldRulesValidator) {
+                config.rules.map {
+                    val toBeObservedKey = it.key
+                    toBeObservedKey?.let {
+                        interested[toBeObservedKey]?.add(toBeNotifiedKey)
+                                ?: interested.put(toBeObservedKey, mutableListOf(toBeNotifiedKey))
+                    }
+                }
+            }
+        }
+        return interested
     }
 
     companion object {
