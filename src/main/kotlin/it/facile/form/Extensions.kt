@@ -134,10 +134,15 @@ fun CharSequence.matchesAll(vararg regexs: Regex): Boolean {
 }
 
 /** Returns if the CharSequence matches at least one of the given regexes */
-fun CharSequence.matchesAtLeastOne(vararg regexs: Regex): Boolean {
-    regexs.map { if (matches(it)) return true }
+fun CharSequence.matchesAtLeastOne(vararg regexes: Regex): Boolean {
+    regexes.map { if (matches(it)) return true }
     return false
 }
 
+/* ---------- Various extensions utilities ---------- */
 
+/** Converts any object to a [Single] the just emit the value */
 fun <T> T.toSingle(): Single<T> = Single.just(this)
+
+/** Convenient global boolean not method */
+fun not(boolean: Boolean) = boolean.not()
