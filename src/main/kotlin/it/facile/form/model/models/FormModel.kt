@@ -76,12 +76,12 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
         val interested: MutableMap<Int, MutableList<Int>> = mutableMapOf()
         for ((toBeNotifiedKey, config) in fields()) {
             if (config is FieldRulesValidator) {
-                config.rules.map {
-                    val toBeObservedKey = it.key
-                    toBeObservedKey?.let {
-                        interested[toBeObservedKey]?.add(toBeNotifiedKey)
-                                ?: interested.put(toBeObservedKey, mutableListOf(toBeNotifiedKey))
-                    }
+                config.rules(storage).map {
+                    it.observedKeys()
+                            .map { it.key }
+                            .map {
+                                interested[it]?.add(toBeNotifiedKey) ?: interested.put(it, mutableListOf(toBeNotifiedKey))
+                            }
                 }
             }
         }

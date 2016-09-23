@@ -12,7 +12,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.ExceptionText
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 
 class FieldConfigInputText(label: String,
-                           override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
+                           override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
     override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)

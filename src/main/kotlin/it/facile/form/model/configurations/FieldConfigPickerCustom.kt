@@ -15,7 +15,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.ExceptionText
 class FieldConfigPickerCustom(label: String,
                               val id: CustomPickerId,
                               val placeHolder: String = "Select a value",
-                              override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
+                              override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
     override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)

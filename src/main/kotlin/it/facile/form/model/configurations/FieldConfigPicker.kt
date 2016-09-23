@@ -16,7 +16,7 @@ import rx.Subscription
 class FieldConfigPicker(label: String,
                         val possibleValues: FieldPossibleValues,
                         val placeHolder: String = "Select a value",
-                        override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
+                        override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
     var sub: Subscription? = null
 

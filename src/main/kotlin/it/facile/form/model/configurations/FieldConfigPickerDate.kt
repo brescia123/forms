@@ -19,7 +19,7 @@ class FieldConfigPickerDate(label: String,
                             val maxDate: Date = Dates.create(2100, 11, 31),
                             val dateFormatter: DateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM),
                             val placeholder: String = "Select a date",
-                            override val rules: List<FieldRule> = emptyList()) : FieldConfig(label), FieldRulesValidator {
+                            override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
     override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)
@@ -34,8 +34,8 @@ class FieldConfigPickerDate(label: String,
         val value = storage.getValue(key)
         return when (value) {
             is DateValue -> DatePicker(minDate, maxDate,
-                        selectedDate = value.date,
-                        dateText = value.date.format(dateFormatter))
+                    selectedDate = value.date,
+                    dateText = value.date.format(dateFormatter))
             is Missing -> DatePicker(minDate, maxDate,
                     selectedDate = Dates.today(),
                     dateText = placeholder)
