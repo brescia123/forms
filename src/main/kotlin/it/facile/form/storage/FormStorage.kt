@@ -1,9 +1,8 @@
 package it.facile.form.storage
 
 import it.facile.form.Entry
-import it.facile.form.storage.FieldPossibleValues
+import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues.Available
-import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.Missing
 import it.facile.form.storage.FieldValue.Object
 import rx.Observable
@@ -68,10 +67,12 @@ class FormStorage(defaultEntries: MutableMap<Int, Entry>) {
         notify(key)
     }
 
-    /** Clear possible values for the given key and notify the change */
+    /** Clear possible values for the given key and and notify the change
+     * If at the given key there are no possible values it does nothing. */
     fun clearPossibleValues(key: Int) {
+        if (not(possibleValuesMap.containsKey(key))) return
         possibleValuesMap.remove(key)
-        notify(key)
+        clearValue(key)
     }
 
     fun observe(): Observable<Int> = publishSubject.asObservable()
