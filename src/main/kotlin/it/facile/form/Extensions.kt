@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import it.facile.form.storage.FieldValue
 import rx.Single
 import java.text.DateFormat
 import java.util.*
@@ -146,3 +147,8 @@ fun <T> T.toSingle(): Single<T> = Single.just(this)
 
 /** Convenient global boolean not method */
 fun not(boolean: Boolean) = boolean.not()
+
+fun FieldValue.asObject() = this as? FieldValue.Object
+fun FieldValue.asDateValue() = this as? FieldValue.DateValue
+fun FieldValue.asText() = this as? FieldValue.Text
+fun FieldValue.asBool() = this as? FieldValue.Bool
