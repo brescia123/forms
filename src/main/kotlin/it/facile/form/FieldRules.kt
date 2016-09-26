@@ -27,13 +27,19 @@ class IsEmail() : FieldRule() {
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
-class IsPhone() : FieldRule() {
+class IsCellularPhone() : FieldRule() {
     val phoneETACSRegex = Regex("^3[0-9]{8}")
     val phoneGSMRegex = Regex("^3[0-9]{9}")
     override val errorMessage = "Field should be a valid phone number"
     override fun verify(value: FieldValue) =
             value.asText()?.text?.matchesAtLeastOne(phoneETACSRegex, phoneGSMRegex) ?: false
 
+    override fun observedKeys() = emptyList<KeyReader>()
+}
+
+class ShouldBeTrue() : FieldRule() {
+    override val errorMessage = "Field should be true"
+    override fun verify(value: FieldValue) = value.asBool()?.bool ?: false
     override fun observedKeys() = emptyList<KeyReader>()
 }
 

@@ -1,16 +1,19 @@
 package it.facile.form.model.configurations
 
 import it.facile.form.model.FieldConfig
-import it.facile.form.storage.FormStorage
+import it.facile.form.model.FieldRule
+import it.facile.form.model.FieldRulesValidator
 import it.facile.form.storage.FieldValue.Bool
 import it.facile.form.storage.FieldValue.Missing
+import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
 
 class FieldConfigBool(label: String,
                       val viewStyle: ViewStyle,
-                      val boolToString: ((Boolean) -> String) = { "" }) : FieldConfig(label) {
+                      val boolToString: ((Boolean) -> String) = { "" },
+                      override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
     enum class ViewStyle { CHECKBOX, TOGGLE }
 
@@ -21,7 +24,7 @@ class FieldConfigBool(label: String,
                 label,
                 getViewModelStyle(key, storage),
                 storage.isHidden(key),
-                null)
+                isValid(storage.getValue(key), storage))
     }
 
     override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
