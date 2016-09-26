@@ -7,11 +7,12 @@ import it.facile.form.storage.FieldValue.Missing
 import it.facile.form.storage.FieldValue.Object
 import rx.Observable
 import rx.subjects.PublishSubject
+import java.util.*
 
-class FormStorage(defaultEntries: MutableMap<Int, Entry>) {
+class FormStorage(defaultEntries: Map<Int, Entry>) {
     private val publishSubject: PublishSubject<Int> = PublishSubject.create()
     private val possibleValuesMap = mutableMapOf<Int, FieldPossibleValues>()
-    val values = defaultEntries
+    val values = HashMap(defaultEntries)
 
     fun getValue(key: Int): FieldValue = values[key]?.value ?: Missing
 
