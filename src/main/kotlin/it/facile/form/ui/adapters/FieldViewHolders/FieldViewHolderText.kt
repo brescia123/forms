@@ -75,8 +75,8 @@ class FieldViewHolderText(itemView: View,
             itemView.imageError.show()
         } else {
             //itemView.textValue.show()
-            itemView.textError.hide()
-            itemView.imageError.hide()
+            itemView.textError.gone()
+            itemView.imageError.gone()
         }
     }
 
