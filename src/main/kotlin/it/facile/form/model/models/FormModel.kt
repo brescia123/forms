@@ -1,7 +1,6 @@
 package it.facile.form.model.models
 
 import it.facile.form.logE
-import it.facile.form.model.FieldAction
 import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
 import it.facile.form.not
@@ -11,7 +10,7 @@ import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import java.util.*
 
-data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<FieldAction>>) : FieldsContainer {
+data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
     val interestedKeys: MutableMap<Int, MutableList<Int>> by lazy { observeActionsKeys() }
@@ -54,7 +53,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
     }
 
     private fun executeFieldAction(key: Int) =
-            actions[key]?.forEach { it.execute(storage.getValue(key), storage) }
+            actions[key]?.forEach { it(storage.getValue(key), storage) }
 
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
@@ -89,7 +88,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<Fi
     }
 
     companion object {
-        fun form(storage: FormStorage, actions: HashMap<Int, List<FieldAction>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorage, actions: HashMap<Int, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
             form.executeAllFieldsActions()
