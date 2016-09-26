@@ -23,7 +23,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/textError"
-        tools:text="LabelLabelLabelLabelLabelLabel"/>
+        tools:text="Label"/>
 
     <TextView
         android:id="@+id/textValue"
@@ -39,7 +39,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/textLabel"
         app:layout_constraintRight_toLeftOf="@+id/textError"
         app:layout_constraintTop_toBottomOf="@+id/textLabel"
-        tools:text="ValueValueValueValueValueValueValue"/>
+        tools:text="Value"/>
 
     <TextView
         android:id="@+id/textError"
@@ -60,7 +60,7 @@
         app:layout_constraintRight_toLeftOf="@+id/imageError"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_constraintRight_creator="1"
-        tools:text="ErrorErrorErrorErrorErrorErrorErrorErrorError"
+        tools:text="Error"
         tools:visibility="visible"/>
 
     <ImageView
@@ -73,6 +73,7 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_error_red"
         android:visibility="invisible"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
