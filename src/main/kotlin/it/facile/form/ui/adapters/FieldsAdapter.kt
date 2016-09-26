@@ -4,8 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import it.facile.form.model.CustomPickerId
+import it.facile.form.not
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.adapters.FieldViewHolderFactory
 import it.facile.form.ui.ViewTypeFactory
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderBase
 import it.facile.form.ui.viewmodel.FieldViewModel
@@ -56,16 +56,19 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     /** Return the position of the first error, -1 if no error are present */
     fun firstErrorPosition(): Int {
-        for ((index, viewModel) in viewModels.visibleFields().withIndex()) {
-            if (viewModel.error != null) return index
+        for ((index, viewModel) in viewModels.withIndex()) {
+            if (viewModel.hasError() and viewModel.isVisible()) {
+                return index
+            }
         }
         return -1
     }
 
+    /** Return the positions of the first error, -1 if no error are present */
     fun errorPositions(): MutableList<Int> {
         val positions = mutableListOf<Int>()
-        for ((index, viewModel) in viewModels.visibleFields().withIndex()) {
-            if (viewModel.error != null) {
+        for ((index, viewModel) in viewModels.withIndex()) {
+            if (viewModel.hasError() and viewModel.isVisible()) {
                 positions.add(index)
             }
         }
@@ -75,7 +78,6 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     /* ---------- HELPER METHODS ---------- */
 
-    private fun MutableList<FieldViewModel>.visibleFields(): List<FieldViewModel> {
-        return filter { !it.hidden }
-    }
+    private fun FieldViewModel.isVisible() = not(hidden)
+    private fun FieldViewModel.hasError() = error != null
 }
