@@ -3,7 +3,7 @@
     <attr format="reference" name="accentColor"/>
 
     <style name="TextAppearance.FieldValue" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
         <item name="android:textSize">14sp</item>
     </style>
 
