@@ -17,7 +17,7 @@ class FieldConfigPickerCustom(label: String,
                               val placeHolder: String = "Select a value",
                               override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
-    override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
+    override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)
         return FieldViewModel(
                 label,
@@ -26,7 +26,7 @@ class FieldConfigPickerCustom(label: String,
                 isValid(value, storage))
     }
 
-    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+    override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
             is Object -> CustomPicker(identifier = id, valueText = value.value.textDescription)

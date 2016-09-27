@@ -21,7 +21,7 @@ data class SectionModel internal constructor (val title: String) : FieldsContain
     }
 
     /** Type-safe builder method to add a field */
-    fun field(key: Int, init: () -> FieldConfig): FieldModel {
+    fun field(key: String, init: () -> FieldConfig): FieldModel {
         val field = FieldModel(key, init())
         fields.add(field)
         return field

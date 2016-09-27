@@ -21,11 +21,11 @@ interface CustomPickerId {}
 /* ---------- View Models ---------- */
 
 interface ViewModelGenerator {
-    fun getViewModel(key: Int, storage: FormStorage): FieldViewModel
+    fun getViewModel(key: String, storage: FormStorage): FieldViewModel
 }
 
 interface ViewModelStyleGenerator {
-    fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle
+    fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle
 }
 
 /* ---------- Rules ---------- */
@@ -50,11 +50,11 @@ abstract class FieldRule() {
 }
 
 interface WithKey {
-    val key: Int
+    val key: String
 }
 
 /** [FormStorage] reader that allows the client to only read the storage for a predefined key */
-class KeyReader(override val key: Int, private val storage: FormStorage) : WithKey {
+class KeyReader(override val key: String, private val storage: FormStorage) : WithKey {
 
     /** @see [FormStorage.getValue] */
     fun getValue(): FieldValue = storage.getValue(key)

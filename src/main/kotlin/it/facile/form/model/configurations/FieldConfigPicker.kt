@@ -20,7 +20,7 @@ class FieldConfigPicker(label: String,
 
     var sub: Subscription? = null
 
-    override fun getViewModel(key: Int, storage: FormStorage) =
+    override fun getViewModel(key: String, storage: FormStorage) =
             FieldViewModel(
                     label,
                     getViewModelStyle(key, storage),
@@ -28,9 +28,9 @@ class FieldConfigPicker(label: String,
                     isValid(storage.getValue(key), storage))
 
 
-    val possibleValuesGenerator: (FormStorage, Int) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }
+    val possibleValuesGenerator: (FormStorage, String) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }
 
-    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+    override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
             is Object -> chooseViewModelStyle(storage, key, value.value.textDescription)
@@ -39,7 +39,7 @@ class FieldConfigPicker(label: String,
         }
     }
 
-    private fun chooseViewModelStyle(storage: FormStorage, key: Int, text: String): FieldViewModelStyle {
+    private fun chooseViewModelStyle(storage: FormStorage, key: String, text: String): FieldViewModelStyle {
         sub?.unsubscribe()
         val possibleValues = possibleValuesGenerator(storage, key)
         return when (possibleValues) {

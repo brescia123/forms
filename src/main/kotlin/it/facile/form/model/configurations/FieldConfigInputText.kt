@@ -14,7 +14,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 class FieldConfigInputText(label: String,
                            override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 
-    override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
+    override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)
         return FieldViewModel(
                 label,
@@ -24,7 +24,7 @@ class FieldConfigInputText(label: String,
     }
 
 
-    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+    override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
             is Text -> InputText(value.text)

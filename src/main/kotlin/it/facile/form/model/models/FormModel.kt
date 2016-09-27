@@ -10,10 +10,10 @@ import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import java.util.*
 
-data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+data class FormModel(val storage: FormStorage, val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
-    val interestedKeys: MutableMap<Int, MutableList<Int>> by lazy { observeActionsKeys() }
+    val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
         models.addAll(page.fields())
@@ -52,7 +52,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<(F
         return page
     }
 
-    private fun executeFieldAction(key: Int) =
+    private fun executeFieldAction(key: String) =
             actions[key]?.forEach { it(storage.getValue(key), storage) }
 
 
@@ -60,19 +60,19 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<(F
             path.sectionIndex < pages[path.pageIndex].sections.size &&
             path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
 
-    private fun contains(key: Int): Boolean = findFieldPathByKey(key).size > 0
+    private fun contains(key: String): Boolean = findFieldPathByKey(key).size > 0
 
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
 
-    private fun findFieldPathByKey(key: Int): List<FieldPath> = FieldPath.buildForKey(key, this)
+    private fun findFieldPathByKey(key: String): List<FieldPath> = FieldPath.buildForKey(key, this)
 
     private fun executeAllFieldsActions() {
         fields().map { executeFieldAction(it.key) }
     }
 
-    private fun observeActionsKeys(): MutableMap<Int, MutableList<Int>> {
-        val interested: MutableMap<Int, MutableList<Int>> = mutableMapOf()
+    private fun observeActionsKeys(): MutableMap<String, MutableList<String>> {
+        val interested: MutableMap<String, MutableList<String>> = mutableMapOf()
         for ((toBeNotifiedKey, config) in fields()) {
             if (config is FieldRulesValidator) {
                 config.rules(storage).map {
@@ -88,7 +88,7 @@ data class FormModel(val storage: FormStorage, val actions: HashMap<Int, List<(F
     }
 
     companion object {
-        fun form(storage: FormStorage, actions: HashMap<Int, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
             form.executeAllFieldsActions()

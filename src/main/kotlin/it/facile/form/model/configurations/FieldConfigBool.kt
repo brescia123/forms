@@ -19,7 +19,7 @@ class FieldConfigBool(label: String,
 
     val defaultIfMissing = false
 
-    override fun getViewModel(key: Int, storage: FormStorage): FieldViewModel {
+    override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         return FieldViewModel(
                 label,
                 getViewModelStyle(key, storage),
@@ -27,7 +27,7 @@ class FieldConfigBool(label: String,
                 isValid(storage.getValue(key), storage))
     }
 
-    override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
+    override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
             is Bool -> chooseViewModelStyle(value.bool)
