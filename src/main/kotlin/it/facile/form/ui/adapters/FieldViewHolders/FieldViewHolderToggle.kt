@@ -21,6 +21,7 @@ class FieldViewHolderToggle(itemView: View,
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
         itemView.toggleLabel.text = viewModel.label
+        itemView.toggleTextView.text = viewModel.style.textDescription
         when (style) {
             is FieldViewModelStyle.Toggle -> {
                 val toggleView = itemView.toggleView

@@ -30,12 +30,12 @@
         android:id="@+id/toggleImageError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:src="@drawable/ic_error_red"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/toggleView"
+        app:layout_constraintRight_toLeftOf="@+id/toggleTextView"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.v7.widget.SwitchCompat
@@ -47,5 +47,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/toggleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/toggleView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:textDescription="Text"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -11,6 +11,7 @@ import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
+import kotlinx.android.synthetic.main.form_field_toggle.view.*
 import rx.subjects.PublishSubject
 
 class FieldViewHolderCheckBox(itemView: View,
@@ -21,6 +22,7 @@ class FieldViewHolderCheckBox(itemView: View,
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
         itemView.checkboxLabel.text = viewModel.label
+        itemView.checkboxTextView.text = viewModel.style.textDescription
         when (style) {
             is FieldViewModelStyle.Checkbox -> {
                 val checkBoxValue = itemView.checkBoxValue
