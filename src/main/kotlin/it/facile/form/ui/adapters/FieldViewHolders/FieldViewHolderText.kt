@@ -55,7 +55,7 @@ class FieldViewHolderText(itemView: View,
             is FieldViewModelStyle.Picker -> {
                 itemView.setOnClickListener {
                     AlertDialog.Builder(itemView.context).setItems(
-                            style.possibleValues.map { it.describe() }.toTypedArray(),
+                            style.possibleValues.map { it.textDescription }.toTypedArray(),
                             { dialogInterface, i ->
                                 notifyNewValue(position, Object(style.possibleValues[i]))
                             })

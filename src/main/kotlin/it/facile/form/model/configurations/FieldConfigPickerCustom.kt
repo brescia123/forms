@@ -29,7 +29,7 @@ class FieldConfigPickerCustom(label: String,
     override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
-            is Object -> CustomPicker(identifier = id, valueText = value.value.describe())
+            is Object -> CustomPicker(identifier = id, valueText = value.value.textDescription)
             is Missing -> CustomPicker(identifier = id, valueText = placeHolder)
             else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }

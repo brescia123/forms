@@ -33,7 +33,7 @@ class FieldConfigPicker(label: String,
     override fun getViewModelStyle(key: Int, storage: FormStorage): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
-            is Object -> chooseViewModelStyle(storage, key, value.value.describe())
+            is Object -> chooseViewModelStyle(storage, key, value.value.textDescription)
             is Missing -> chooseViewModelStyle(storage, key, placeHolder)
             else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }

@@ -12,7 +12,7 @@ sealed class FieldValue {
     override fun toString(): String = when (this) {
         is Text -> text.toString()
         is Bool -> bool.toString()
-        is Object -> value.text
+        is Object -> value.textDescription
         is DateValue -> date.toString()
         is Missing -> "Missing value"
     }
