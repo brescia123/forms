@@ -128,6 +128,9 @@ fun RecyclerView.Adapter<*>.deferredNotifyItemChanged(position: Int) {
 
 /* ---------- Regex extensions utilities ---------- */
 
+/** Returns if the CharSequence contains match of */
+fun CharSequence.containsMatchOf(regex: Regex): Boolean = regex.containsMatchIn(this)
+
 /** Returns if the CharSequence matches all the given regexes */
 fun CharSequence.matchesAll(vararg regexes: Regex): Boolean {
     regexes.map { if (!matches(it)) return false }

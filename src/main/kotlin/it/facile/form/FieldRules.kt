@@ -33,6 +33,20 @@ class IsCellularPhone(override val errorMessage: String = "Field should be a val
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
+class IsName(override val errorMessage: String = "Field should be a valid name") : FieldRule() {
+    val regex1 = Regex("(.)\\1\\1")
+    val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE)
+    val regex3 = Regex("^[a-zòàùèéìíóáúäëïöü\\ '\\-]+$", RegexOption.IGNORE_CASE)
+    val regex4 = Regex("^[a-z]", RegexOption.IGNORE_CASE)
+
+    override fun verify(value: FieldValue) = not(value.asText()?.text?.matches(regex1) ?: true) and
+            not(value.asText()?.text?.matches(regex2) ?: true) and
+            (value.asText()?.text?.containsMatchOf(regex3) ?: false) and
+            (value.asText()?.text?.containsMatchOf(regex4) ?: false)
+
+    override fun observedKeys() = emptyList<KeyReader>()
+}
+
 class ShouldBeTrue(override val errorMessage: String = "Field should be true") : FieldRule() {
     override fun verify(value: FieldValue) = value.asBool()?.bool ?: false
     override fun observedKeys() = emptyList<KeyReader>()
