@@ -19,7 +19,7 @@ In order to use the form UI, add `FormRecyclerView` to your layout
 Next you have should have your view (an `Activity`, a `Fragment` or whatever you want to contain the form)
 implement `FormView` interface and implement its methods:
 
-```
+```kotlin
 // Where your view receives the list of PageViewModel and initalizes the
 // components (recyclerview, adapters..) used to display them
 fun init(pageViewModels: List<PageViewModel>)
