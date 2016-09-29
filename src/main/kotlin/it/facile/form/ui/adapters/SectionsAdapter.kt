@@ -13,9 +13,10 @@ import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
+import java.util.*
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
-                      onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit)
+                      customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap())
 : SectionedRecyclerViewAdapter(R.layout.form_section_header, R.layout.form_section_first_header) {
     private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
@@ -24,7 +25,7 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
         setAwareSections(sectionViewModels.buildPositionAwareList())
         val fieldViewModels = sectionViewModels.listAllFieldsViewModel()
         fieldsAdapter = FieldsAdapter(fieldViewModels,
-                onCustomPickerClicked,
+                customPickerActions,
                 FieldViewTypeFactory(),
                 FieldViewHolderFactory())
         this.adapter = fieldsAdapter

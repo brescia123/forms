@@ -60,5 +60,5 @@ interface ViewHolderFactory {
     fun createViewHolder(viewType: Int,
                          v: View,
                          valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
-                         onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit): RecyclerView.ViewHolder
+                         customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>): RecyclerView.ViewHolder
 }

@@ -18,7 +18,7 @@ import rx.subjects.PublishSubject
 
 class FieldViewHolderText(itemView: View,
                           private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
-                          private val onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit) :
+                          private val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>) :
         FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError {
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
@@ -31,9 +31,7 @@ class FieldViewHolderText(itemView: View,
         when (style) {
             is FieldViewModelStyle.CustomPicker -> {
                 itemView.setOnClickListener {
-                    onCustomPickerClicked(
-                            style.identifier,
-                            { notifyNewValue(position, it) })
+                    customPickerActions[style.identifier]?.invoke { notifyNewValue(position, it) }
                 }
             }
             is FieldViewModelStyle.DatePicker -> {

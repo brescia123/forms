@@ -13,7 +13,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
-                    val onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit,
+                    val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
                     val viewTypeFactory: ViewTypeFactory,
                     val fieldViewHolderFactory: FieldViewHolderFactory)
 : RecyclerView.Adapter<FieldViewHolderBase>() {
@@ -26,7 +26,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
                     viewType,
                     LayoutInflater.from(parent.context).inflate(viewType, parent, false),
                     valueChangesSubject,
-                    onCustomPickerClicked)
+                    customPickerActions)
 
     override fun onBindViewHolder(holder: FieldViewHolderBase, position: Int) =
             holder.bind(viewModels[position], position, errorsShouldBeVisible)

@@ -12,10 +12,10 @@ class FieldViewHolderFactory() : ViewHolderFactory {
     override fun createViewHolder(viewType: Int,
                                   v: View,
                                   valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
-                                  onCustomPickerClicked: (CustomPickerId, (FieldValue) -> Unit) -> Unit): FieldViewHolderBase =
+                                  customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>): FieldViewHolderBase =
             when (viewType) {
                 R.layout.form_field_empty -> FieldViewHolderEmpty(v)
-                R.layout.form_field_text -> FieldViewHolderText(v, valueChangesSubject, onCustomPickerClicked)
+                R.layout.form_field_text -> FieldViewHolderText(v, valueChangesSubject, customPickerActions)
                 R.layout.form_field_input_text -> FieldViewHolderInputText(v, valueChangesSubject)
                 R.layout.form_field_checkbox -> FieldViewHolderCheckBox(v, valueChangesSubject)
                 R.layout.form_field_toggle -> FieldViewHolderToggle(v, valueChangesSubject)
