@@ -12,16 +12,14 @@ class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Recycler
     }
 
     init {
-        itemAnimator = FormItemAnimator()
+        itemAnimator = FormDefaultItemAnimator()
         layoutManager = LinearLayoutManager(context)
-        setHasFixedSize(true)
     }
 
     override fun setItemAnimator(animator: ItemAnimator?) {
-        if (animator !is FormItemAnimator)
+        if (animator !is FormDefaultItemAnimator)
             logW("Using an ItemAnimator that is not a FormItemAnimator can lead to problems " +
                     "with input text fields.")
         super.setItemAnimator(animator)
     }
 }
-
