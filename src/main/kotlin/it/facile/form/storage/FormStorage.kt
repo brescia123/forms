@@ -1,6 +1,6 @@
 package it.facile.form.storage
 
-import it.facile.form.Entry
+import it.facile.form.storage.Entry
 import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldValue.Missing

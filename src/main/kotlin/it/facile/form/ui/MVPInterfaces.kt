@@ -1,6 +1,5 @@
 package it.facile.form.ui
 
-import it.facile.form.ui.FieldPathWithValue
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.PageViewModel
@@ -26,5 +25,6 @@ interface FormView : View {
     fun updateField(path: FieldPath,
                     viewModel: FieldViewModel,
                     sectionViewModel: SectionViewModel)
+
     fun observeValueChanges(): Observable<FieldPathWithValue>
 }

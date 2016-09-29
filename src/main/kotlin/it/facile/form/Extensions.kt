@@ -152,6 +152,6 @@ fun <T> T.toSingle(): Single<T> = Single.just(this)
 fun not(boolean: Boolean) = boolean.not()
 
 fun FieldValue.asObject() = this as? FieldValue.Object
-fun FieldValue.asDateValue() = this as? FieldValue.DateValue
+fun FieldValue.asDate() = this as? FieldValue.DateValue
 fun FieldValue.asText() = this as? FieldValue.Text
 fun FieldValue.asBool() = this as? FieldValue.Bool

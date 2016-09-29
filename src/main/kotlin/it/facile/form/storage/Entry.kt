@@ -1,5 +1,3 @@
-package it.facile.form
-
-import it.facile.form.storage.FieldValue
+package it.facile.form.storage
 
 data class Entry(val value: FieldValue, val hidden: Boolean = false)
