@@ -8,6 +8,7 @@ import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.FieldViewTypeFactory
+import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.SectionViewModel
@@ -40,8 +41,8 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
      * appropriate. It also need the [SectionViewModel] of the section containing it to be able to draw
      * the section header correctly
      */
-    fun updateField(absolutePosition: Int, viewModel: FieldViewModel, sectionViewModel: SectionViewModel) {
-
+    fun updateField(path: FieldPath, viewModel: FieldViewModel, sectionViewModel: SectionViewModel) {
+        val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
         val oldViewModel = fieldsAdapter.getViewModel(absolutePosition)
         logD("Position $absolutePosition: new fieldViewModel update request:\n" +
                 "old: $oldViewModel\n" +
@@ -156,5 +157,16 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
             }
         }
         return null
+    }
+
+    fun FieldPath.buildAbsoluteFieldPosition(sectionViewModels: List<SectionViewModel>): Int {
+        var absolutePosition = 0
+        for (i in 0..sectionViewModels.size - 1) {
+            for (j in 0..sectionViewModels[i].fields.size - 1) {
+                if (i == sectionIndex && j == fieldIndex) return absolutePosition
+                absolutePosition++
+            }
+        }
+        return -1
     }
 }
