@@ -155,3 +155,4 @@ fun FieldValue.asObject() = this as? FieldValue.Object
 fun FieldValue.asDate() = this as? FieldValue.DateValue
 fun FieldValue.asText() = this as? FieldValue.Text
 fun FieldValue.asBool() = this as? FieldValue.Bool
+fun FieldValue.asBoolOrFalse() = (this as? FieldValue.Bool)?.bool ?: false
