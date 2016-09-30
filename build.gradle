@@ -57,5 +57,5 @@ dependencies {
     compile "io.reactivex:rxjava:1.1.6"
     compile "io.reactivex:rxandroid:1.2.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }
