@@ -12,7 +12,7 @@
     </style>
 
     <style name="TextAppearance.SectionHeader" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textColor">@color/gray_600</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif</item>
