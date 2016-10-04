@@ -33,7 +33,7 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        //TODO remove the recyclerView from the adapter
+        //TODO remove the recyclerView from the adapter and move it to pageFragment
         recyclerViews.add(recyclerView)
     }
 

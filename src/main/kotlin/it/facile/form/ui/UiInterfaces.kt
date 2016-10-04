@@ -6,6 +6,8 @@ import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
+import it.facile.form.ui.viewmodel.SectionViewModel
+import rx.Observable
 import rx.subjects.PublishSubject
 
 /** Represent a Field that can show an error state */
@@ -61,4 +63,11 @@ interface ViewHolderFactory {
                          v: View,
                          valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
                          customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>): RecyclerView.ViewHolder
+}
+
+interface SectionViewModelProvider {
+    fun getSectionViewModels(index: Int): List<SectionViewModel>
+}
+interface PageValueChangesObserver {
+    fun registerPageValueChangesObservable(observable: Observable<FieldPathWithValue>)
 }
