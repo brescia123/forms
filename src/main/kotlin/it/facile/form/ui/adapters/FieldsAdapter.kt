@@ -8,6 +8,7 @@ import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.ViewTypeFactory
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderBase
+import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderFactory
 import it.facile.form.ui.viewmodel.FieldViewModel
 import rx.Observable
 import rx.subjects.PublishSubject

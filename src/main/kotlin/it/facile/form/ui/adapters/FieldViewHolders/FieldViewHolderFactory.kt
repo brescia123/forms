@@ -1,4 +1,4 @@
-package it.facile.form.ui.adapters
+package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
 import it.facile.form.R

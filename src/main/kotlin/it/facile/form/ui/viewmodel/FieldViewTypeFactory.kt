@@ -1,7 +1,7 @@
-package it.facile.form.ui
+package it.facile.form.ui.viewmodel
 
 import it.facile.form.R
-import it.facile.form.ui.viewmodel.FieldViewModelStyle
+import it.facile.form.ui.ViewTypeFactory
 
 class FieldViewTypeFactory : ViewTypeFactory {
     override fun viewType(style: FieldViewModelStyle.Empty) = R.layout.form_field_empty

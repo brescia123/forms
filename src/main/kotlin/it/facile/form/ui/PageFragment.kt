@@ -87,23 +87,23 @@ class PageFragment : Fragment() {
             return fragment
         }
     }
+
+    fun FragmentActivity.asSectionViewModelProviderOrThrow(): SectionViewModelProvider =
+            if (this is SectionViewModelProvider) {
+                this
+            } else {
+                throw RuntimeException(this.toString()
+                        + " must implement SectionViewModelProvider")
+            }
+
+    fun FragmentActivity.asPageValueChangesObserverOrThrow(): PageValueChangesObserver =
+            if (this is PageValueChangesObserver) {
+                this
+            } else {
+                throw RuntimeException(this.toString()
+                        + " must implement PageValueChangesObserver")
+            }
 }
-
-private fun FragmentActivity.asSectionViewModelProviderOrThrow(): SectionViewModelProvider =
-        if (this is SectionViewModelProvider) {
-            this
-        } else {
-            throw RuntimeException(this.toString()
-                    + " must implement SectionViewModelProvider")
-        }
-
-private fun FragmentActivity.asPageValueChangesObserverOrThrow(): PageValueChangesObserver =
-        if (this is PageValueChangesObserver) {
-            this
-        } else {
-            throw RuntimeException(this.toString()
-                    + " must implement PageValueChangesObserver")
-        }
 
 
 

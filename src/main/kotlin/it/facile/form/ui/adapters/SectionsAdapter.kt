@@ -7,7 +7,8 @@ import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.FieldViewTypeFactory
+import it.facile.form.ui.viewmodel.FieldViewTypeFactory
+import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderFactory
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
