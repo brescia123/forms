@@ -10,10 +10,11 @@ import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import java.util.*
 
-data class FormModel(val storage: FormStorage, val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+data class FormModel(val storage: FormStorage,
+                     private val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
-    val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
+    private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
         models.addAll(page.fields())
