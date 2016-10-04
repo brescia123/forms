@@ -1,9 +1,14 @@
 package it.facile.form
 
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
+import android.support.annotation.ColorInt
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import it.facile.form.storage.FieldValue
@@ -106,6 +111,18 @@ fun TextView.setCompoundDrawables(left: Drawable? = null,
                                   bottom: Drawable? = null) {
     this.setCompoundDrawables(left, top, right, bottom)
 }
+
+
+/* ---------- Context extensions utilities ---------- */
+
+fun Context.getColor(@ColorInt id: Int, theme: Resources.Theme? = null) = if (Build.VERSION.SDK_INT >= 23) {
+    getColor(id)
+} else {
+    resources.getColor(id, theme)
+}
+
+fun Context.PXtoDP(px: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, resources.displayMetrics).toInt()
+fun Context.DPtoPX(dp: Int): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, dp.toFloat(), resources.displayMetrics).toInt()
 
 
 /* ---------- Handler extensions utilities ---------- */
