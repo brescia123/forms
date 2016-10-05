@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.ViewGroup
 import it.facile.form.ui.FieldPathWithValue
 import it.facile.form.ui.PageFragment
+import it.facile.form.ui.pathTo
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.PageViewModel
 import rx.Observable
@@ -18,16 +19,20 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
     private val valueChangesSubject = PublishSubject.create<FieldPathWithValue>()
 
     override fun getItem(position: Int): Fragment {
-        val pageFragment = PageFragment.newInstance(position)
+        val pageFragment = PageFragment.newInstance()
         pageFragments.put(position, pageFragment)
-        return pageFragments[position]!!
+        return pageFragment
     }
 
     override fun getCount(): Int = pageViewModels.size
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
         val pageFragment = super.instantiateItem(container, position) as PageFragment
-        pageFragment.observeValueChanges().subscribe(valueChangesSubject)
+        pageFragment.sectionViewModels = pageViewModels[position].sections
+        pageFragment
+                .observeValueChanges()
+                .map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, position) pathTo it.second }
+                .subscribe(valueChangesSubject)
         return pageFragment
     }
 

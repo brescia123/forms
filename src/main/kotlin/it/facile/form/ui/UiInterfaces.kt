@@ -64,7 +64,3 @@ interface ViewHolderFactory {
                          valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
                          customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>): RecyclerView.ViewHolder
 }
-
-interface SectionViewModelProvider {
-    fun getSectionViewModels(index: Int): List<SectionViewModel>
-}
