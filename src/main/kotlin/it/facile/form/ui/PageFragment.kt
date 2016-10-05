@@ -11,9 +11,10 @@ import it.facile.form.R
 import it.facile.form.logD
 import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.viewmodel.FieldPath
-import it.facile.form.ui.viewmodel.FieldViewModel
-import it.facile.form.ui.viewmodel.SectionViewModel
+import it.facile.form.ui.viewmodel.PageViewModel
 import kotlinx.android.synthetic.main.fragment_page.*
+import rx.Observable
+import rx.subjects.PublishSubject
 
 /**
  * A simple [Fragment] subclass.
@@ -23,11 +24,16 @@ import kotlinx.android.synthetic.main.fragment_page.*
 class PageFragment : Fragment() {
 
     private val pageIndex by lazy { arguments.getInt(PAGE_INDEX) }
-    private val sectionViewModels by lazy { activity.asSectionViewModelProviderOrThrow().getSectionViewModels(pageIndex!!) }
+    private val sectionViewModels by lazy { activity.asSectionViewModelProviderOrThrow().getSectionViewModels(pageIndex) }
     private val sectionsAdapter by lazy { SectionsAdapter(sectionViewModels) }
+    private val valueChangesSubject = PublishSubject.create<FieldPathWithValue>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sectionsAdapter
+                .observeValueChanges()
+                .map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, pageIndex) pathTo it.second }
+                .subscribe(valueChangesSubject)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -37,14 +43,6 @@ class PageFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         formRecyclerView.adapter = sectionsAdapter
         formRecyclerView.setHasFixedSize(true)
-
-        val parent = activity
-        parent.asPageValueChangesObserverOrThrow()
-                .registerPageValueChangesObservable((sectionsAdapter.observeValueChanges()
-                        .map {
-                            FieldPath(it.first.fieldIndex, it.first.sectionIndex, pageIndex) pathTo it.second
-                        }))
-
     }
 
     /**
@@ -57,6 +55,7 @@ class PageFragment : Fragment() {
         sectionsAdapter.updateField(path, sectionViewModel)
     }
 
+    fun observeValueChanges(): Observable<FieldPathWithValue> = valueChangesSubject.asObservable()
 
     fun checkErrors() {
         formRecyclerView.clearFocus()
@@ -95,14 +94,6 @@ class PageFragment : Fragment() {
             } else {
                 throw RuntimeException(this.toString()
                         + " must implement SectionViewModelProvider")
-            }
-
-    fun FragmentActivity.asPageValueChangesObserverOrThrow(): PageValueChangesObserver =
-            if (this is PageValueChangesObserver) {
-                this
-            } else {
-                throw RuntimeException(this.toString()
-                        + " must implement PageValueChangesObserver")
             }
 }
 

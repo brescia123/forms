@@ -68,6 +68,3 @@ interface ViewHolderFactory {
 interface SectionViewModelProvider {
     fun getSectionViewModels(index: Int): List<SectionViewModel>
 }
-interface PageValueChangesObserver {
-    fun registerPageValueChangesObservable(observable: Observable<FieldPathWithValue>)
-}

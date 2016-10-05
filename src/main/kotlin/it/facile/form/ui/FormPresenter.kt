@@ -2,7 +2,6 @@ package it.facile.form.ui
 
 import it.facile.form.logE
 import it.facile.form.model.models.FormModel
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
@@ -34,13 +33,5 @@ class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
     override fun detach() {
         super.detach()
         subscriptions.clear()
-    }
-
-    fun registerValueChangesObservable(observable: Observable<FieldPathWithValue>) {
-        // Observe values from view (FieldPathValue)
-        subscriptions.add(
-                observable.retry().subscribe(
-                        { formModel.notifyValueChanged(it.path, it.value) },
-                        { logE(it.message) }))
     }
 }
