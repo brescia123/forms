@@ -13,13 +13,19 @@ class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
         super.attach(view)
         view.init(formModel.pages.map { it.buildPageViewModel(formModel.storage) })  // Init view with viewModels
 
-        // Observe paths from model (FieldPath)
+        // Observe values from view (FieldPathValue) and notify new values to the model
+        subscriptions.add(
+                view.observeValueChanges().retry().subscribe(
+                        { formModel.notifyValueChanged(it.path, it.value) },
+                        { logE(it.message) }))
+
+
+        // Observe paths from model (FieldPath) and update the View
         subscriptions.add(
                 formModel.observeChanges().subscribe(
                         {
-                            val fieldViewModel = formModel.getField(it).buildFieldViewModel(formModel.storage)
-                            val sectionViewModel = formModel.getSection(it).buildSectionViewModel(formModel.storage)
-                            view.updateField(it, fieldViewModel, sectionViewModel)
+                            val pageViewModel = formModel.getPage(it).buildPageViewModel(formModel.storage)
+                            view.updateField(it, pageViewModel)
                         },
                         { logE(it.message) }))
 

@@ -22,6 +22,7 @@ interface View {
 interface FormView : View {
     fun init(pageViewModels: List<PageViewModel>)
     fun updateField(path: FieldPath,
-                    viewModel: FieldViewModel,
-                    sectionViewModel: SectionViewModel)
+                    pageViewModel: PageViewModel)
+
+    fun observeValueChanges(): Observable<FieldPathWithValue>
 }

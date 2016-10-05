@@ -48,12 +48,13 @@ class PageFragment : Fragment() {
     }
 
     /**
-     * Updates the [FieldViewModel] at the given position taking care of notifying the changes when
-     * appropriate. It also need the [SectionViewModel] of the section containing it to be able to draw
-     * the section header correctly
+     * Updates the page and the section containing the field at the given [FieldPath] using
+     * the provided [PageViewModel].
      */
-    fun updateField(path: FieldPath, viewModel: FieldViewModel, sectionViewModel: SectionViewModel) {
-        sectionsAdapter.updateField(path, viewModel, sectionViewModel)
+    fun updateField(path: FieldPath, pageViewModel: PageViewModel) {
+        //TODO: use pageViewModel.title
+        val sectionViewModel = pageViewModel.sections[path.sectionIndex]
+        sectionsAdapter.updateField(path, sectionViewModel)
     }
 
 

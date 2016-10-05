@@ -7,12 +7,8 @@ import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.viewmodel.FieldViewTypeFactory
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderFactory
-import it.facile.form.ui.viewmodel.FieldPath
-import it.facile.form.ui.viewmodel.FieldPathSection
-import it.facile.form.ui.viewmodel.FieldViewModel
-import it.facile.form.ui.viewmodel.SectionViewModel
+import it.facile.form.ui.viewmodel.*
 import rx.Observable
 import java.util.*
 
@@ -39,12 +35,12 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
     }
 
     /**
-     * Updates the [FieldViewModel] at the given position taking care of notifying the changes when
-     * appropriate. It also need the [SectionViewModel] of the section containing it to be able to draw
-     * the section header correctly
+     * Updates the field at the given [FieldPath] taking care of notifying the changes when
+     * appropriate using the provided [SectionViewModel].
      */
-    fun updateField(path: FieldPath, viewModel: FieldViewModel, sectionViewModel: SectionViewModel) {
+    fun updateField(path: FieldPath, sectionViewModel: SectionViewModel) {
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
+        val viewModel = sectionViewModel.fields[path.fieldIndex]
         val oldViewModel = fieldsAdapter.getViewModel(absolutePosition)
         logD("Position $absolutePosition: new fieldViewModel update request:\n" +
                 "old: $oldViewModel\n" +
