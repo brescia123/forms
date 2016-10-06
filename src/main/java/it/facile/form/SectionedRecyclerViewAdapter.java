@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
+import it.facile.form.ui.WithOriginalHeight;
+
+public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implements WithOriginalHeight {
 
     private static final int SECTION_HEADER_VIEW_TYPE = 0;
     private static final int SECTION_FIRST_HEADER_VIEW_TYPE = 1;
 
     private boolean valid = true;
     private int sectionLayout;
+    private int originalHeight;
     private Integer sectionFirstLayout = null;
     private SparseArray<PositionAwareSectionViewModel> awareSections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
@@ -64,6 +67,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == SECTION_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(sectionLayout, parent, false);
+            setOriginalHeight(v.getLayoutParams().height);
             return new SectionViewHolder(v, R.id.title);
         } else if (viewType == SECTION_FIRST_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
@@ -149,6 +153,16 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public void setAwareSection(PositionAwareSectionViewModel sectionViewModel) {
         awareSections.put(sectionViewModel.getSectionedPosition(), sectionViewModel);
+    }
+
+    @Override
+    public int getOriginalHeight() {
+        return originalHeight;
+    }
+
+    @Override
+    public void setOriginalHeight(int i) {
+        originalHeight = i;
     }
 
     private class SectionViewHolder extends RecyclerView.ViewHolder {
