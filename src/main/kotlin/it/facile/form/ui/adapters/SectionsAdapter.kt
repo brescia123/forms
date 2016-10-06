@@ -1,20 +1,22 @@
 package it.facile.form.ui.adapters
 
 import android.support.v7.widget.RecyclerView
-import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapter
 import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.viewmodel.*
+import it.facile.form.ui.viewmodel.FieldPath
+import it.facile.form.ui.viewmodel.FieldPathSection
+import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 import java.util.*
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
                       fieldsLayouts: FieldsLayouts,
                       customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap())
-: SectionedRecyclerViewAdapter(R.layout.form_section_header, R.layout.form_section_first_header) {
+: SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeader, fieldsLayouts.firstSectionHeader) {
     private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
