@@ -13,6 +13,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class PagesAdapter(val pageViewModels: List<PageViewModel>,
+                   val fieldsLayouts: FieldsLayouts,
                    fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     private val pageFragments: MutableMap<Int, PageFragment> = mutableMapOf()
@@ -29,6 +30,7 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
         val pageFragment = super.instantiateItem(container, position) as PageFragment
         pageFragment.sectionViewModels = pageViewModels[position].sections
+        pageFragment.fieldsLayouts = fieldsLayouts
         pageFragment
                 .observeValueChanges()
                 .map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, position) pathTo it.second }

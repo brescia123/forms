@@ -2,13 +2,9 @@ package it.facile.form.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
-import it.facile.form.ui.viewmodel.SectionViewModel
-import rx.Observable
-import rx.subjects.PublishSubject
 
 /** Represent a Field that can show an error state */
 interface CanShowError {
@@ -59,8 +55,5 @@ interface ViewTypeFactory {
 }
 
 interface ViewHolderFactory {
-    fun createViewHolder(viewType: Int,
-                         v: View,
-                         valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
-                         customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>): RecyclerView.ViewHolder
+    fun createViewHolder(viewType: Int, v: View): RecyclerView.ViewHolder
 }

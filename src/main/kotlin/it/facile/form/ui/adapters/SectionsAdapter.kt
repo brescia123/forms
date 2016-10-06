@@ -7,12 +7,12 @@ import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderFactory
 import it.facile.form.ui.viewmodel.*
 import rx.Observable
 import java.util.*
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
+                      fieldsLayouts: FieldsLayouts,
                       customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap())
 : SectionedRecyclerViewAdapter(R.layout.form_section_header, R.layout.form_section_first_header) {
     private val fieldsAdapter: FieldsAdapter
@@ -23,8 +23,7 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
         val fieldViewModels = sectionViewModels.listAllFieldsViewModel()
         fieldsAdapter = FieldsAdapter(fieldViewModels,
                 customPickerActions,
-                FieldViewTypeFactory(),
-                FieldViewHolderFactory())
+                fieldsLayouts)
         this.adapter = fieldsAdapter
     }
 

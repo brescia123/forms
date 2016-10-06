@@ -6,28 +6,25 @@ import android.view.ViewGroup
 import it.facile.form.model.CustomPickerId
 import it.facile.form.not
 import it.facile.form.storage.FieldValue
-import it.facile.form.ui.ViewTypeFactory
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderBase
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderFactory
 import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewTypeFactory
 import rx.Observable
 import rx.subjects.PublishSubject
 
 class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
-                    val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
-                    val viewTypeFactory: ViewTypeFactory,
-                    val fieldViewHolderFactory: FieldViewHolderFactory)
+                    customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
+                    fieldsLayouts: FieldsLayouts)
 : RecyclerView.Adapter<FieldViewHolderBase>() {
 
     private var errorsShouldBeVisible = false
     private val valueChangesSubject = PublishSubject.create<Pair<Int, FieldValue>>()
+    private val fieldViewHolderFactory = FieldViewHolderFactory(valueChangesSubject, customPickerActions, fieldsLayouts)
+    private val viewTypeFactory = FieldViewTypeFactory(fieldsLayouts)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolderBase =
-            fieldViewHolderFactory.createViewHolder(
-                    viewType,
-                    LayoutInflater.from(parent.context).inflate(viewType, parent, false),
-                    valueChangesSubject,
-                    customPickerActions)
+            fieldViewHolderFactory.createViewHolder(viewType, LayoutInflater.from(parent.context).inflate(viewType, parent, false))
 
     override fun onBindViewHolder(holder: FieldViewHolderBase, position: Int) =
             holder.bind(viewModels[position], position, errorsShouldBeVisible)

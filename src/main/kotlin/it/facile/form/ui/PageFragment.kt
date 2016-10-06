@@ -1,6 +1,7 @@
 package it.facile.form.ui
 
 import android.os.Bundle
+
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import it.facile.form.R
 import it.facile.form.logD
 import it.facile.form.storage.FieldValue
+import it.facile.form.ui.adapters.FieldsLayouts
 import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
@@ -17,7 +19,6 @@ import it.facile.form.ui.viewmodel.SectionViewModel
 import kotlinx.android.synthetic.main.fragment_page.*
 import rx.Observable
 import rx.subjects.PublishSubject
-
 /**
  * A simple [Fragment] subclass.
  * Use the [PageFragment.newInstance] factory method to
@@ -25,7 +26,8 @@ import rx.subjects.PublishSubject
  */
 class PageFragment : Fragment() {
 
-    var sectionViewModels: List<SectionViewModel>? = null
+    var sectionViewModels: List<SectionViewModel> = emptyList()
+    var fieldsLayouts: FieldsLayouts = FieldsLayouts()
     private var sectionsAdapter: SectionsAdapter? = null
     private val valueChangesSubject = PublishSubject.create<Pair<FieldPathSection, FieldValue>>()
 
@@ -37,15 +39,15 @@ class PageFragment : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater?.inflate(R.layout.fragment_page, container, false)
 
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         sectionViewModels?.let {
-            sectionsAdapter = SectionsAdapter(it)
+            sectionsAdapter = SectionsAdapter(it, fieldsLayouts)
             sectionsAdapter?.observeValueChanges()?.subscribe(valueChangesSubject)
             formRecyclerView.adapter = sectionsAdapter
             formRecyclerView.setHasFixedSize(true)
         }
     }
-
 
     /**
      * Updates the page and the section containing the field at the given [FieldPath] using
@@ -59,6 +61,7 @@ class PageFragment : Fragment() {
 
     fun observeValueChanges(): Observable<Pair<FieldPathSection, FieldValue>> = valueChangesSubject.asObservable()
 
+
     fun checkErrors() {
         sectionsAdapter?.let {
             formRecyclerView.clearFocus()
@@ -70,8 +73,6 @@ class PageFragment : Fragment() {
             if (!it.hasErrors()) Snackbar.make(mainLayout, "No errors!", Snackbar.LENGTH_SHORT).show()
         }
     }
-
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -82,6 +83,7 @@ class PageFragment : Fragment() {
         fun newInstance(): PageFragment {
             return PageFragment()
         }
+
     }
 }
 

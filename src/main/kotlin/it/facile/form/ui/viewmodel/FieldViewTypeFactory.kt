@@ -2,16 +2,18 @@ package it.facile.form.ui.viewmodel
 
 import it.facile.form.R
 import it.facile.form.ui.ViewTypeFactory
+import it.facile.form.ui.adapters.FieldsLayouts
+import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
 
-class FieldViewTypeFactory : ViewTypeFactory {
-    override fun viewType(style: FieldViewModelStyle.Empty) = R.layout.form_field_empty
-    override fun viewType(style: FieldViewModelStyle.SimpleText) = R.layout.form_field_text
-    override fun viewType(style: FieldViewModelStyle.InputText) = R.layout.form_field_input_text
-    override fun viewType(style: FieldViewModelStyle.Checkbox) = R.layout.form_field_checkbox
-    override fun viewType(style: FieldViewModelStyle.Toggle) = R.layout.form_field_toggle
-    override fun viewType(style: FieldViewModelStyle.CustomPicker) = R.layout.form_field_text
-    override fun viewType(style: FieldViewModelStyle.DatePicker) = R.layout.form_field_text
-    override fun viewType(style: FieldViewModelStyle.Picker) = R.layout.form_field_text
-    override fun viewType(style: FieldViewModelStyle.ExceptionText) = R.layout.form_field_exception_text
-    override fun viewType(style: FieldViewModelStyle.Loading) = R.layout.form_field_loading
+class FieldViewTypeFactory(val fieldsLayouts: FieldsLayouts) : ViewTypeFactory {
+    override fun viewType(style: Empty) = fieldsLayouts.empty
+    override fun viewType(style: SimpleText) = fieldsLayouts.text
+    override fun viewType(style: InputText) = fieldsLayouts.inputText
+    override fun viewType(style: Checkbox) = fieldsLayouts.checkBox
+    override fun viewType(style: Toggle) = fieldsLayouts.toggle
+    override fun viewType(style: CustomPicker) = fieldsLayouts.text
+    override fun viewType(style: DatePicker) = fieldsLayouts.text
+    override fun viewType(style: Picker) = fieldsLayouts.text
+    override fun viewType(style: ExceptionText) = fieldsLayouts.exceptionText
+    override fun viewType(style: Loading) = fieldsLayouts.loading
 }
