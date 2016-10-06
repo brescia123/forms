@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="@dimen/field_height_big"
                 android:orientation="vertical"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"

@@ -1,7 +1,6 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
-import it.facile.form.R
 import it.facile.form.gone
 import it.facile.form.show
 import it.facile.form.storage.FieldValue
@@ -16,7 +15,6 @@ import rx.subjects.PublishSubject
 class FieldViewHolderToggle(itemView: View,
                             private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
         FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError {
-
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
@@ -31,10 +29,6 @@ class FieldViewHolderToggle(itemView: View,
                 itemView.setOnClickListener { view -> toggleView.isChecked = !toggleView.isChecked }
             }
         }
-    }
-
-    override fun getHeight(): Int {
-        return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
     }
 
     override fun notifyNewValue(position: Int, newValue: FieldValue) {

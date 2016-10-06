@@ -18,19 +18,22 @@ interface CanNotifyNewValues {
     fun notifyNewValue(position: Int, newValue: FieldValue)
 }
 
+interface WithOriginalHeight {
+    var originalHeight: Int
+}
+
+
 /** Represent a Field that can be hidden by reducing its height to 0 */
 interface CanBeHidden {
-    fun hide(itemView: View, isHidden: Boolean) {
-        val param = itemView.layoutParams as RecyclerView.LayoutParams
+    fun hide(itemView: View, originalHeight: Int, isHidden: Boolean) {
+        val param = itemView.layoutParams
         if (isHidden) {
             param.height = 0
         } else {
-            param.height = getHeight()
+            param.height = originalHeight
         }
         itemView.layoutParams = param
     }
-
-    fun getHeight(): Int
 }
 
 interface ViewModel {

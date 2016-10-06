@@ -64,8 +64,6 @@ class FieldViewHolderText(itemView: View,
         }
     }
 
-    override fun getHeight(): Int = itemView.resources.getDimension(R.dimen.field_height_big).toInt()
-
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
             //itemView.textValue.hide()

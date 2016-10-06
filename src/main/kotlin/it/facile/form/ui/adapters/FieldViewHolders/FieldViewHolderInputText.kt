@@ -4,7 +4,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import it.facile.form.R
 import it.facile.form.RxTextChangedWrapper
 import it.facile.form.logD
 import it.facile.form.logE
@@ -74,10 +73,6 @@ class FieldViewHolderInputText(itemView: View,
                         { throwable -> logE(throwable.message) })
             }
         }
-    }
-
-    override fun getHeight(): Int {
-        return itemView.resources.getDimension(R.dimen.field_height_input_text).toInt()
     }
 
     override fun notifyNewValue(position: Int, newValue: FieldValue) {

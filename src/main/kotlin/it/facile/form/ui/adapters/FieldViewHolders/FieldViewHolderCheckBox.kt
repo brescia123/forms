@@ -1,7 +1,6 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
-import it.facile.form.R
 import it.facile.form.gone
 import it.facile.form.show
 import it.facile.form.storage.FieldValue
@@ -11,13 +10,11 @@ import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
-import kotlinx.android.synthetic.main.form_field_toggle.view.*
 import rx.subjects.PublishSubject
 
 class FieldViewHolderCheckBox(itemView: View,
                               private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
         FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError {
-
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
@@ -32,10 +29,6 @@ class FieldViewHolderCheckBox(itemView: View,
                 itemView.setOnClickListener { view -> checkBoxValue.isChecked = !checkBoxValue.isChecked }
             }
         }
-    }
-
-    override fun getHeight(): Int {
-        return itemView.resources.getDimension(R.dimen.field_height_medium).toInt()
     }
 
     override fun notifyNewValue(position: Int, newValue: FieldValue) {
