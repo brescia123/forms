@@ -13,7 +13,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class PagesAdapter(val pageViewModels: List<PageViewModel>,
-                   val fieldsLayouts: FieldsLayouts,
+                   val fieldsLayouts: FieldsLayouts = FieldsLayouts(),
                    fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     private val pageFragments: MutableMap<Int, PageFragment> = mutableMapOf()
