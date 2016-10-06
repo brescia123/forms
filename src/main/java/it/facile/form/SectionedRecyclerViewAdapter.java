@@ -67,7 +67,6 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == SECTION_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(sectionLayout, parent, false);
-            setOriginalHeight(v.getLayoutParams().height);
             return new SectionViewHolder(v, R.id.title);
         } else if (viewType == SECTION_FIRST_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
@@ -171,6 +170,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
         public SectionViewHolder(View itemView, int titleResourceId) {
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(titleResourceId);
+            setOriginalHeight(itemView.getLayoutParams().height);
         }
 
         public void bind(PositionAwareSectionViewModel sectionViewModel) {
@@ -187,7 +187,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
         public int getHeight() {
             return (int) (titleTextView.getText().length() == 0
                                 ? itemView.getResources().getDimension(R.dimen.section_height_small)
-                                : itemView.getResources().getDimension(R.dimen.section_height_medium));
+                                : getOriginalHeight());
         }
     }
 
