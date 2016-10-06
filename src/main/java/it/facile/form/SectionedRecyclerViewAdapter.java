@@ -19,12 +19,8 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter {
     private SparseArray<PositionAwareSectionViewModel> awareSections = new SparseArray<>();
     private RecyclerView.Adapter adapter;
 
-    public SectionedRecyclerViewAdapter(@LayoutRes int sectionLayout) {
-        this.sectionLayout = sectionLayout;
-    }
-
     public SectionedRecyclerViewAdapter(@LayoutRes int sectionLayout,
-                                        @LayoutRes int sectionFirstLayout) {
+                                        @LayoutRes Integer sectionFirstLayout) {
         this.sectionLayout = sectionLayout;
         this.sectionFirstLayout = sectionFirstLayout;
     }

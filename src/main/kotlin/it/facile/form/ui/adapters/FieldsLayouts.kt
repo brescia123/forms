@@ -9,5 +9,4 @@ data class FieldsLayouts(val empty: Int = R.layout.form_field_empty,
                          val toggle: Int = R.layout.form_field_toggle,
                          val exceptionText: Int = R.layout.form_field_exception_text,
                          val loading: Int = R.layout.form_field_loading,
-                         val firstSectionHeader: Int = R.layout.form_section_first_header,
-                         val sectionHeader: Int = R.layout.form_section_header)
+                         val sectionHeaders: Pair<Int, Int?> = R.layout.form_section_first_header to R.layout.form_section_first_header)

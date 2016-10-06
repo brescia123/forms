@@ -16,7 +16,7 @@ import java.util.*
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
                       fieldsLayouts: FieldsLayouts,
                       customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap())
-: SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeader, fieldsLayouts.firstSectionHeader) {
+: SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeaders.first, fieldsLayouts.sectionHeaders.second) {
     private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
 
