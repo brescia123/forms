@@ -2,7 +2,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
 import it.facile.form.gone
-import it.facile.form.show
+import it.facile.form.visible
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
@@ -37,7 +37,7 @@ class FieldViewHolderToggle(itemView: View,
 
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
-            itemView.toggleImageError.show()
+            itemView.toggleImageError.visible()
         } else {
             itemView.toggleImageError.gone()
         }

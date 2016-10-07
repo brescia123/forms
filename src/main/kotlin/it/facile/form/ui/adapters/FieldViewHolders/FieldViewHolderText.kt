@@ -67,10 +67,10 @@ class FieldViewHolderText(itemView: View,
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
             itemView.textValue.gone()
-            itemView.textError.show()
-            itemView.imageError.show()
+            itemView.textError.visible()
+            itemView.imageError.visible()
         } else {
-            itemView.textValue.show()
+            itemView.textValue.visible()
             itemView.textError.gone()
             itemView.imageError.gone()
         }

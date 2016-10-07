@@ -2,13 +2,13 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
 import it.facile.form.gone
-import it.facile.form.show
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
+import it.facile.form.visible
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
 import rx.subjects.PublishSubject
 
@@ -37,7 +37,7 @@ class FieldViewHolderCheckBox(itemView: View,
 
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
-            itemView.checkboxImageError.show()
+            itemView.checkboxImageError.visible()
         } else {
             itemView.checkboxImageError.gone()
         }

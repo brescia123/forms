@@ -1,5 +1,7 @@
 package it.facile.form
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
@@ -12,6 +14,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import it.facile.form.storage.FieldValue
+import it.facile.form.ui.CanBeHidden
 import rx.Single
 import java.text.DateFormat
 import java.util.*
@@ -49,6 +52,10 @@ inline fun <reified T : Any> T.logV(text: Any?) {
 
 inline fun <reified T : Any> T.logW(text: Any?) {
     Log.w(T::class.java.simpleName, text.toString())
+}
+
+fun <T> T.logWW(text: Any?) where T : CanBeHidden, T : Cloneable {
+
 }
 
 
@@ -90,16 +97,47 @@ fun Date.format(formatter: DateFormat): String {
 
 /* ---------- View extensions utilities ---------- */
 
-fun View.show() {
-    visibility = View.VISIBLE
+fun View.visible(animate: Boolean = false) {
+    if (animate) {
+        alpha = 0.0f
+        visibility = View.VISIBLE
+        animate()
+                .alpha(1.0f)
+                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        visibility = View.VISIBLE
+                    }
+                })
+    }
+    else visibility = View.VISIBLE
 }
 
-fun View.hide() {
-    visibility = View.INVISIBLE
+fun View.invisible(animate: Boolean = false) {
+    if (animate) animate()
+            .alpha(0.0f)
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    visibility = View.INVISIBLE
+                }
+            })
+    else visibility = View.INVISIBLE
 }
 
-fun View.gone() {
-    visibility = View.GONE
+fun View.gone(animate: Boolean = false) {
+    if (animate) animate()
+            .alpha(0.0f)
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    visibility = View.GONE
+                }
+            })
+    else visibility = View.GONE
 }
 
 
