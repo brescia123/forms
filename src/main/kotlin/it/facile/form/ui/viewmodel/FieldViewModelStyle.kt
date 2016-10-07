@@ -1,6 +1,7 @@
 package it.facile.form.ui.viewmodel
 
 import it.facile.form.model.CustomPickerId
+import it.facile.form.model.InputTextType
 import it.facile.form.storage.DescribableWithKey
 import it.facile.form.ui.ViewTypeFactory
 import it.facile.form.ui.Visitable
@@ -11,7 +12,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
     object Empty : FieldViewModelStyle("Empty") { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class ExceptionText(val text: String) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class SimpleText(val text: String) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class InputText(val text: String) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
+    class InputText(val text: String, val inputTextType: InputTextType) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle(dateText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
@@ -28,6 +29,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
             is ExceptionText -> other is ExceptionText
             is SimpleText -> other is SimpleText && other.text == text
             is InputText -> other is InputText && other.text == text
+                    && other.inputTextType == inputTextType
             is Checkbox -> other is Checkbox && other.bool == bool
             is Toggle -> other is Toggle && other.bool == bool
             is CustomPicker -> other is CustomPicker

@@ -49,6 +49,18 @@ abstract class FieldRule() {
     abstract fun observedKeys(): List<WithKey>
 }
 
+interface FieldInputMode {
+    val inputTextType: InputTextType
+}
+
+enum class InputTextType {
+    TEXT,
+    CAP_WORDS,
+    EMAIL,
+    PHONE,
+    NUMBER
+}
+
 interface WithKey {
     val key: String
 }
@@ -61,8 +73,7 @@ class KeyReader(override val key: String, private val storage: FormStorage) : Wi
 
     /** @see [FormStorage.isHidden] */
     fun isHidden(): Boolean = storage.isHidden(key)
-
     /** @see [FormStorage.getPossibleValues] */
     fun getPossibleValues(): FieldPossibleValues? = storage.getPossibleValues(key)
-}
 
+}
