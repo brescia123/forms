@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="inputLabel"/>
+    <item type="id" name="inputErrorText"/>
+    <item type="id" name="inputErrorImage"/>
+    <item type="id" name="inputEditText"/>
+</resources>
