@@ -45,10 +45,11 @@ Last but not least you have to instantiate a `FormPresenter` passing it the Mode
 In order to use different layouts for fields you have to pass to `PagesAdapter` (or `SectionsAdapter` if you have
 a single page) a `FieldsLayouts`. Using Kotlin's named parameters you will be able to provide a layout
 id only for the fields that you want to customize:
-```
-FieldsLayouts(
+```kotlin
+val fieldsLayouts = FieldsLayouts(
             text = R.layout.custom_text_layout,
             checkBox= R.layout.custom_checkbox_layout)
+val adapter = PagesAdapter(pageViewModels, fieldsLayouts, supportFragmentManager)
 ```
 The only rule to follow when implementing custom layouts is that they should include a predefined set
 of views with particular ids.
