@@ -1,6 +1,5 @@
 package it.facile.form.storage
 
-import it.facile.form.storage.Entry
 import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldValue.Missing
@@ -83,6 +82,6 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
     private fun switchValueAtKey(fieldKey: String, value: Object) {
         val fieldPossibleValues = possibleValuesMap[fieldKey]
         if (fieldPossibleValues is Available)
-            putValue(fieldKey, Object(fieldPossibleValues.list[value.value.key]))
+            putValue(fieldKey, Object(fieldPossibleValues.list.filter { it.key == value.value.key }.first()) )
     }
 }
