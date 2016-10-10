@@ -64,10 +64,6 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
         setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
 
-        if(viewModel.style is InputText) {
-            viewModel.style.
-            return
-        }
 
         recyclerViews.map {
             if (isViewModelChanged or areErrorsVisible()) {
