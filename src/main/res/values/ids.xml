@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Text Field-->
-    <item type="id" name="textLabel"/>
-    <item type="id" name="textView"/>
-    <item type="id" name="textErrorText"/>
-    <item type="id" name="textErrorImage"/>
+    <item name="textLabel" type="id"/>
+    <item name="textView" type="id"/>
+    <item name="textErrorText" type="id"/>
+    <item name="textErrorImage" type="id"/>
 
     <!-- Input Text Field -->
-    <item type="id" name="inputValue"/>
+    <item name="inputValue" type="id"/>
 
-    <item type="id" name="inputLabel"/>
-    <item type="id" name="inputEditText"/>
-    <item type="id" name="inputErrorText"/>
-    <item type="id" name="inputErrorImage"/>
+    <item name="inputLabel" type="id"/>
+    <item name="inputEditText" type="id"/>
+    <item name="inputErrorText" type="id"/>
+    <item name="inputErrorImage" type="id"/>
 
     <!-- Toggle Field-->
-    <item type="id" name="toggleLabel"/>
-    <item type="id" name="toggleView"/>
-    <item type="id" name="toggleTextView"/>
-    <item type="id" name="toggleErrorImage"/>
+    <item name="toggleLabel" type="id"/>
+    <item name="toggleView" type="id"/>
+    <item name="toggleTextView" type="id"/>
+    <item name="toggleErrorImage" type="id"/>
 
     <!-- CheckBox Field -->
-    <item type="id" name="checkboxLabel"/>
-    <item type="id" name="checkboxView"/>
-    <item type="id" name="checkboxTextView"/>
-    <item type="id" name="checkboxErrorImage"/>
+    <item name="checkboxLabel" type="id"/>
+    <item name="checkboxView" type="id"/>
+    <item name="checkboxTextView" type="id"/>
+    <item name="checkboxErrorImage" type="id"/>
 
     <!-- Loading Field -->
-    <item type="id" name="loadingLabel"/>
-    <item type="id" name="loadingProgressBar"/>
+    <item name="loadingLabel" type="id"/>
+    <item name="loadingProgressBar" type="id"/>
 
     <!-- Exception Text Field -->
-    <item type="id" name="exceptionLabel"/>
-    <item type="id" name="exceptionTextView"/>
-    <item type="id" name="exceptionImage"/>
+    <item name="exceptionLabel" type="id"/>
+    <item name="exceptionTextView" type="id"/>
+    <item name="exceptionImage" type="id"/>
 
     <!-- Section Header -->
-    <item type="id" name="sectionTitle"/>
+    <item name="sectionTitle" type="id"/>
 
 </resources>

@@ -59,6 +59,7 @@ of views with particular ids.
 - `textView`
 - `textErrorText`
 - `textErrorImage`
+
 ##### Input Text Field
 The input type is a particular one, in the sense that if you use Android support `TextInputLayout` you have to
 specify only its id (the view has all the feature to display label, error and value at the same time):

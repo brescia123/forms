@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkboxErrorImage"
+        app:layout_constraintRight_toLeftOf="@id/checkboxErrorImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:text="Label"/>
@@ -35,7 +35,7 @@
         android:src="@drawable/ic_error_red"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkboxView"
+        app:layout_constraintRight_toLeftOf="@id/checkboxView"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"/>
@@ -58,7 +58,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkboxView"
+        app:layout_constraintRight_toLeftOf="@id/checkboxView"
         app:layout_constraintTop_toTopOf="parent"
         tools:textDescription="Text"/>
 

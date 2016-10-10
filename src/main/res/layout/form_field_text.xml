@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/textErrorImage"
+        app:layout_constraintRight_toLeftOf="@id/textErrorImage"
         tools:text="Label"/>
 
     <TextView
@@ -36,9 +36,9 @@
         android:textAppearance="@style/TextAppearance.FieldValue"
         android:visibility="visible"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/textLabel"
-        app:layout_constraintRight_toLeftOf="@+id/textErrorImage"
-        app:layout_constraintTop_toBottomOf="@+id/textLabel"
+        app:layout_constraintLeft_toLeftOf="@id/textLabel"
+        app:layout_constraintRight_toLeftOf="@id/textErrorImage"
+        app:layout_constraintTop_toBottomOf="@id/textLabel"
         tools:text="Value"/>
 
     <TextView
@@ -51,9 +51,9 @@
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.FieldValue.Error"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/textLabel"
-        app:layout_constraintRight_toLeftOf="@+id/textErrorImage"
-        app:layout_constraintTop_toBottomOf="@+id/textLabel"
+        app:layout_constraintLeft_toLeftOf="@id/textLabel"
+        app:layout_constraintRight_toLeftOf="@id/textErrorImage"
+        app:layout_constraintTop_toBottomOf="@id/textLabel"
         tools:text="Error"
         tools:visibility="visible"/>
 
