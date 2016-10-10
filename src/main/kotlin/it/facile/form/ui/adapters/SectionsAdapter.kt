@@ -9,6 +9,7 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
+import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 import java.util.*
@@ -56,22 +57,27 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
         } // Same view model
 
         val sectionIndex = absolutePosition.calculateSectionIndex()
-        val isSectionViewModelChanged = sectionViewModel != sectionViewModels[sectionIndex!!]
+        val isSectionTitleChanged = sectionViewModel.title != sectionViewModels[sectionIndex!!].title
         val isViewModelChanged = viewModel != oldViewModel
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
         setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
 
+        if(viewModel.style is InputText) {
+            viewModel.style.
+            return
+        }
+
         recyclerViews.map {
             if (isViewModelChanged or areErrorsVisible()) {
                 logD("Updating...")
                 if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
                     deferredNotifyItemChanged(sectionedPosition)
-                    if (isSectionViewModelChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
+                    if (isSectionTitleChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
                 } else {
                     notifyItemChanged(sectionedPosition)
-                    if (isSectionViewModelChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
+                    if (isSectionTitleChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
                 }
             } else {
                 logD("Not updating because viewModel is the same")
