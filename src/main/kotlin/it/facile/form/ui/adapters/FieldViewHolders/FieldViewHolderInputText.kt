@@ -15,7 +15,7 @@ import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
-import it.facile.form.ui.viewmodel.FieldViewModelStyle
+import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import rx.Subscription
 import rx.subjects.PublishSubject
@@ -36,8 +36,8 @@ class FieldViewHolderInputText(itemView: View,
         editText?.setOnKeyListener(null)
         subscription?.unsubscribe()
         when (style) {
-            is FieldViewModelStyle.InputText -> {
-                editText?.inputType = InputTextTypeToAndroidInputType(style.inputTextType)
+            is InputText -> {
+                if (isInputTypeChanged(style, editText)) editText?.inputType = style.inputTextType.toAndroidInputType()
                 // Listen for new values:
 
                 // If ENTER on keyboard tapped notify new value
@@ -98,6 +98,9 @@ class FieldViewHolderInputText(itemView: View,
     private fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
             viewModel.style.textDescription != editText?.text.toString()
 
+    private fun isInputTypeChanged(style: InputText, editText: EditText?) =
+            editText?.inputType != style.inputTextType.toAndroidInputType()
+
     private val hasInputValue by lazy { itemView.findViewById(R.id.inputValue) != null }
     private val hasErrorTextView by lazy { itemView.findViewById(R.id.inputErrorText) != null }
     private val hasErrorImageView by lazy { itemView.findViewById(R.id.inputErrorImage) != null }
@@ -125,12 +128,11 @@ class FieldViewHolderInputText(itemView: View,
         else errorImageView.invisible(true)
     }
 
-    private fun InputTextTypeToAndroidInputType(inputTextType: InputTextType) = when (inputTextType) {
+    fun InputTextType.toAndroidInputType() = when (this) {
         InputTextType.TEXT -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         InputTextType.CAP_WORDS -> InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         InputTextType.EMAIL -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         InputTextType.PHONE -> InputType.TYPE_CLASS_PHONE
         InputTextType.NUMBER -> InputType.TYPE_CLASS_NUMBER
     }
-
 }
