@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.view.ViewGroup
+import it.facile.form.model.CustomPickerId
+import it.facile.form.storage.FieldValue
 import it.facile.form.ui.FieldPathWithValue
 import it.facile.form.ui.PageFragment
 import it.facile.form.ui.pathTo
@@ -14,6 +16,7 @@ import rx.subjects.PublishSubject
 
 class PagesAdapter(val pageViewModels: List<PageViewModel>,
                    val fieldsLayouts: FieldsLayouts = FieldsLayouts(),
+                   val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
                    fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     private val pageFragments: MutableMap<Int, PageFragment> = mutableMapOf()
@@ -28,6 +31,7 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
         pageFragments.put(position, pageFragment)
         pageFragment.sectionViewModels = pageViewModels[position].sections
         pageFragment.fieldsLayouts = fieldsLayouts
+        pageFragment.customPickerActions = customPickerActions
         pageFragment
                 .observeValueChanges()
                 .map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, position) pathTo it.second }

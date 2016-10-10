@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import it.facile.form.R
 import it.facile.form.logD
+import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.adapters.FieldsLayouts
 import it.facile.form.ui.adapters.SectionsAdapter
@@ -19,6 +20,7 @@ import it.facile.form.ui.viewmodel.SectionViewModel
 import kotlinx.android.synthetic.main.fragment_page.*
 import rx.Observable
 import rx.subjects.PublishSubject
+
 /**
  * A simple [Fragment] subclass.
  * Use the [PageFragment.newInstance] factory method to
@@ -28,6 +30,7 @@ class PageFragment : Fragment() {
 
     var sectionViewModels: List<SectionViewModel> = emptyList()
     var fieldsLayouts: FieldsLayouts = FieldsLayouts()
+    var customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>? = null
     private var sectionsAdapter: SectionsAdapter? = null
     private val valueChangesSubject = PublishSubject.create<Pair<FieldPathSection, FieldValue>>()
 
@@ -41,12 +44,13 @@ class PageFragment : Fragment() {
 
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        sectionViewModels?.let {
-            sectionsAdapter = SectionsAdapter(it, fieldsLayouts)
-            sectionsAdapter?.observeValueChanges()?.subscribe(valueChangesSubject)
-            formRecyclerView.adapter = sectionsAdapter
-            formRecyclerView.setHasFixedSize(true)
-        }
+        sectionsAdapter = SectionsAdapter(
+                sectionViewModels = sectionViewModels,
+                fieldsLayouts = fieldsLayouts,
+                customPickerActions = customPickerActions ?: emptyMap())
+        sectionsAdapter?.observeValueChanges()?.subscribe(valueChangesSubject)
+        formRecyclerView.adapter = sectionsAdapter
+        formRecyclerView.setHasFixedSize(true)
     }
 
     /**
@@ -73,6 +77,7 @@ class PageFragment : Fragment() {
             if (!it.hasErrors()) Snackbar.make(mainLayout, "No errors!", Snackbar.LENGTH_SHORT).show()
         }
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
