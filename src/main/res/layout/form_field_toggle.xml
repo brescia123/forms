@@ -8,7 +8,7 @@
                                              android:orientation="vertical">
 
     <TextView
-        android:id="@+id/toggleLabel"
+        android:id="@id/toggleLabel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="16dp"
@@ -21,13 +21,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/toggleImageError"
+        app:layout_constraintRight_toLeftOf="@+id/toggleErrorImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:text="Label"/>
 
     <ImageView
-        android:id="@+id/toggleImageError"
+        android:id="@id/toggleErrorImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.v7.widget.SwitchCompat
-        android:id="@+id/toggleView"
+        android:id="@id/toggleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/toggleTextView"
+        android:id="@id/toggleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

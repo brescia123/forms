@@ -22,7 +22,7 @@
         tools:text="Label"/>
 
     <TextView
-        android:id="@+id/exceptionValue"
+        android:id="@id/exceptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
         android:textAppearance="@style/TextAppearance.FieldValue.Error"/>
 
     <ImageView
-        android:id="@+id/exceptionType"
+        android:id="@id/exceptionImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

@@ -12,7 +12,7 @@ class FieldViewHolderException(itemView: View) : FieldViewHolderBase(itemView), 
         itemView.exceptionLabel.text = viewModel.label
         val style = viewModel.style
         when (style) {
-            is FieldViewModelStyle.ExceptionText -> itemView.exceptionValue.text = style.text
+            is FieldViewModelStyle.ExceptionText -> itemView.exceptionTextView.text = style.text
         }
     }
 }

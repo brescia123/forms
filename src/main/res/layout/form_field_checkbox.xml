@@ -8,7 +8,7 @@
                                              android:orientation="vertical">
 
     <TextView
-        android:id="@+id/checkboxLabel"
+        android:id="@id/checkboxLabel"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
@@ -23,25 +23,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkboxImageError"
+        app:layout_constraintRight_toLeftOf="@+id/checkboxErrorImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:text="Label"/>
 
     <ImageView
-        android:id="@+id/checkboxImageError"
+        android:id="@id/checkboxErrorImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_error_red"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkBoxValue"
+        app:layout_constraintRight_toLeftOf="@+id/checkboxView"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"/>
 
     <CheckBox
-        android:id="@+id/checkBoxValue"
+        android:id="@id/checkboxView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -52,13 +52,13 @@
         />
 
     <TextView
-        android:id="@+id/checkboxTextView"
+        android:id="@id/checkboxTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/checkBoxValue"
+        app:layout_constraintRight_toLeftOf="@+id/checkboxView"
         app:layout_constraintTop_toTopOf="parent"
         tools:textDescription="Text"/>
 

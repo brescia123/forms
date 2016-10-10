@@ -22,7 +22,7 @@ class FieldViewHolderCheckBox(itemView: View,
         itemView.checkboxTextView.text = viewModel.style.textDescription
         when (style) {
             is FieldViewModelStyle.Checkbox -> {
-                val checkBoxValue = itemView.checkBoxValue
+                val checkBoxValue = itemView.checkboxView
                 checkBoxValue.setOnCheckedChangeListener(null)
                 checkBoxValue.isChecked = style.bool
                 checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
@@ -37,9 +37,9 @@ class FieldViewHolderCheckBox(itemView: View,
 
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
-            itemView.checkboxImageError.visible()
+            itemView.checkboxErrorImage.visible()
         } else {
-            itemView.checkboxImageError.gone()
+            itemView.checkboxErrorImage.gone()
         }
     }
 

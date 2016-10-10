@@ -25,8 +25,8 @@ class FieldViewHolderText(itemView: View,
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
         itemView.textLabel.text = viewModel.label
-        itemView.textValue.text = viewModel.style.textDescription
-        itemView.textError.text = viewModel.error
+        itemView.textView.text = viewModel.style.textDescription
+        itemView.textErrorText.text = viewModel.error
         itemView.setOnClickListener(null) // Remove old listener
         when (style) {
             is FieldViewModelStyle.CustomPicker -> {
@@ -66,18 +66,18 @@ class FieldViewHolderText(itemView: View,
 
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         if (show && viewModel.error != null) {
-            itemView.textValue.gone()
-            itemView.textError.visible()
-            itemView.imageError.visible()
+            itemView.textView.gone()
+            itemView.textErrorText.visible()
+            itemView.textErrorImage.visible()
         } else {
-            itemView.textValue.visible()
-            itemView.textError.gone()
-            itemView.imageError.gone()
+            itemView.textView.visible()
+            itemView.textErrorText.gone()
+            itemView.textErrorImage.gone()
         }
     }
 
     override fun isErrorOutdated(itemView: View, viewModel: FieldViewModel): Boolean =
-            itemView.textError.text.toString() != viewModel.error
+            itemView.textErrorText.text.toString() != viewModel.error
 
     override fun notifyNewValue(position: Int, newValue: FieldValue) {
         valueChangesSubject.onNext(position to newValue)

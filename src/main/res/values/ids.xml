@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Text Field-->
+    <item type="id" name="textLabel"/>
+    <item type="id" name="textView"/>
+    <item type="id" name="textErrorText"/>
+    <item type="id" name="textErrorImage"/>
+
+    <!-- Input Text Field -->
+    <item type="id" name="inputValue"/>
+
     <item type="id" name="inputLabel"/>
+    <item type="id" name="inputEditText"/>
     <item type="id" name="inputErrorText"/>
     <item type="id" name="inputErrorImage"/>
-    <item type="id" name="inputEditText"/>
+
+    <!-- Toggle Field-->
+    <item type="id" name="toggleLabel"/>
+    <item type="id" name="toggleView"/>
+    <item type="id" name="toggleTextView"/>
+    <item type="id" name="toggleErrorImage"/>
+
+    <!-- CheckBox Field -->
+    <item type="id" name="checkboxLabel"/>
+    <item type="id" name="checkboxView"/>
+    <item type="id" name="checkboxTextView"/>
+    <item type="id" name="checkboxErrorImage"/>
+
+    <!-- Loading Field -->
+    <item type="id" name="loadingLabel"/>
+    <item type="id" name="loadingProgressBar"/>
+
+    <!-- Exception Text Field -->
+    <item type="id" name="exceptionLabel"/>
+    <item type="id" name="exceptionTextView"/>
+    <item type="id" name="exceptionImage"/>
+
+    <!-- Section Header -->
+    <item type="id" name="sectionTitle"/>
+
 </resources>

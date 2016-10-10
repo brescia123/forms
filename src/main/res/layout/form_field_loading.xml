@@ -8,7 +8,7 @@
                                              android:orientation="vertical">
 
     <TextView
-        android:id="@+id/loadingLabel"
+        android:id="@id/loadingLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -23,7 +23,7 @@
         android:layout_marginLeft="16dp"/>
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@id/loadingProgressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
         android:layout_width="24dp"
         android:layout_height="24dp"

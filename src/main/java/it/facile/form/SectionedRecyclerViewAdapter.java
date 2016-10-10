@@ -67,11 +67,11 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == SECTION_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(sectionLayout, parent, false);
-            return new SectionViewHolder(v, R.id.title);
+            return new SectionViewHolder(v, R.id.sectionTitle);
         } else if (viewType == SECTION_FIRST_HEADER_VIEW_TYPE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
                     sectionFirstLayout != null ? sectionFirstLayout : sectionLayout, parent, false);
-            return new SectionViewHolder(v, R.id.title);
+            return new SectionViewHolder(v, R.id.sectionTitle);
         } else {
             return adapter.onCreateViewHolder(parent, viewType - 1);
         }
