@@ -19,6 +19,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import rx.Subscription
 import rx.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 class FieldViewHolderInputText(itemView: View,
                                private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
@@ -66,14 +67,16 @@ class FieldViewHolderInputText(itemView: View,
                 }
 
                 // If new char typed notify new value
-                subscription = RxTextChangedWrapper.wrap(editText, false)?.subscribe(
-                        { charSequence ->
-                            val p = position
-                            val text = editText?.text.toString()
-                            logD("Notify position=$p, val=$text cause new char entered")
-                            notifyNewValue(p, FieldValue.Text(text))
-                        },
-                        { throwable -> logE(throwable.message) })
+                subscription = RxTextChangedWrapper.wrap(editText, false)
+                        .debounce(300, TimeUnit.MILLISECONDS)
+                        .subscribe(
+                                { charSequence ->
+                                    val p = position
+                                    val text = editText?.text.toString()
+                                    logD("Notify position=$p, val=$text cause new char entered")
+                                    notifyNewValue(p, FieldValue.Text(text))
+                                },
+                                { throwable -> logE(throwable.message) })
             }
         }
     }
