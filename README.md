@@ -54,42 +54,42 @@ The only rule to follow when implementing custom layouts is that they should inc
 of views with particular ids.
 
 ##### Text Field
-- textLabel
-- textView
-- textErrorText
-- textErrorImage
+- `textLabel`
+- `textView`
+- `textErrorText`
+- `textErrorImage`
 ##### Input Text Field
 The input type is a particular one, in the sense that if you use Android support `TextInputLayout` you have to
 specify only its id (the view has all the feature to display label, error and value at the same time):
-- inputValue
+- `inputValue`
 
 If your are using a normal `EditText` and other views to show label, error text and error icon you have to specify the
 following ids:
-- inputLabel
-- inputEditText
-- inputErrorText
-- inputErrorImage
+- `inputLabel`
+- `inputEditText`
+- `inputErrorText`
+- `inputErrorImage`
 
 ##### CheckBox Field
-- checkboxLabel
-- checkboxView
-- checkboxTextView
-- checkboxErrorImage
+- `checkboxLabel`
+- `checkboxView`
+- `checkboxTextView`
+- `checkboxErrorImage`
 
 ##### Toggle Field
-- toggleLabel
-- toggleView
-- toggleTextView
-- toggleErrorImage
+- `toggleLabel`
+- `toggleView`
+- `toggleTextView`
+- `toggleErrorImage`
 
 ##### Exception
-- exceptionLabel
-- exceptionTextView
-- exceptionImage
+- `exceptionLabel`
+- `exceptionTextView`
+- `exceptionImage`
 
 ##### Loading
-- loadingLabel
-- loadingProgressBar
+- `loadingLabel`
+- `loadingProgressBar`
 
 ##### Section Header
-- sectionTitle
+- `sectionTitle`
