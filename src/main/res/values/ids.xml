@@ -35,6 +35,10 @@
     <item name="exceptionTextView" type="id"/>
     <item name="exceptionImage" type="id"/>
 
+    <!-- Action Field -->
+    <item name="actionLabel" type="id"/>
+    <item name="actionImage" type="id"/>
+
     <!-- Section Header -->
     <item name="sectionTitle" type="id"/>
 

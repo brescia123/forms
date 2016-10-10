@@ -55,6 +55,7 @@ interface ViewTypeFactory {
     fun viewType(style: Picker): Int
     fun viewType(style: ExceptionText): Int
     fun viewType(style: Loading): Int
+    fun viewType(style: Action): Int
 }
 
 interface ViewHolderFactory {
