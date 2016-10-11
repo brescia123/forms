@@ -8,7 +8,7 @@
     </style>
 
     <style name="TextAppearance.FieldValue.Error" parent="TextAppearance.FieldValue">
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@color/red_700</item>
     </style>
 
     <style name="TextAppearance.SectionHeader" parent="TextAppearance.AppCompat">
