@@ -4,7 +4,7 @@
                                              xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="match_parent"
                                              android:layout_height="@dimen/field_height_medium"
-                                             android:background="?attr/selectableItemBackground"
+                                             android:background="@drawable/form_field_background"
                                              android:orientation="vertical">
 
     <TextView
