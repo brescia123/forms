@@ -9,13 +9,12 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.FieldViewModel
-import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 import java.util.*
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
-                      fieldsLayouts: FieldsLayouts,
+                      fieldsLayouts: FieldsLayouts = FieldsLayouts(),
                       customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap())
 : SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeaders.first, fieldsLayouts.sectionHeaders.second) {
     private val fieldsAdapter: FieldsAdapter
