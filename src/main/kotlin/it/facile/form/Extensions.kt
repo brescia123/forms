@@ -98,6 +98,7 @@ fun Date.format(formatter: DateFormat): String {
 /* ---------- View extensions utilities ---------- */
 
 fun View.visible(animate: Boolean = false) {
+    if (visibility == View.VISIBLE) return
     if (animate) {
         alpha = 0.0f
         visibility = View.VISIBLE
@@ -115,6 +116,7 @@ fun View.visible(animate: Boolean = false) {
 }
 
 fun View.invisible(animate: Boolean = false) {
+    if (visibility == View.INVISIBLE) return
     if (animate) animate()
             .alpha(0.0f)
             .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
@@ -128,6 +130,7 @@ fun View.invisible(animate: Boolean = false) {
 }
 
 fun View.gone(animate: Boolean = false) {
+    if (visibility == View.GONE) return
     if (animate) animate()
             .alpha(0.0f)
             .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
