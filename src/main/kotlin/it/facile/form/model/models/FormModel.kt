@@ -26,19 +26,12 @@ data class FormModel(val storage: FormStorage,
     fun getField(path: FieldPath): FieldModel = pages[path.pageIndex].sections[path.sectionIndex].fields[path.fieldIndex]
 
     fun observeChanges(): Observable<FieldPath> = storage.observe()
-            .doOnNext { executeFieldAction(it.first, it.second) }
-            .flatMap {
-                val (path, userMade) = it
-                val observable1 = Observable.just(it)
-                val mutableIterable: MutableIterable<String> = interestedKeys[path] ?: mutableListOf()
-                val observable2 = Observable.from(mutableIterable.map { it to  userMade})
-                observable1.mergeWith(observable2)
-            }
-            .map { findFieldPathByKey(it.first) }
-            .flatMap { Observable.from(it) } // Emit for every FieldPath related to the field key
-            .doOnError { logE(it.message) }
+            .doOnNext { executeFieldAction(it.first, it.second) } // Execute all side effects actions related to the key
+            .map { it.first } // Get rid of userMade boolean information
+            .flatMap { Observable.just(it).mergeWith(Observable.from(interestedKeys[it] ?: emptyList())) } // Merge with interested keys
+            .flatMap { Observable.from(findFieldPathByKey(it)) } // Emit for every FieldPath associated to the field key
+            .doOnError { logE(it.message) } // Log errors
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
-            .map { it } // Used to deal with nullable Kotlin types in rxJava
 
     /** Notify the model of a field value change generated from the outside (that is a user made
      * change and not for the example one result of an field Action) */
