@@ -11,7 +11,7 @@ import rx.Observable
 import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     private val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+                     private val actions: HashMap<String, List<(FieldValue, FormStorage, Boolean) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
@@ -26,23 +26,26 @@ data class FormModel(val storage: FormStorage,
     fun getField(path: FieldPath): FieldModel = pages[path.pageIndex].sections[path.sectionIndex].fields[path.fieldIndex]
 
     fun observeChanges(): Observable<FieldPath> = storage.observe()
-            .filter { contains(it) } // Filter if the model does not contain the field key
-            .doOnNext { executeFieldAction(it) }
+            .doOnNext { executeFieldAction(it.first, it.second) }
             .flatMap {
+                val (path, userMade) = it
                 val observable1 = Observable.just(it)
-                val observable2 = Observable.from(interestedKeys[it] ?: emptyList())
+                val mutableIterable: MutableIterable<String> = interestedKeys[path] ?: mutableListOf()
+                val observable2 = Observable.from(mutableIterable.map { it to  userMade})
                 observable1.mergeWith(observable2)
             }
-            .map { findFieldPathByKey(it) }
+            .map { findFieldPathByKey(it.first) }
             .flatMap { Observable.from(it) } // Emit for every FieldPath related to the field key
             .doOnError { logE(it.message) }
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
             .map { it } // Used to deal with nullable Kotlin types in rxJava
 
+    /** Notify the model of a field value change generated from the outside (that is a user made
+     * change and not for the example one result of an field Action) */
     fun notifyValueChanged(path: FieldPath, value: FieldValue): Unit {
         if (not(contains(path))) return // The model does not contain the given path
         val key = findFieldModelByFieldPath(path).key
-        storage.putValue(key, value)
+        storage.putValue(key, value, true)
     }
 
     /** Type-safe builder method to add a page */
@@ -53,8 +56,8 @@ data class FormModel(val storage: FormStorage,
         return page
     }
 
-    private fun executeFieldAction(key: String) =
-            actions[key]?.forEach { it(storage.getValue(key), storage) }
+    private fun executeFieldAction(key: String, userMade: Boolean) =
+            actions[key]?.forEach { it(storage.getValue(key), storage, userMade) }
 
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
@@ -69,7 +72,7 @@ data class FormModel(val storage: FormStorage,
     private fun findFieldPathByKey(key: String): List<FieldPath> = FieldPath.buildForKey(key, this)
 
     private fun executeAllFieldsActions() {
-        fields().map { executeFieldAction(it.key) }
+        fields().map { executeFieldAction(it.key, false) }
     }
 
     private fun observeActionsKeys(): MutableMap<String, MutableList<String>> {
@@ -89,7 +92,7 @@ data class FormModel(val storage: FormStorage,
     }
 
     companion object {
-        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage, Boolean) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
             form.executeAllFieldsActions()
