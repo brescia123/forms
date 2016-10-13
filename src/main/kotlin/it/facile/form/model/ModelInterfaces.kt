@@ -41,12 +41,13 @@ interface FieldRulesValidator {
     }
 }
 
-abstract class FieldRule() {
-    abstract val errorMessage: String
+interface FieldRule {
+    val errorMessage: String
     /** Return if the value satisfies the rule and the error message to use if it doesn't */
-    abstract fun verify(value: FieldValue): Boolean
+    fun verify(value: FieldValue): Boolean
+
     /** Return a list of objects containing keys to be observed to validate the rule */
-    abstract fun observedKeys(): List<WithKey>
+    fun observedKeys(): List<WithKey>
 }
 
 interface FieldInputMode {
@@ -73,6 +74,7 @@ class KeyReader(override val key: String, private val storage: FormStorage) : Wi
 
     /** @see [FormStorage.isHidden] */
     fun isHidden(): Boolean = storage.isHidden(key)
+
     /** @see [FormStorage.getPossibleValues] */
     fun getPossibleValues(): FieldPossibleValues? = storage.getPossibleValues(key)
 

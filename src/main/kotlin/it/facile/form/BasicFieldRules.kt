@@ -5,7 +5,7 @@ import it.facile.form.model.KeyReader
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.Text
 
-class NotMissing(override val errorMessage: String = "Field should not be empty") : FieldRule() {
+class NotMissing(override val errorMessage: String = "Field should not be empty") : FieldRule {
     override fun verify(value: FieldValue) = when (value) {
         is FieldValue.Missing -> false
         is Text -> value.text.length > 0
@@ -15,7 +15,7 @@ class NotMissing(override val errorMessage: String = "Field should not be empty"
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
-class IsEmail(override val errorMessage: String = "Field should be a valid email") : FieldRule() {
+class IsEmail(override val errorMessage: String = "Field should be a valid email") : FieldRule {
     val emailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}\\@" +
             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
             "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+")
@@ -24,7 +24,7 @@ class IsEmail(override val errorMessage: String = "Field should be a valid email
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
-class IsCellularPhone(override val errorMessage: String = "Field should be a valid phone number") : FieldRule() {
+class IsCellularPhone(override val errorMessage: String = "Field should be a valid phone number") : FieldRule {
     val phoneETACSRegex = Regex("^3[0-9]{8}")
     val phoneGSMRegex = Regex("^3[0-9]{9}")
     override fun verify(value: FieldValue) =
@@ -33,7 +33,7 @@ class IsCellularPhone(override val errorMessage: String = "Field should be a val
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
-class IsName(override val errorMessage: String = "Field should be a valid name") : FieldRule() {
+class IsName(override val errorMessage: String = "Field should be a valid name") : FieldRule {
     val regex1 = Regex("(.)\\1\\1")
     val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE)
     val regex3 = Regex("^[a-zòàùèéìíóáúäëïöü\\ '\\-]+$", RegexOption.IGNORE_CASE)
@@ -47,7 +47,7 @@ class IsName(override val errorMessage: String = "Field should be a valid name")
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
-class ShouldBeTrue(override val errorMessage: String = "Field should be true") : FieldRule() {
+class ShouldBeTrue(override val errorMessage: String = "Field should be true") : FieldRule {
     override fun verify(value: FieldValue) = value.asBool()?.bool ?: false
     override fun observedKeys() = emptyList<KeyReader>()
 }
