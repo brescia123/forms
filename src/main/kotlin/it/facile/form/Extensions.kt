@@ -16,6 +16,8 @@ import android.widget.TextView
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeHidden
 import rx.Single
+import rx.Subscription
+import rx.subscriptions.CompositeSubscription
 import java.text.DateFormat
 import java.util.*
 
@@ -111,8 +113,7 @@ fun View.visible(animate: Boolean = false) {
                         visibility = View.VISIBLE
                     }
                 })
-    }
-    else visibility = View.VISIBLE
+    } else visibility = View.VISIBLE
 }
 
 fun View.invisible(animate: Boolean = false) {
@@ -205,6 +206,11 @@ fun CharSequence.matchesAtLeastOne(vararg regexes: Regex): Boolean {
 
 /** Converts any object to a [Single] the just emit the value */
 fun <T> T.toSingle(): Single<T> = Single.just(this)
+
+/** Add the [Subscription] to a [CompositeSubscription] */
+fun Subscription.addTo(compositeSubscription: CompositeSubscription) {
+    compositeSubscription.add(this)
+}
 
 /** Convenient global boolean not method */
 fun not(boolean: Boolean) = boolean.not()
