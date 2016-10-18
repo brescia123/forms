@@ -11,7 +11,7 @@ import rx.Observable
 import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     private val actions: HashMap<String, List<(FieldValue, FormStorage, Boolean) -> Unit>>) : FieldsContainer {
+                     private val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
@@ -26,7 +26,7 @@ data class FormModel(val storage: FormStorage,
     fun getField(path: FieldPath): FieldModel = pages[path.pageIndex].sections[path.sectionIndex].fields[path.fieldIndex]
 
     fun observeChanges(): Observable<FieldPath> = storage.observe()
-            .doOnNext { executeFieldAction(it.first, it.second) } // Execute all side effects actions related to the key
+            .doOnNext { if (it.second) executeFieldAction(it.first) } // Execute all side effects actions related to the key if user made
             .map { it.first } // Get rid of userMade boolean information
             .flatMap { Observable.just(it).mergeWith(Observable.from(interestedKeys[it] ?: emptyList())) } // Merge with interested keys
             .flatMap { Observable.from(findFieldPathByKey(it)) } // Emit for every FieldPath associated to the field key
@@ -49,8 +49,8 @@ data class FormModel(val storage: FormStorage,
         return page
     }
 
-    private fun executeFieldAction(key: String, userMade: Boolean) =
-            actions[key]?.forEach { it(storage.getValue(key), storage, userMade) }
+    private fun executeFieldAction(key: String) =
+            actions[key]?.forEach { it(storage.getValue(key), storage) }
 
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
@@ -63,10 +63,6 @@ data class FormModel(val storage: FormStorage,
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
 
     private fun findFieldPathByKey(key: String): List<FieldPath> = FieldPath.buildForKey(key, this)
-
-    private fun executeAllFieldsActions() {
-        fields().map { executeFieldAction(it.key, false) }
-    }
 
     private fun observeActionsKeys(): MutableMap<String, MutableList<String>> {
         val interested: MutableMap<String, MutableList<String>> = mutableMapOf()
@@ -85,10 +81,9 @@ data class FormModel(val storage: FormStorage,
     }
 
     companion object {
-        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage, Boolean) -> Unit>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
-            form.executeAllFieldsActions()
             return form
         }
     }
