@@ -44,6 +44,10 @@ inline fun <reified T : Any> T.logE(text: Any?) {
     Log.e(T::class.java.simpleName, text.toString())
 }
 
+inline fun <reified T : Any> T.logE(throwable: Throwable) {
+    Log.e(T::class.java.simpleName, Log.getStackTraceString(throwable))
+}
+
 inline fun <reified T : Any> T.logI(text: Any?) {
     Log.i(T::class.java.simpleName, text.toString())
 }
