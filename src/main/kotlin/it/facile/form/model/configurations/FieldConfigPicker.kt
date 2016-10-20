@@ -12,6 +12,8 @@ import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 class FieldConfigPicker(label: String,
                         val possibleValues: FieldPossibleValues,
@@ -22,10 +24,11 @@ class FieldConfigPicker(label: String,
 
     override fun getViewModel(key: String, storage: FormStorage) =
             FieldViewModel(
-                    label,
-                    getViewModelStyle(key, storage),
-                    storage.isHidden(key),
-                    isValid(storage.getValue(key), storage))
+                    label = label,
+                    style = getViewModelStyle(key, storage),
+                    hidden = storage.isHidden(key),
+                    disabled = storage.isDisabled(key),
+                    error = isValid(storage.getValue(key), storage))
 
 
     val possibleValuesGenerator: (FormStorage, String) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }

@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import it.facile.form.*
+import it.facile.form.ui.CanBeDisabled
 import it.facile.form.model.InputTextType
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeHidden
@@ -23,17 +24,44 @@ import java.util.concurrent.TimeUnit
 
 class FieldViewHolderInputText(itemView: View,
                                private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
-        FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError {
+        FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError, CanBeDisabled {
 
-    var subscription: Subscription? = null
+    private var subscription: Subscription? = null
+
+    private val keyListener: (View, Int, KeyEvent) -> Boolean = { view, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+            logD("Pressed Enter button")
+            editText?.clearFocus()
+        }
+        false
+    }
+    private val editorActionListener: (TextView, Int, KeyEvent) -> Boolean = { view, i, keyEvent ->
+        if (i == EditorInfo.IME_ACTION_DONE) {
+            logD("Pressed Done button")
+            editText?.clearFocus()
+        }
+        false
+    }
+    private fun focusChangedListener(position: Int): (View, Boolean) -> Unit = { view, b ->
+        if (!b) {
+            val text = editText?.text.toString()
+            logD("Notify position=$position, val=$text cause focus lost")
+            notifyNewValue(position, FieldValue.Text(text))
+        }
+    }
+
+    private fun rxEditText(editText: EditText?) = RxTextChangedWrapper.wrap(editText, false)
+            .debounce(300, TimeUnit.MILLISECONDS)
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
+        val disabled = viewModel.disabled
         setLabel(viewModel.label)
         if (isTextChanged(viewModel, editText)) editText?.setText(style.textDescription)
         editText?.onFocusChangeListener = null
         editText?.setOnKeyListener(null)
+        editText?.isEnabled = not(disabled)
         subscription?.unsubscribe()
         when (style) {
             is InputText -> {
@@ -41,42 +69,18 @@ class FieldViewHolderInputText(itemView: View,
                 // Listen for new values:
 
                 // If ENTER on keyboard tapped notify new value
-                editText?.setOnKeyListener { view, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                        logD("Pressed Enter button")
-                        editText?.clearFocus()
-                    }
-                    false
-                }
+                editText?.setOnKeyListener(if (disabled) null else (keyListener))
 
-                editText?.setOnEditorActionListener { view, i, keyEvent ->
-                    if (i == EditorInfo.IME_ACTION_DONE) {
-                        logD("Pressed Done button")
-                        editText?.clearFocus()
-                    }
-                    false
-                }
+                editText?.setOnEditorActionListener(if (disabled) null else (editorActionListener))
 
                 // If focus is lost notify new value
-                editText?.setOnFocusChangeListener { view, b ->
-                    if (!b) {
-                        val text = editText?.text.toString()
-                        logD("Notify position=$position, val=$text cause focus lost")
-                        notifyNewValue(position, FieldValue.Text(text))
-                    }
-                }
+                editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
                 // If new char typed notify new value
-                subscription = RxTextChangedWrapper.wrap(editText, false)
-                        .debounce(300, TimeUnit.MILLISECONDS)
-                        .subscribe(
-                                { charSequence ->
-                                    val p = position
-                                    val text = editText?.text.toString()
-                                    logD("Notify position=$p, val=$text cause new char entered")
-                                    notifyNewValue(p, FieldValue.Text(text))
-                                },
-                                { throwable -> logE(throwable.message) })
+                if (not(disabled)) subscription = rxEditText(editText).subscribe(
+                        { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
+                        { logE(it) })
+
             }
         }
     }

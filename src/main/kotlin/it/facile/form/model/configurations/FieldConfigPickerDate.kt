@@ -24,10 +24,11 @@ class FieldConfigPickerDate(label: String,
     override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         val value = storage.getValue(key)
         return FieldViewModel(
-                label,
-                getViewModelStyle(key, storage),
-                storage.isHidden(key),
-                isValid(value, storage))
+                label = label,
+                style = getViewModelStyle(key, storage),
+                hidden = storage.isHidden(key),
+                disabled = storage.isDisabled(key),
+                error = isValid(value, storage))
     }
 
     override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {

@@ -21,10 +21,11 @@ class FieldConfigBool(label: String,
 
     override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         return FieldViewModel(
-                label,
-                getViewModelStyle(key, storage),
-                storage.isHidden(key),
-                isValid(storage.getValue(key), storage))
+                label = label,
+                style = getViewModelStyle(key, storage),
+                hidden = storage.isHidden(key),
+                disabled = storage.isDisabled(key),
+                error = isValid(storage.getValue(key), storage))
     }
 
     override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {

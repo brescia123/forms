@@ -1,7 +1,10 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.view.View
+import android.widget.CompoundButton
 import it.facile.form.gone
+import it.facile.form.ui.CanBeDisabled
+import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
@@ -14,19 +17,26 @@ import rx.subjects.PublishSubject
 
 class FieldViewHolderCheckBox(itemView: View,
                               private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
-        FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError {
+        FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError, CanBeDisabled {
+
+    private val itemViewClickListener = { view: View -> view.checkboxView.isChecked = !view.checkboxView.isChecked }
+
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
+        val disabled = viewModel.disabled
+        itemView.setOnClickListener(if (disabled) null else itemViewClickListener)
+        itemView.isClickable = not(disabled)
         itemView.checkboxLabel.text = viewModel.label
         itemView.checkboxTextView.text = viewModel.style.textDescription
+        itemView.checkboxTextView.alpha = alpha(disabled)
         when (style) {
             is FieldViewModelStyle.Checkbox -> {
                 val checkBoxValue = itemView.checkboxView
                 checkBoxValue.setOnCheckedChangeListener(null)
                 checkBoxValue.isChecked = style.bool
-                checkBoxValue.setOnCheckedChangeListener { b, value -> notifyNewValue(position, FieldValue.Bool(value)) }
-                itemView.setOnClickListener { view -> checkBoxValue.isChecked = !checkBoxValue.isChecked }
+                checkBoxValue.isEnabled = not(disabled)
+                checkBoxValue.setOnCheckedChangeListener { b: CompoundButton, value: Boolean -> notifyNewValue(position, FieldValue.Bool(value)) }
             }
         }
     }

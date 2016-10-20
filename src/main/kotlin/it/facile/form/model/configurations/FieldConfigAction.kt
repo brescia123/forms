@@ -9,10 +9,11 @@ class FieldConfigAction(label: String,
                         val action: () -> Unit) : FieldConfig(label) {
 
     override fun getViewModel(key: String, storage: FormStorage) = FieldViewModel(
-            label,
-            getViewModelStyle(key, storage),
-            storage.isHidden(key),
-            null
+            label = label,
+            style = getViewModelStyle(key, storage),
+            hidden = storage.isHidden(key),
+            disabled = storage.isDisabled(key),
+            error = null
     )
 
     override fun getViewModelStyle(key: String, storage: FormStorage) = Action(key, action)

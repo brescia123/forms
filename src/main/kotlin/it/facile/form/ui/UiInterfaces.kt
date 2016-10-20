@@ -61,3 +61,7 @@ interface ViewTypeFactory {
 interface ViewHolderFactory {
     fun createViewHolder(viewType: Int, v: View): RecyclerView.ViewHolder
 }
+
+interface CanBeDisabled {
+    fun alpha(disabled: Boolean) = if (disabled) 0.4f else 1f
+}

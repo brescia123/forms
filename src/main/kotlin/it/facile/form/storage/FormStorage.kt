@@ -19,6 +19,8 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
 
     fun isHidden(key: String): Boolean = values[key]?.hidden ?: false
 
+    fun isDisabled(key: String): Boolean = values[key]?.disabled ?: false
+
     fun getPossibleValues(key: String): FieldPossibleValues? = possibleValuesMap[key]
 
     /* ---------- Writing methods ---------- */
@@ -27,13 +29,23 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
      * If at the given key the value already present is equal to the given one it does nothing. */
     fun putValue(key: String, value: FieldValue, userMade: Boolean = false) {
         if (value == values[key]?.value) return // No changes
-        values.put(key, Entry(value, isHidden(key)))
+        values.put(key, Entry(value, isHidden(key), isDisabled(key)))
+        notify(key, userMade)
+    }
+
+    fun disable(key: String, userMade: Boolean = false) {
+        values.put(key, Entry(getValue(key), isHidden(key), true))
+        notify(key, userMade)
+    }
+
+    fun enable(key: String, userMade: Boolean = false) {
+        values.put(key, Entry(getValue(key), isHidden(key), false))
         notify(key, userMade)
     }
 
     /** Clear the selected value for the given key and notify the change */
     fun clearValue(key: String, userMade: Boolean = false) {
-        values.put(key, Entry(Missing, isHidden(key)))
+        values.put(key, Entry(Missing, isHidden(key), isDisabled(key)))
         notify(key, userMade)
     }
 
@@ -41,7 +53,7 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
      * If at the given key the visibility is equal to the given one it does nothing. */
     fun setVisibility(key: String, hidden: Boolean) {
         if (values[key]?.hidden == hidden) return // No changes
-        values.put(key, Entry(getValue(key), hidden))
+        values.put(key, Entry(getValue(key), hidden, isDisabled(key)))
         notify(key, false)
     }
 
@@ -67,7 +79,7 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
      * If at the given key value and visibility are equal to the given ones it does nothing. */
     fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean) {
         if (value == values[key]?.value && values[key]?.hidden == hidden) return // No changes
-        values.put(key, Entry(value, hidden))
+        values.put(key, Entry(value, hidden, isDisabled(key)))
         notify(key, false)
     }
 
