@@ -45,10 +45,12 @@ class FieldConfigPicker(label: String,
         return when (possibleValues) {
             is Available -> Picker(possibleValues.list, text)
             is ToBeRetrieved -> {
-                sub = possibleValues.retrieve().subscribe(
-                        { storage.putPossibleValues(key, Available(it)) },
-                        { storage.putPossibleValues(key, RetrieveError(it.message ?: "Generic error")) }
-                )
+                sub = possibleValues.retrieve()
+                        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { storage.putPossibleValues(key, Available(it)) },
+                                { storage.putPossibleValues(key, RetrieveError(it.message ?: "Generic error")) }
+                        )
                 Loading()
             }
             is RetrieveError -> ExceptionText(possibleValues.errorMessage)
