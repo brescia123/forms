@@ -23,6 +23,10 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
 
     fun getPossibleValues(key: String): FieldPossibleValues? = possibleValuesMap[key]
 
+    fun ping(key: String) {
+        notify(key, false)
+    }
+
     /* ---------- Writing methods ---------- */
 
     /** Set the new selected value for the given key and notify the change.

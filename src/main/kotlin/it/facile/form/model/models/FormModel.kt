@@ -1,13 +1,17 @@
 package it.facile.form.model.models
 
 import it.facile.form.logE
+import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
+import it.facile.form.model.configurations.FieldConfigDeferred
 import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.*
 
 data class FormModel(val storage: FormStorage,
@@ -80,10 +84,40 @@ data class FormModel(val storage: FormStorage,
         return interested
     }
 
+    private fun replaceConfig(key: String, newConfig: FieldConfig) {
+        val paths = findFieldPathByKey(key)
+        paths.map {
+            pages[it.pageIndex]
+                    .sections[it.sectionIndex]
+                    .fields[it.fieldIndex] = FieldModel(key, newConfig)
+        }
+    }
+
+    private fun loadDeferredConfigs() {
+        for ((key, config) in fields()) {
+            if (config is FieldConfigDeferred) {
+                config.deferredConfig
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { // Replace config with the loaded one and notify
+                                    replaceConfig(key, it)
+                                    storage.ping(key)
+                                },
+                                { // Make config show the error and notify
+                                    config.hasLoadingErrors = true
+                                    storage.ping(key)
+                                }
+                        )
+            }
+        }
+    }
+
     companion object {
         fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
+            form.loadDeferredConfigs()
             return form
         }
     }
