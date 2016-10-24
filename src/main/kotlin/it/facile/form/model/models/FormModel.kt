@@ -1,5 +1,6 @@
 package it.facile.form.model.models
 
+import it.facile.form.logD
 import it.facile.form.logE
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
@@ -103,10 +104,12 @@ data class FormModel(val storage: FormStorage,
                                 { // Replace config with the loaded one and notify
                                     replaceConfig(key, it)
                                     storage.ping(key)
+                                    logD("Config at key $key changed")
                                 },
                                 { // Make config show the error and notify
                                     config.hasLoadingErrors = true
                                     storage.ping(key)
+                                    logE(it)
                                 }
                         )
             }
