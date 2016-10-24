@@ -22,14 +22,10 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
     private val pageFragments: MutableMap<Int, PageFragment> = mutableMapOf()
     private val valueChangesSubject = PublishSubject.create<FieldPathWithValue>()
 
-    override fun getItem(position: Int): Fragment = PageFragment.newInstance()
-
-    override fun getCount(): Int = pageViewModels.size
-
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-        val pageFragment = super.instantiateItem(container, position) as PageFragment
+    override fun getItem(position: Int): Fragment {
+        val pageFragment = PageFragment.newInstance()
         pageFragments.put(position, pageFragment)
-        pageFragment.sectionViewModels = pageViewModels[position].sections
+        pageFragment.pageViewModel = pageViewModels[position]
         pageFragment.fieldsLayouts = fieldsLayouts
         pageFragment.customPickerActions = customPickerActions
         pageFragment
@@ -38,6 +34,9 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
                 .subscribe(valueChangesSubject)
         return pageFragment
     }
+
+    override fun getCount(): Int = pageViewModels.size
+
 
     fun getPageFragment(position: Int) = pageFragments[position]
 

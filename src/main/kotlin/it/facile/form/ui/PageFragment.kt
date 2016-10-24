@@ -1,7 +1,6 @@
 package it.facile.form.ui
 
 import android.os.Bundle
-
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
 import it.facile.form.ui.viewmodel.PageViewModel
-import it.facile.form.ui.viewmodel.SectionViewModel
 import kotlinx.android.synthetic.main.fragment_page.*
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -28,7 +26,7 @@ import rx.subjects.PublishSubject
  */
 class PageFragment : Fragment() {
 
-    var sectionViewModels: List<SectionViewModel> = emptyList()
+    lateinit var pageViewModel: PageViewModel
     var fieldsLayouts: FieldsLayouts = FieldsLayouts()
     var customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>? = null
     private var sectionsAdapter: SectionsAdapter? = null
@@ -45,7 +43,7 @@ class PageFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         sectionsAdapter = SectionsAdapter(
-                sectionViewModels = sectionViewModels,
+                sectionViewModels = pageViewModel.sections,
                 fieldsLayouts = fieldsLayouts,
                 customPickerActions = customPickerActions ?: emptyMap())
         sectionsAdapter?.observeValueChanges()?.subscribe(valueChangesSubject)
@@ -57,8 +55,9 @@ class PageFragment : Fragment() {
      * Updates the page and the section containing the field at the given [FieldPath] using
      * the provided [PageViewModel].
      */
-    fun updateField(path: FieldPath, pageViewModel: PageViewModel) {
+    fun updateField(path: FieldPath, newPageViewModel: PageViewModel) {
         //TODO: use pageViewModel.title
+        pageViewModel = newPageViewModel
         val sectionViewModel = pageViewModel.sections[path.sectionIndex]
         sectionsAdapter?.updateField(path, sectionViewModel)
     }
@@ -85,9 +84,7 @@ class PageFragment : Fragment() {
          *
          * @return A new instance of fragment PageFragment.
          */
-        fun newInstance(): PageFragment {
-            return PageFragment()
-        }
+        fun newInstance(): PageFragment = PageFragment()
 
     }
 }
