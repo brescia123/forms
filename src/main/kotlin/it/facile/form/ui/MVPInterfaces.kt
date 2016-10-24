@@ -13,6 +13,8 @@ abstract class Presenter<T : View> {
     open fun detach() {
         v = null
     }
+
+    open fun onDestroy() {}
 }
 
 interface View {
