@@ -3,6 +3,8 @@ package it.facile.form.ui
 import it.facile.form.addTo
 import it.facile.form.logE
 import it.facile.form.model.models.FormModel
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
 class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
@@ -17,6 +19,8 @@ class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
 
         // Observe values from view (FieldPathValue) and notify new values to the model
         view.observeValueChanges()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .retry()
                 .subscribe(
                         { formModel.notifyValueChanged(it.path, it.value) },
@@ -26,6 +30,8 @@ class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
 
         // Observe paths from model (FieldPath) and update the View
         formModel.observeChanges()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { view.updateField(it, formModel.getPage(it).buildPageViewModel(formModel.storage)) },
                         { logE(it.message) })
