@@ -38,7 +38,7 @@ a `Fragment` for every form page. It should be instantiated with the list of `Pa
 available within `init()` method.
 
 Last but not least you have to instantiate a `FormPresenter` passing it the Model and to **remember to call**
-`attach()` and `detach()` methods typically within `onStop()` and `onStart()`.
+`onAttach()` and `onDetach()` methods typically within `onStop()` and `onStart()`.
 
 ### Custom Fields layout
 

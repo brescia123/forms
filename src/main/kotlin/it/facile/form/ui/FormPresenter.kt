@@ -7,12 +7,12 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
+class FormPresenter(val formModel: FormModel) : BasePresenter<FormView>() {
 
     private val subscriptions by lazy { CompositeSubscription() }
 
-    override fun attach(view: FormView) {
-        super.attach(view)
+    override fun onAttach(view: FormView) {
+        super.onAttach(view)
 
         // Initialize the View with the page ViewModels
         view.init(formModel.pages.map { it.buildPageViewModel(formModel.storage) })  // Init view with viewModels
@@ -39,8 +39,8 @@ class FormPresenter(val formModel: FormModel) : Presenter<FormView>() {
 
     }
 
-    override fun detach() {
-        super.detach()
+    override fun onDetach() {
+        super.onDetach()
         subscriptions.clear()
     }
 }
