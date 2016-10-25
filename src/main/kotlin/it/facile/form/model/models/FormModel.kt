@@ -13,10 +13,9 @@ import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     private val actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+                     private val actions: List<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     val pages = arrayListOf<PageModel>()
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
@@ -55,7 +54,7 @@ data class FormModel(val storage: FormStorage,
     }
 
     private fun executeFieldAction(key: String) =
-            actions[key]?.forEach { it(storage.getValue(key), storage) }
+            actions.filter { it.first == key }.forEach { it.second(storage.getValue(key), storage) }
 
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
@@ -117,7 +116,7 @@ data class FormModel(val storage: FormStorage,
     }
 
     companion object {
-        fun form(storage: FormStorage, actions: HashMap<String, List<(FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorage, actions: List<Pair<String, (FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions)
             form.init()
             form.loadDeferredConfigs()
