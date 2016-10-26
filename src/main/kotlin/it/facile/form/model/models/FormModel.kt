@@ -13,11 +13,12 @@ import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     private val actions: List<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+                     val pages: ArrayList<PageModel> = arrayListOf<PageModel>(),
+                     private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
-    val pages = arrayListOf<PageModel>()
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
@@ -96,6 +97,7 @@ data class FormModel(val storage: FormStorage,
     private fun loadDeferredConfigs() {
         for ((key, config) in fields()) {
             if (config is FieldConfigDeferred) {
+                logD("Loading  deferred config at key: $key")
                 config.deferredConfig
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -117,10 +119,14 @@ data class FormModel(val storage: FormStorage,
 
     companion object {
         fun form(storage: FormStorage, actions: List<Pair<String, (FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
-            val form = FormModel(storage, actions)
+            val form = FormModel(storage, actions = actions.toMutableList())
             form.init()
             form.loadDeferredConfigs()
             return form
         }
+    }
+
+    fun addAction(pair: Pair<String, (FieldValue, FormStorage) -> Unit>) {
+        actions.add(pair)
     }
 }

@@ -1,10 +1,10 @@
 package it.facile.form.model.models
 
-import it.facile.form.storage.FormStorage
 import it.facile.form.model.FieldsContainer
+import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.PageViewModel
 
-data class PageModel internal constructor(val title: String) : FieldsContainer {
+data class PageModel(val title: String) : FieldsContainer {
 
     val sections = arrayListOf<SectionModel>()
 
