@@ -7,9 +7,12 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-open class FormPresenter(val formModel: FormModel) : BasePresenter<FormView>() {
+abstract class FormPresenter() : BasePresenter<FormView>() {
 
     private val subscriptions by lazy { CompositeSubscription() }
+    val formModel: FormModel by lazy { formModelGenerator() }
+
+    abstract fun formModelGenerator(): FormModel
 
     override fun onAttach(view: FormView) {
         super.onAttach(view)
