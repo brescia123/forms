@@ -12,8 +12,6 @@ import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 
 class FieldConfigPicker(label: String,
                         val possibleValues: FieldPossibleValues,
@@ -49,7 +47,6 @@ class FieldConfigPicker(label: String,
             is Available -> Picker(possibleValues.list, text)
             is ToBeRetrieved -> {
                 sub = possibleValues.retrieve()
-                        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 { storage.putPossibleValues(key, Available(it)) },
                                 { storage.putPossibleValues(key, RetrieveError(it.message ?: "Generic error")) }

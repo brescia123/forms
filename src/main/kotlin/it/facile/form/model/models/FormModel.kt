@@ -11,8 +11,6 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.*
 
 data class FormModel(val storage: FormStorage,
@@ -99,8 +97,6 @@ data class FormModel(val storage: FormStorage,
             if (config is FieldConfigDeferred) {
                 logD("Loading  deferred config at key: $key")
                 config.deferredConfig
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 { // Replace config with the loaded one and notify
                                     replaceConfig(key, it)
