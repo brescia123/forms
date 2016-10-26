@@ -18,7 +18,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
     class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle(dateText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class CustomPicker(val identifier: CustomPickerId, val valueText: String) : FieldViewModelStyle(valueText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle(valueText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Action(val key: String, val action: () -> Unit) : FieldViewModelStyle(key) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
+    class Action(val key: String, val identifier: String) : FieldViewModelStyle(key) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
     class Loading() : FieldViewModelStyle("Loading") { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
 
     override fun toString(): String = textDescription
@@ -47,7 +47,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
             is Loading -> other is Loading
             is Action -> other is Action
                     && other.key == key
-                    && other.action == action
+                    && other.identifier == identifier
         }
     }
 
@@ -62,7 +62,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
         is CustomPicker -> (textDescription.hashCode() * 31 + identifier.hashCode()) * 31 + valueText.hashCode()
         is Picker -> (textDescription.hashCode() * 31 + possibleValues.hashCode()) * 31 + valueText.hashCode()
         is Loading -> textDescription.hashCode()
-        is Action -> (textDescription.hashCode() * 31 + action.hashCode())
+        is Action -> (textDescription.hashCode() * 31 + identifier.hashCode())
     }
 
     companion object {
