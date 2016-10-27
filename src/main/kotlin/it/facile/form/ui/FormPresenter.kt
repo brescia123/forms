@@ -6,15 +6,22 @@ import it.facile.form.model.models.FormModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import kotlin.properties.Delegates.observable
 
-abstract class FormPresenter() : BasePresenter<FormView>() {
+abstract class FormPresenter<V : FormView>() : Presenter<V>(), StorageProvider {
 
-    private val subscriptions by lazy { CompositeSubscription() }
-    val formModel: FormModel by lazy { formModelGenerator() }
+    protected val formModel: FormModel by lazy { formModelGenerator() }
+    protected val subscriptions by lazy { CompositeSubscription() }
+    protected var stateErrorShown: Boolean by observable(false) {
+        p, o, new -> if (new) v?.showErrors(stateErrorShown)  // When changed trigger view's method to show errors
+    }
 
+    /** This method should return the [FormModel] to be handled by the presenter */
     abstract fun formModelGenerator(): FormModel
 
-    override fun onAttach(view: FormView) {
+    override fun getStorage() = formModel.storage
+
+    override fun onAttach(view: V) {
         super.onAttach(view)
 
         // Initialize the View with the page ViewModels

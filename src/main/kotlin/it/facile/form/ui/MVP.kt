@@ -5,14 +5,14 @@ package it.facile.form.ui
  *
  * @param T The type of view (which extends [View]) the presenter is controlling.
  */
-interface Presenter<in T : View> {
+interface PresenterApi<in T : View> {
     fun onAttach(view: T)
     fun onDetach()
     fun onDestroy()
 }
 
 /** Base Class for all the presenters. It takes care of implementing the attach/detach view mechanism. */
-abstract class BasePresenter<T : View> : Presenter<T> {
+abstract class Presenter<T : View> : PresenterApi<T> {
     /** holds the view reference when it is attached. if the Presenter is not attached ot any View it is null. */
     var v: T? = null
 
