@@ -67,10 +67,10 @@ class PageFragment : Fragment() {
     fun observeValueChanges(): Observable<Pair<FieldPathSection, FieldValue>> = valueChangesSubject.asObservable()
 
 
-    fun checkErrors() {
+    fun checkErrors(show: Boolean) {
         sectionsAdapter?.let {
             formRecyclerView.clearFocus()
-            it.toggleErrorsVisibility()
+            it.showErrors(show  )
             if (it.areErrorsVisible() && it.hasErrors()) {
                 logD("First error position: ${it.firstErrorPosition()}")
                 formRecyclerView.smoothScrollToPosition(it.firstErrorPosition())

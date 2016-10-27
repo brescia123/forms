@@ -44,8 +44,8 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     fun observeValueChanges(): Observable<Pair<Int, FieldValue>> = valueChangesSubject.asObservable()
 
-    fun toggleErrorsVisibility() {
-        errorsShouldBeVisible = !errorsShouldBeVisible
+    fun showErrors(show: Boolean) {
+        errorsShouldBeVisible = show
     }
 
     fun areErrorsVisible() = errorsShouldBeVisible

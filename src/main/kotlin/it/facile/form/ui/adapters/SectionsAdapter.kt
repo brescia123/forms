@@ -98,9 +98,9 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
     /* ---------- Errors related methods ---------- */
 
     /** Toggles the errors visibility notifying the changes to the adapter */
-    fun toggleErrorsVisibility() {
-        fieldsAdapter.toggleErrorsVisibility()
-        fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
+    fun showErrors(show: Boolean) {
+        fieldsAdapter.showErrors(show)
+        if (show) fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
     }
 
     /** Returns the sectioned position of the first occurred error, -1 if no errors are present */

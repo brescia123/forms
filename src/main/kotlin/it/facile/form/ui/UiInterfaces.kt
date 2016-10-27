@@ -80,4 +80,6 @@ interface FormView : it.facile.form.ui.View {
                     pageViewModel: PageViewModel)
 
     fun observeValueChanges(): Observable<FieldPathWithValue>
+    fun showErrors(show: Boolean)
 }
+

@@ -52,6 +52,14 @@ data class FormModel(val storage: FormStorage,
         return page
     }
 
+    fun hasErrors(): Boolean = fields()
+            .filter { not(storage.isHidden(it.key)) }
+            .filter {
+                val config = it.fieldConfiguration
+                if(config is FieldRulesValidator) config.isValid(storage.getValue(it.key), storage) != null else false
+            }
+            .size != 0
+
     private fun executeFieldAction(key: String) =
             actions.filter { it.first == key }.forEach { it.second(storage.getValue(key), storage) }
 

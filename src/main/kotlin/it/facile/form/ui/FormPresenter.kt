@@ -19,6 +19,7 @@ abstract class FormPresenter() : BasePresenter<FormView>() {
 
         // Initialize the View with the page ViewModels
         view.init(formModel.pages.map { it.buildPageViewModel(formModel.storage) })  // Init view with viewModels
+        view.showErrors(stateErrorShown) // Restore state
 
         // Observe values from view (FieldPathValue) and notify new values to the model
         view.observeValueChanges()
