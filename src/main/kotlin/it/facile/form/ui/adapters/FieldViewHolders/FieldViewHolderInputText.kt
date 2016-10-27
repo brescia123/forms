@@ -2,6 +2,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.support.design.widget.TextInputLayout
 import android.text.InputType
+import android.text.Spanned
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -9,9 +10,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import it.facile.form.*
-import it.facile.form.ui.CanBeDisabled
 import it.facile.form.model.InputTextType
 import it.facile.form.storage.FieldValue
+import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
@@ -42,6 +43,7 @@ class FieldViewHolderInputText(itemView: View,
         }
         false
     }
+
     private fun focusChangedListener(position: Int): (View, Boolean) -> Unit = { view, b ->
         if (!b) {
             val text = editText?.text.toString()
@@ -57,7 +59,7 @@ class FieldViewHolderInputText(itemView: View,
         super.bind(viewModel, position, errorsShouldBeVisible)
         val style = viewModel.style
         val disabled = viewModel.disabled
-        setLabel(viewModel.label)
+        setLabel(viewModel.label.toHtmlSpanned())
         if (isTextChanged(viewModel, editText)) editText?.setText(style.textDescription)
         editText?.onFocusChangeListener = null
         editText?.setOnKeyListener(null)
@@ -117,7 +119,7 @@ class FieldViewHolderInputText(itemView: View,
     private val errorTextView by lazy { itemView.findViewById(R.id.inputErrorText) as TextView }
     private val errorImageView by lazy { itemView.findViewById(R.id.inputErrorImage) as ImageView }
 
-    private fun setLabel(label: String) {
+    private fun setLabel(label: Spanned) {
         if (hasInputValue) inputValue.hint = label
         else labelTextView.text = label
     }

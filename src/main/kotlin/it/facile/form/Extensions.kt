@@ -5,10 +5,12 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.os.Build
+import android.os.Build.VERSION
 import android.os.Handler
 import android.support.annotation.ColorInt
 import android.support.v7.widget.RecyclerView
+import android.text.Html
+import android.text.Spanned
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -20,6 +22,9 @@ import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 import java.text.DateFormat
 import java.util.*
+import java.util.regex.Pattern
+
+private const val HTTP_PATTERN = "(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
 
 fun <T1, T2> Map<T1, T2>.equalMap(other: Map<T1, T2>): Boolean {
     if (size != other.size) return false
@@ -158,10 +163,19 @@ fun TextView.setCompoundDrawables(left: Drawable? = null,
     this.setCompoundDrawables(left, top, right, bottom)
 }
 
+fun String.toHtmlSpanned(): Spanned = if (VERSION.SDK_INT >= 24) {
+    Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+} else {
+    Html.fromHtml(this)
+}
+
+fun String.containsLink() =
+        Pattern.compile(HTTP_PATTERN, Pattern.MULTILINE).toRegex().containsMatchIn(this)
+
 
 /* ---------- Context extensions utilities ---------- */
 
-fun Context.getColor(@ColorInt id: Int, theme: Resources.Theme? = null) = if (Build.VERSION.SDK_INT >= 23) {
+fun Context.getColor(@ColorInt id: Int, theme: Resources.Theme? = null) = if (VERSION.SDK_INT >= 23) {
     getColor(id)
 } else {
     resources.getColor(id, theme)

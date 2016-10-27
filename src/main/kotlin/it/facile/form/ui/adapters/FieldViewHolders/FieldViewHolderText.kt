@@ -2,6 +2,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.app.DatePickerDialog
 import android.support.v7.app.AlertDialog
+import android.text.method.LinkMovementMethod
 import android.view.View
 import it.facile.form.*
 import it.facile.form.model.CustomPickerId
@@ -15,6 +16,7 @@ import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
+import kotlinx.android.synthetic.main.form_field_checkbox.view.*
 import kotlinx.android.synthetic.main.form_field_text.view.*
 import rx.subjects.PublishSubject
 import java.util.*
@@ -53,7 +55,9 @@ class FieldViewHolderText(itemView: View,
         val style = viewModel.style
         val disabled = viewModel.disabled
 
-        itemView.textLabel.text = viewModel.label
+        itemView.textLabel.text = viewModel.label.toHtmlSpanned()
+        if (viewModel.label.containsLink())
+            itemView.checkboxLabel.movementMethod = LinkMovementMethod.getInstance()
         itemView.textView.text = viewModel.style.textDescription
         itemView.textErrorText.text = viewModel.error
 

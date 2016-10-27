@@ -1,16 +1,16 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
+import android.text.method.LinkMovementMethod
 import android.view.View
-import it.facile.form.gone
-import it.facile.form.ui.CanBeDisabled
-import it.facile.form.not
+import it.facile.form.*
 import it.facile.form.storage.FieldValue
+import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
-import it.facile.form.visible
+import kotlinx.android.synthetic.main.form_field_checkbox.view.*
 import kotlinx.android.synthetic.main.form_field_toggle.view.*
 import rx.subjects.PublishSubject
 
@@ -26,7 +26,9 @@ class FieldViewHolderToggle(itemView: View,
         val disabled = viewModel.disabled
         itemView.setOnClickListener(if (disabled) null else itemViewClickListener)
         itemView.isClickable = not(disabled)
-        itemView.toggleLabel.text = viewModel.label
+        itemView.toggleLabel.text = viewModel.label.toHtmlSpanned()
+        if (viewModel.label.containsLink())
+            itemView.checkboxLabel.movementMethod = LinkMovementMethod.getInstance()
         itemView.toggleTextView.text = viewModel.style.textDescription
         itemView.toggleTextView.alpha = alpha(disabled)
         when (style) {
