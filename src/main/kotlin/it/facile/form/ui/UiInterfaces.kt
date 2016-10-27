@@ -2,8 +2,11 @@ package it.facile.form.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
+import it.facile.form.ui.adapters.FieldsLayouts
+import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
@@ -83,3 +86,39 @@ interface FormView : it.facile.form.ui.View {
     fun showErrors(show: Boolean)
 }
 
+
+/** Convenient abstract class for createing a view that contains a single page of a form. s*/
+interface PageFormView : FormView {
+    var sectionsAdapter: SectionsAdapter?
+
+    override fun init(pageViewModels: List<PageViewModel>) {
+        if (sectionsAdapter == null) {
+            sectionsAdapter = SectionsAdapter(
+                    sectionViewModels = pageViewModels[0].sections,
+                    fieldsLayouts = getFieldsLayouts(),
+                    customActions = getCustomActions(),
+                    customPickerActions = getCustomPickerActions())
+            getRecyclerView().adapter = sectionsAdapter
+        }
+    }
+
+    override fun updateField(path: FieldPath, pageViewModel: PageViewModel) {
+        sectionsAdapter?.updateField(path, pageViewModel.sections[path.sectionIndex])
+    }
+
+    override fun observeValueChanges(): Observable<FieldPathWithValue> {
+        return sectionsAdapter?.observeValueChanges()?.map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, 0) pathTo it.second } ?: Observable.empty()
+    }
+
+    override fun showErrors(show: Boolean) {
+        sectionsAdapter?.showErrors(show)
+    }
+
+    fun getRecyclerView(): RecyclerView
+
+    fun getFieldsLayouts(): FieldsLayouts = FieldsLayouts()
+
+    fun getCustomPickerActions(): Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap()
+
+    fun getCustomActions(): Map<String, () -> Unit> = emptyMap()
+}
