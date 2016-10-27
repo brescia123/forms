@@ -28,14 +28,14 @@ class FieldViewHolderInputText(itemView: View,
 
     private var subscription: Subscription? = null
 
-    private val keyListener: (View, Int, KeyEvent) -> Boolean = { view, keyCode, event ->
-        if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+    private val keyListener: (View, Int, KeyEvent?) -> Boolean = { view, keyCode, event ->
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event?.action == KeyEvent.ACTION_UP) {
             logD("Pressed Enter button")
             editText?.clearFocus()
         }
         false
     }
-    private val editorActionListener: (TextView, Int, KeyEvent) -> Boolean = { view, i, keyEvent ->
+    private val editorActionListener: (TextView, Int, KeyEvent?) -> Boolean = { view, i, keyEvent ->
         if (i == EditorInfo.IME_ACTION_DONE) {
             logD("Pressed Done button")
             editText?.clearFocus()
