@@ -3,8 +3,9 @@ package it.facile.form.storage
 import rx.Single
 
 sealed class FieldPossibleValues() {
-    class Available(val list: List<DescribableWithKey>) : FieldPossibleValues()
-    class ToBeRetrieved(val possibleValuesSingle: Single<List<DescribableWithKey>>) : FieldPossibleValues() {
+    class Available(val list: List<DescribableWithKey>) : FieldPossibleValues() {}
+    class ToBeRetrieved(val possibleValuesSingle: Single<List<DescribableWithKey>>,
+                        val preselectKey: String? = null) : FieldPossibleValues() {
         fun retrieve(): Single<List<DescribableWithKey>> = possibleValuesSingle
     }
 

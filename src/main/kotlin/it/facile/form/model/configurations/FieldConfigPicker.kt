@@ -48,7 +48,13 @@ class FieldConfigPicker(label: String,
             is ToBeRetrieved -> {
                 sub = possibleValues.retrieve()
                         .subscribe(
-                                { storage.putPossibleValues(key, Available(it)) },
+                                {
+                                    storage.putPossibleValues(key, Available(it))
+                                    // If there is a match between preselectKey and possible values keys put the selected value into the storage
+                                    it.find { it.key == possibleValues.preselectKey }?.let {
+                                        storage.putValue(key, Object(it))
+                                    }
+                                },
                                 { storage.putPossibleValues(key, RetrieveError(it.message ?: "Generic error")) }
                         )
                 Loading()
