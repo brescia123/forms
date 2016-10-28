@@ -16,7 +16,7 @@ import rx.subjects.PublishSubject
 class PagesAdapter(val pageViewModels: List<PageViewModel>,
                    val fieldsLayouts: FieldsLayouts = FieldsLayouts(),
                    val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
-                   val customActions: Map<String, () -> Unit> = emptyMap(),
+                   val customBehaviours: Map<String, () -> Unit> = emptyMap(),
                    fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     private val pageFragments: MutableMap<Int, PageFragment> = mutableMapOf()
@@ -28,7 +28,7 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
         pageFragment.pageViewModel = pageViewModels[position]
         pageFragment.fieldsLayouts = fieldsLayouts
         pageFragment.customPickerActions = customPickerActions
-        pageFragment.customActions= customActions
+        pageFragment.customBehaviours = customBehaviours
         pageFragment
                 .observeValueChanges()
                 .map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, position) pathTo it.second }

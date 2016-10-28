@@ -15,13 +15,13 @@ import rx.subjects.PublishSubject
 
 class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
                     customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
-                    customActions: Map<String, () -> Unit>,
+                    customBehaviours: Map<String, () -> Unit>,
                     fieldsLayouts: FieldsLayouts)
 : RecyclerView.Adapter<FieldViewHolderBase>() {
 
     private var errorsShouldBeVisible = false
     private val valueChangesSubject = PublishSubject.create<Pair<Int, FieldValue>>()
-    private val fieldViewHolderFactory = FieldViewHolderFactory(valueChangesSubject, customPickerActions, customActions, fieldsLayouts)
+    private val fieldViewHolderFactory = FieldViewHolderFactory(valueChangesSubject, customPickerActions, customBehaviours, fieldsLayouts)
     private val viewTypeFactory = FieldViewTypeFactory(fieldsLayouts)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FieldViewHolderBase =

@@ -96,7 +96,7 @@ interface PageFormView : FormView {
             sectionsAdapter = SectionsAdapter(
                     sectionViewModels = pageViewModels[0].sections,
                     fieldsLayouts = getFieldsLayouts(),
-                    customActions = getCustomActions(),
+                    customBehaviours = getCustomBehaviours(),
                     customPickerActions = getCustomPickerActions())
             getRecyclerView().adapter = sectionsAdapter
         }
@@ -120,5 +120,5 @@ interface PageFormView : FormView {
 
     fun getCustomPickerActions(): Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap()
 
-    fun getCustomActions(): Map<String, () -> Unit> = emptyMap()
+    fun getCustomBehaviours(): Map<String, () -> Unit> = emptyMap()
 }

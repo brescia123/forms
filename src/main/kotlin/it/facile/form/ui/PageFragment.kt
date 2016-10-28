@@ -29,7 +29,7 @@ class PageFragment : Fragment() {
     lateinit var pageViewModel: PageViewModel
     var fieldsLayouts: FieldsLayouts = FieldsLayouts()
     var customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>? = null
-    var customActions: Map<String, () -> Unit>? = null
+    var customBehaviours: Map<String, () -> Unit>? = null
     private var sectionsAdapter: SectionsAdapter? = null
     private val valueChangesSubject = PublishSubject.create<Pair<FieldPathSection, FieldValue>>()
 
@@ -46,7 +46,7 @@ class PageFragment : Fragment() {
         sectionsAdapter = SectionsAdapter(
                 sectionViewModels = pageViewModel.sections,
                 fieldsLayouts = fieldsLayouts,
-                customActions = customActions ?: emptyMap(),
+                customBehaviours = customBehaviours ?: emptyMap(),
                 customPickerActions = customPickerActions ?: emptyMap())
         sectionsAdapter?.observeValueChanges()?.subscribe(valueChangesSubject)
         formRecyclerView.adapter = sectionsAdapter

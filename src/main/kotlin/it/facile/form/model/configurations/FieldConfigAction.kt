@@ -6,7 +6,7 @@ import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.Action
 
 class FieldConfigAction(label: String,
-                        val customActionId: String) : FieldConfig(label) {
+                        val customBehaviourId: String) : FieldConfig(label) {
 
     override fun getViewModel(key: String, storage: FormStorage) = FieldViewModel(
             label = label,
@@ -16,5 +16,5 @@ class FieldConfigAction(label: String,
             error = null
     )
 
-    override fun getViewModelStyle(key: String, storage: FormStorage) = Action(key, customActionId)
+    override fun getViewModelStyle(key: String, storage: FormStorage) = Action(key, customBehaviourId)
 }

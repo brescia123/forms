@@ -9,7 +9,7 @@ import rx.subjects.PublishSubject
 
 class FieldViewHolderFactory(val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
                              val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
-                             val customActions: Map<String, () -> Unit>,
+                             val customBehaviours: Map<String, () -> Unit>,
                              val fieldsLayouts: FieldsLayouts) : ViewHolderFactory {
     override fun createViewHolder(viewType: Int,
                                   v: View): FieldViewHolderBase =
@@ -21,7 +21,7 @@ class FieldViewHolderFactory(val valueChangesSubject: PublishSubject<Pair<Int, F
                 fieldsLayouts.toggle -> FieldViewHolderToggle(v, valueChangesSubject)
                 fieldsLayouts.exceptionText -> FieldViewHolderException(v)
                 fieldsLayouts.loading -> FieldViewHolderLoading(v)
-                fieldsLayouts.action -> FieldViewHolderAction(v, customActions)
+                fieldsLayouts.action -> FieldViewHolderAction(v, customBehaviours)
                 else -> FieldViewHolderEmpty(v)
             }
 }
