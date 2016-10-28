@@ -8,7 +8,7 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import kotlin.properties.Delegates.observable
 
-abstract class FormPresenter<V : FormView>() : Presenter<V>(), StorageProvider {
+abstract class FormPresenter<V : FormView>() : Presenter<V>() {
 
     protected val formModel: FormModel by lazy { formModelGenerator() }
     protected val subscriptions by lazy { CompositeSubscription() }
@@ -18,8 +18,6 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>(), StorageProvider {
 
     /** This method should return the [FormModel] to be handled by the presenter */
     abstract fun formModelGenerator(): FormModel
-
-    override fun getStorage() = formModel.storage
 
     override fun onAttach(view: V) {
         super.onAttach(view)

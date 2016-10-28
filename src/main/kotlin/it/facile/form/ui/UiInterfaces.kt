@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
-import it.facile.form.storage.FormStorage
 import it.facile.form.ui.adapters.FieldsLayouts
 import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.viewmodel.FieldPath
@@ -71,10 +70,6 @@ interface ViewHolderFactory {
 
 interface CanBeDisabled {
     fun alpha(disabled: Boolean) = if (disabled) 0.4f else 1f
-}
-
-interface StorageProvider {
-    fun getStorage(): FormStorage
 }
 
 interface FormView : it.facile.form.ui.View {
