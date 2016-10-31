@@ -93,7 +93,7 @@ class FieldViewHolderInputText(itemView: View,
 
     override fun showError(itemView: View, viewModel: FieldViewModel, show: Boolean) {
         setErrorText(if (show) viewModel.error else null)
-        if (hasErrorImageView) showErrorImage(show)
+        if (hasErrorImageView) showErrorImage(show && viewModel.error != null)
     }
 
     override fun isErrorOutdated(itemView: View, viewModel: FieldViewModel): Boolean =
