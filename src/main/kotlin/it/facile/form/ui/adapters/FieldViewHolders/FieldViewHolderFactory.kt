@@ -21,7 +21,7 @@ class FieldViewHolderFactory(val valueChangesSubject: PublishSubject<Pair<Int, F
                 fieldsLayouts.toggle -> FieldViewHolderToggle(v, valueChangesSubject)
                 fieldsLayouts.exceptionText -> FieldViewHolderException(v)
                 fieldsLayouts.loading -> FieldViewHolderLoading(v)
-                fieldsLayouts.action -> FieldViewHolderAction(v, customBehaviours)
+                fieldsLayouts.customBehaviours -> FieldViewHolderCustomBehaviour(v, customBehaviours)
                 else -> FieldViewHolderEmpty(v)
             }
 }

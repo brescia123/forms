@@ -9,10 +9,10 @@ import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.Action
 import kotlinx.android.synthetic.main.form_field_checkbox.view.*
-import kotlinx.android.synthetic.main.form_field_custom_action.view.*
+import kotlinx.android.synthetic.main.form_field_custom_behaviours.view.*
 
-class FieldViewHolderAction(v: View,
-                            private val customBehaviours: Map<String, () -> Unit>) : FieldViewHolderBase(v), CanBeDisabled {
+class FieldViewHolderCustomBehaviour(v: View,
+                                     private val customBehaviours: Map<String, () -> Unit>) : FieldViewHolderBase(v), CanBeDisabled {
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)

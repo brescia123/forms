@@ -5,8 +5,8 @@ import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.Action
 
-class FieldConfigAction(label: String,
-                        val customBehaviourId: String) : FieldConfig(label) {
+class FieldConfigCustomBehaviour(label: String,
+                                 val customBehaviourId: String) : FieldConfig(label) {
 
     override fun getViewModel(key: String, storage: FormStorage) = FieldViewModel(
             label = label,

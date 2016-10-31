@@ -72,6 +72,7 @@ interface CanBeDisabled {
     fun alpha(disabled: Boolean) = if (disabled) 0.4f else 1f
 }
 
+/** Interface representing the base functionality to be provided by a view containing a Form */
 interface FormView : it.facile.form.ui.View {
     fun init(pageViewModels: List<PageViewModel>)
     fun updateField(path: FieldPath,
@@ -82,7 +83,11 @@ interface FormView : it.facile.form.ui.View {
 }
 
 
-/** Convenient abstract class for createing a view that contains a single page of a form. s*/
+/**
+ * Convenient interface that represents a view containing a single page of a form.
+ * It has default methods that execute common operations to build and sync the view and provides
+ * methods provide custom behaviour.
+ * */
 interface PageFormView : FormView {
     var sectionsAdapter: SectionsAdapter?
 
