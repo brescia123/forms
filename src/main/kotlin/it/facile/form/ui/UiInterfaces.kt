@@ -79,6 +79,7 @@ interface FormView : it.facile.form.ui.View {
                     pageViewModel: PageViewModel)
 
     fun observeValueChanges(): Observable<FieldPathWithValue>
+    fun scrollToFirstError()
     fun showErrors(show: Boolean)
 }
 
@@ -108,6 +109,11 @@ interface PageFormView : FormView {
 
     override fun observeValueChanges(): Observable<FieldPathWithValue> {
         return sectionsAdapter?.observeValueChanges()?.map { FieldPath(it.first.fieldIndex, it.first.sectionIndex, 0) pathTo it.second } ?: Observable.empty()
+    }
+
+    override fun scrollToFirstError() {
+        val position = sectionsAdapter?.firstErrorPosition() ?: 0
+        if (position > -1) getRecyclerView().smoothScrollToPosition(position)
     }
 
     override fun showErrors(show: Boolean) {

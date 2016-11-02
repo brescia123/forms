@@ -6,15 +6,12 @@ import it.facile.form.model.models.FormModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import kotlin.properties.Delegates.observable
 
 abstract class FormPresenter<V : FormView>() : Presenter<V>() {
 
     protected val formModel: FormModel by lazy { formModelGenerator() }
     protected val subscriptions by lazy { CompositeSubscription() }
-    protected var stateErrorShown: Boolean by observable(false) {
-        p, o, new -> if (new) v?.showErrors(stateErrorShown)  // When changed trigger view's method to show errors
-    }
+    protected var stateErrorShown: Boolean = false
 
     /** This method should return the [FormModel] to be handled by the presenter */
     abstract fun formModelGenerator(): FormModel
@@ -51,5 +48,10 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
     override fun onDetach() {
         super.onDetach()
         subscriptions.clear()
+    }
+
+    protected fun showErrors(show: Boolean) {
+        stateErrorShown = show
+        v?.showErrors(show)
     }
 }

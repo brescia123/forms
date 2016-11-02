@@ -106,6 +106,9 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
     /** Returns the sectioned position of the first occurred error, -1 if no errors are present */
     fun firstErrorPosition() = positionToSectionedPosition(fieldsAdapter.firstErrorPosition())
 
+    /** Returns the message of the first occurred error, null if no errors are present */
+    fun firstErrorMessage() = fieldsAdapter.getViewModel(fieldsAdapter.firstErrorPosition()).error
+
     /** Returns whether the adapter is currently showing errors */
     fun areErrorsVisible() = fieldsAdapter.areErrorsVisible()
 
