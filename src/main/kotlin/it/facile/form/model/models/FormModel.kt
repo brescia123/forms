@@ -6,6 +6,7 @@ import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
 import it.facile.form.model.configurations.FieldConfigDeferred
+import it.facile.form.model.serialization.NodeMap
 import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
@@ -52,9 +53,15 @@ data class FormModel(val storage: FormStorage,
         return page
     }
 
+    /** Return the serialized version of this form */
+    fun getSerialized(): NodeMap = fields()
+            .map { it.serialize(storage) } // Serialize every single fields
+            .filter { it != null } // Filter non serializable fields
+            .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
+            .fold(NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
+
     private fun executeFieldAction(key: String) =
             actions.filter { it.first == key }.forEach { it.second(storage.getValue(key), storage) }
-
 
     private fun contains(path: FieldPath): Boolean = path.pageIndex < pages.size &&
             path.sectionIndex < pages[path.pageIndex].sections.size &&
@@ -69,7 +76,7 @@ data class FormModel(val storage: FormStorage,
 
     private fun observeActionsKeys(): MutableMap<String, MutableList<String>> {
         val interested: MutableMap<String, MutableList<String>> = mutableMapOf()
-        for ((toBeNotifiedKey, config) in fields()) {
+        for ((toBeNotifiedKey, _ignored, config) in fields()) {
             if (config is FieldRulesValidator) {
                 config.rules(storage).map {
                     it.observedKeys()
@@ -88,12 +95,12 @@ data class FormModel(val storage: FormStorage,
         paths.map {
             pages[it.pageIndex]
                     .sections[it.sectionIndex]
-                    .fields[it.fieldIndex] = FieldModel(key, newConfig)
+                    .fields[it.fieldIndex] = FieldModel(key, findFieldModelByFieldPath(it).serialization, newConfig)
         }
     }
 
     private fun loadDeferredConfigs() {
-        for ((key, config) in fields()) {
+        for ((key, _ignored, config) in fields()) {
             if (config is FieldConfigDeferred) {
                 logD("Loading  deferred config at key: $key")
                 config.deferredConfig

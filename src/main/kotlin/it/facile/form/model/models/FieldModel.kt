@@ -1,11 +1,12 @@
 package it.facile.form.model.models
 
 import it.facile.form.model.FieldConfig
+import it.facile.form.model.serialization.FieldSerialization
 import it.facile.form.storage.FormStorage
-import it.facile.form.ui.viewmodel.FieldViewModel
 
-data class FieldModel(val key: String, val fieldConfiguration: FieldConfig) {
-    fun buildFieldViewModel(storage: FormStorage): FieldViewModel {
-        return fieldConfiguration.getViewModel(key, storage)
-    }
+data class FieldModel(val key: String,
+                      val serialization: FieldSerialization,
+                      val configuration: FieldConfig) {
+    fun buildFieldViewModel(storage: FormStorage) = configuration.getViewModel(key, storage)
+    fun serialize(storage: FormStorage) = serialization.serialize(key, storage)
 }
