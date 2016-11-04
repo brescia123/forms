@@ -54,11 +54,11 @@ data class FormModel(val storage: FormStorage,
     }
 
     /** Return the serialized version of this form */
-    fun getSerialized(): NodeMap = fields()
+    fun getSerialized(with: NodeMap? = null): NodeMap = fields()
             .map { it.serialize(storage) } // Serialize every single fields
             .filter { it != null } // Filter non serializable fields
             .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
-            .fold(NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
+            .fold(with ?: NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
 
     private fun executeFieldAction(key: String) =
             actions.filter { it.first == key }.forEach { it.second(storage.getValue(key), storage) }
