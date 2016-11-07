@@ -18,6 +18,11 @@ interface FieldsContainer {
 
 interface CustomPickerId {}
 
+interface CanBeInError {
+    val errorMessage: String
+    var hasErrors: Boolean
+}
+
 /* ---------- View Models ---------- */
 
 interface ViewModelGenerator {

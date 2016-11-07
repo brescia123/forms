@@ -15,7 +15,7 @@ class FieldViewHolderException(itemView: View) : FieldViewHolderBase(itemView), 
         super.bind(viewModel, position, errorsShouldBeVisible)
         itemView.exceptionLabel.text = viewModel.label.toHtmlSpanned()
         if (viewModel.label.containsLink())
-            itemView.checkboxLabel.movementMethod = LinkMovementMethod.getInstance()
+            itemView.exceptionLabel.movementMethod = LinkMovementMethod.getInstance()
         val style = viewModel.style
         when (style) {
             is FieldViewModelStyle.ExceptionText -> itemView.exceptionTextView.text = style.text

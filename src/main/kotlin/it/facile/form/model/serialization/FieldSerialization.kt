@@ -26,8 +26,8 @@ enum class FieldSerializationRule {
 
 sealed class FieldSerializationStrategy() {
     object None : FieldSerializationStrategy()
-    class Single(val serializer: FieldSerializer = FieldSerializer()) : FieldSerializationStrategy()
-    class Multiple(val serializers: List<FieldSerializer>) : FieldSerializationStrategy()
+    class SingleKey(val serializer: FieldSerializer = FieldSerializer()) : FieldSerializationStrategy()
+    class MultipleKey(val serializers: List<FieldSerializer>) : FieldSerializationStrategy()
 }
 
 class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) {
@@ -42,8 +42,8 @@ class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSe
 
         return when (strategy) {
             None -> null
-            is Single -> listOf(strategy.serializer.serialize(key, value))
-            is Multiple -> strategy.serializers.map { it.serialize(key, value) }
+            is SingleKey -> listOf(strategy.serializer.serialize(key, value))
+            is MultipleKey -> strategy.serializers.map { it.serialize(key, value) }
         }
     }
 }
@@ -81,3 +81,8 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
         fun empty() = NodeMap(mutableMapOf())
     }
 }
+
+infix fun FieldSerializationRule.serialize(s: FieldSerializationStrategy) = FieldSerialization(this, s)
+infix fun FieldSerializationRule.serialize(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
+infix fun FieldSerializationRule.serialize(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
+infix fun ((String) -> RemoteKey).to(v: (FieldValue) -> Any?) = FieldSerializer(this, v)

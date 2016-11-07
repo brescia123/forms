@@ -1,5 +1,6 @@
 package it.facile.form.model.configurations
 
+import it.facile.form.model.CanBeInError
 import it.facile.form.model.FieldConfig
 import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldViewModel
@@ -9,8 +10,8 @@ import rx.Single
 
 class FieldConfigDeferred(label: String = "Loading...",
                           val deferredConfig: Single<FieldConfig>,
-                          val loadingError: String = "Loading error") : FieldConfig(label) {
-    var hasLoadingErrors = false
+                          override val errorMessage: String = "Loading error") : FieldConfig(label), CanBeInError {
+    override var hasErrors = false
 
     override fun getViewModel(key: String, storage: FormStorage) = FieldViewModel(
             label = label,
@@ -19,8 +20,8 @@ class FieldConfigDeferred(label: String = "Loading...",
             disabled = false,
             error = null)
 
-    override fun getViewModelStyle(key: String, storage: FormStorage) = if (hasLoadingErrors)
-        ExceptionText(loadingError)
+    override fun getViewModelStyle(key: String, storage: FormStorage) = if (hasErrors)
+        ExceptionText(errorMessage)
     else
         Loading()
 }

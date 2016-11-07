@@ -1,6 +1,7 @@
 package it.facile.form.ui
 
 import it.facile.form.addTo
+import it.facile.form.logD
 import it.facile.form.logE
 import it.facile.form.model.models.FormModel
 import rx.android.schedulers.AndroidSchedulers
@@ -43,6 +44,17 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
                         { logE(it.message) })
                 .addTo(subscriptions)
 
+        formModel.observeFormState()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { logD(it.name) },
+                        { logE(it) }
+                )
+                .addTo(subscriptions)
+
+        // Start dynamic loading
+        formModel.loadDynamicValues()
     }
 
     override fun onDetach() {
