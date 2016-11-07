@@ -1,9 +1,9 @@
 package it.facile.form.ui
 
 import it.facile.form.addTo
-import it.facile.form.logD
 import it.facile.form.logE
 import it.facile.form.model.models.FormModel
+import it.facile.form.model.models.FormModel.FormState
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
@@ -16,6 +16,10 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
 
     /** This method should return the [FormModel] to be handled by the presenter */
     abstract fun formModelGenerator(): FormModel
+
+    fun retryLoading() {
+        formModel.loadDynamicValues()
+    }
 
     override fun onAttach(view: V) {
         super.onAttach(view)
@@ -48,7 +52,13 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { logD(it.name) },
+                        {
+                            when (it!!) {
+                                FormState.READY -> v?.showLoadingErrors(false)
+                                FormState.LOADING -> v?.showLoadingErrors(false)
+                                FormState.ERROR -> v?.showLoadingErrors(true)
+                            }
+                        },
                         { logE(it) }
                 )
                 .addTo(subscriptions)

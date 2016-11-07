@@ -20,7 +20,6 @@ import rx.subjects.PublishSubject
 import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     val loadingError: String = "Error",
                      val pages: ArrayList<PageModel> = arrayListOf<PageModel>(),
                      private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 

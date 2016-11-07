@@ -81,6 +81,7 @@ interface FormView : it.facile.form.ui.View {
     fun observeValueChanges(): Observable<FieldPathWithValue>
     fun scrollToFirstError()
     fun showErrors(show: Boolean)
+    fun showLoadingErrors(show: Boolean)
 }
 
 
