@@ -108,14 +108,15 @@ fun Date.format(formatter: DateFormat): String {
 
 /* ---------- View extensions utilities ---------- */
 
-fun View.visible(animate: Boolean = false) {
+fun View.visible(animate: Boolean = false,
+                 animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
     if (visibility == View.VISIBLE) return
     if (animate) {
         alpha = 0.0f
         visibility = View.VISIBLE
         animate()
                 .alpha(1.0f)
-                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                .setDuration(animDuration)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
@@ -125,11 +126,12 @@ fun View.visible(animate: Boolean = false) {
     } else visibility = View.VISIBLE
 }
 
-fun View.invisible(animate: Boolean = false) {
+fun View.invisible(animate: Boolean = false,
+                   animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
     if (visibility == View.INVISIBLE) return
     if (animate) animate()
             .alpha(0.0f)
-            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .setDuration(animDuration)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
@@ -139,11 +141,12 @@ fun View.invisible(animate: Boolean = false) {
     else visibility = View.INVISIBLE
 }
 
-fun View.gone(animate: Boolean = false) {
+fun View.gone(animate: Boolean = false,
+              animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
     if (visibility == View.GONE) return
     if (animate) animate()
             .alpha(0.0f)
-            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .setDuration(animDuration)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
