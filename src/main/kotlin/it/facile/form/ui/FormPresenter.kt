@@ -73,8 +73,9 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
         subscriptions.clear()
     }
 
-    protected fun showErrors(show: Boolean) {
+    protected fun showFormErrors(show: Boolean) {
         stateErrorShown = show
         view?.showErrors(show)
+        if (show) view?.scrollToFirstError()
     }
 }
