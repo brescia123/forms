@@ -77,6 +77,20 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
         return this
     }
 
+    /** Merge this NodeMap with the given one and return a new NodeMap  */
+    fun with(nodeMap: NodeMap?): NodeMap {
+        val temp = mutableMapOf(*map.toList().toTypedArray())
+        temp.putAll(nodeMap?.map ?: emptyMap())
+        return NodeMap(temp)
+    }
+
+    /** Merge this NodeMap with the given pair and return a new NodeMap  */
+    fun with(pair: Pair<String, Any?>): NodeMap {
+        val temp = mutableMapOf(*map.toList().toTypedArray())
+        temp.put(pair.first, pair.second)
+        return NodeMap(temp)
+    }
+
     companion object {
         fun empty() = NodeMap(mutableMapOf())
     }

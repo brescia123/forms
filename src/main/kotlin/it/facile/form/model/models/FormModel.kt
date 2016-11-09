@@ -75,11 +75,11 @@ data class FormModel(val storage: FormStorage,
     }
 
     /** Return the serialized version of this form */
-    fun getSerialized(with: NodeMap? = null): NodeMap = fields()
+    fun getSerialized(): NodeMap = fields()
             .map { it.serialize(storage) } // Serialize every single fields
             .filter { it != null } // Filter non serializable fields
             .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
-            .fold(with ?: NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
+            .fold(NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
     fun loadDynamicValues() {
