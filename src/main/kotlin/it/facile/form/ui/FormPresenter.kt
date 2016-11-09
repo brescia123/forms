@@ -48,15 +48,16 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
                         { logE(it.message) })
                 .addTo(subscriptions)
 
+        // Observe model loading state
         formModel.observeFormState()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
                             when (it!!) {
-                                FormState.READY -> v?.showLoadingErrors(false)
-                                FormState.LOADING -> v?.showLoadingErrors(false)
-                                FormState.ERROR -> v?.showLoadingErrors(true)
+                                FormState.READY -> this.view?.showLoadingErrors(false)
+                                FormState.LOADING -> this.view?.showLoadingErrors(false)
+                                FormState.ERROR -> this.view?.showLoadingErrors(true)
                             }
                         },
                         { logE(it) }
@@ -74,6 +75,6 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
 
     protected fun showErrors(show: Boolean) {
         stateErrorShown = show
-        v?.showErrors(show)
+        view?.showErrors(show)
     }
 }

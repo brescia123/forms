@@ -2,7 +2,6 @@ package it.facile.form.model.models
 
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.serialization.FieldSerialization
-import it.facile.form.model.serialization.FieldSerializationRule
 import it.facile.form.model.serialization.FieldSerializationRule.NEVER
 import it.facile.form.model.serialization.FieldSerializationStrategy.None
 import it.facile.form.storage.FormStorage

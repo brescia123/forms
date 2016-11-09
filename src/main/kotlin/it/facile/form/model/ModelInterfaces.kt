@@ -10,7 +10,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle
 
 /* ---------- Configurations ---------- */
 
-abstract class FieldConfig(val label: String) : ViewModelGenerator, ViewModelStyleGenerator {}
+abstract class FieldConfig(val label: String) : ViewModelGenerator, ViewModelStyleGenerator
 
 interface FieldsContainer {
     fun fields(): List<FieldModel>
@@ -18,7 +18,7 @@ interface FieldsContainer {
 
 interface CustomPickerId {}
 
-interface CanBeInError {
+interface CouldHaveLoadingError {
     val errorMessage: String
     var hasErrors: Boolean
 }

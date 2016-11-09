@@ -1,6 +1,6 @@
 package it.facile.form.model.configurations
 
-import it.facile.form.model.CanBeInError
+import it.facile.form.model.CouldHaveLoadingError
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRule
 import it.facile.form.model.FieldRulesValidator
@@ -19,7 +19,7 @@ class FieldConfigPicker(label: String,
                         val possibleValues: FieldPossibleValues,
                         val placeHolder: String = "Select a value",
                         override val errorMessage: String = "Loading error",
-                        override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator, CanBeInError {
+                        override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator, CouldHaveLoadingError {
 
     private var sub: Subscription? = null
     override var hasErrors = false

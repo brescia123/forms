@@ -2,7 +2,7 @@ package it.facile.form.model.models
 
 import it.facile.form.logD
 import it.facile.form.logE
-import it.facile.form.model.CanBeInError
+import it.facile.form.model.CouldHaveLoadingError
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
@@ -23,6 +23,11 @@ data class FormModel(val storage: FormStorage,
                      val pages: ArrayList<PageModel> = arrayListOf<PageModel>(),
                      private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
+    /** Enum representing the possibile form state:
+     * - READY: all the dynamic values have been loaded successfully
+     * - LOADING: there is some dynamic value still loading
+     * - ERROR: some load error occurred
+     */
     enum class FormState {
         READY,
         LOADING,
@@ -41,6 +46,7 @@ data class FormModel(val storage: FormStorage,
     fun getSection(path: FieldPath): SectionModel = pages[path.pageIndex].sections[path.sectionIndex]
     fun getField(path: FieldPath): FieldModel = pages[path.pageIndex].sections[path.sectionIndex].fields[path.fieldIndex]
 
+    /** Observable that emit [FieldPath] associated to fields that need to be updated */
     fun observeChanges(): Observable<FieldPath> = storage.observe()
             .doOnNext { if (it.second) executeFieldAction(it.first) } // Execute all side effects actions related to the key if user made
             .map { it.first } // Get rid of userMade boolean information
@@ -49,6 +55,7 @@ data class FormModel(val storage: FormStorage,
             .doOnError { logE(it.message) } // Log errors
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
 
+    /** Observable that emit [FormState] every time it changes */
     fun observeFormState(): Observable<FormState> = formStateSubject.asObservable().distinctUntilChanged()
 
     /** Notify the model of a field value change generated from the outside (that is a user made
@@ -74,11 +81,12 @@ data class FormModel(val storage: FormStorage,
             .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
             .fold(with ?: NodeMap.empty(), NodeMap::fromRemoteKeyValue) // Build the node map
 
+    /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
     fun loadDynamicValues() {
         formStateSubject.onNext(FormState.LOADING)
         fields().forEach {
             val config = it.configuration
-            if (config is CanBeInError) {
+            if (config is CouldHaveLoadingError) {
                 config.hasErrors = false
                 storage.ping(it.key)
             }
@@ -91,6 +99,17 @@ data class FormModel(val storage: FormStorage,
                         { formStateSubject.onNext(FormState.READY) })
     }
 
+    fun hasFormError() = fields()
+            .filter {
+                val hasError = (it.configuration as? FieldRulesValidator)?.isValid(storage.getValue(it.key), storage) != null
+                hasError and not(storage.isHidden(it.key))
+            }
+            .isNotEmpty()
+
+    fun addAction(pair: Pair<String, (FieldValue, FormStorage) -> Unit>) {
+        actions.add(pair)
+    }
+
     private fun executeFieldAction(key: String) =
             actions.filter { it.first == key }.forEach { it.second(storage.getValue(key), storage) }
 
@@ -98,7 +117,7 @@ data class FormModel(val storage: FormStorage,
             path.sectionIndex < pages[path.pageIndex].sections.size &&
             path.fieldIndex < pages[path.pageIndex].sections[path.sectionIndex].fields.size
 
-    private fun contains(key: String): Boolean = findFieldPathByKey(key).size > 0
+    private fun contains(key: String): Boolean = findFieldPathByKey(key).isNotEmpty()
 
     private fun findFieldModelByFieldPath(fieldPath: FieldPath): FieldModel =
             pages[fieldPath.pageIndex].sections[fieldPath.sectionIndex].fields[fieldPath.fieldIndex]
@@ -182,9 +201,5 @@ data class FormModel(val storage: FormStorage,
             form.init()
             return form
         }
-    }
-
-    fun addAction(pair: Pair<String, (FieldValue, FormStorage) -> Unit>) {
-        actions.add(pair)
     }
 }

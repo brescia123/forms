@@ -55,12 +55,7 @@ class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
 
     /** Return the position of the first error, -1 if no error are present */
     fun firstErrorPosition(): Int {
-        for ((index, viewModel) in viewModels.withIndex()) {
-            if (viewModel.hasError() and viewModel.isVisible()) {
-                return index
-            }
-        }
-        return -1
+        return viewModels.indexOfFirst { it.hasError() and it.isVisible() }
     }
 
     /** Return the positions of the first error, -1 if no error are present */

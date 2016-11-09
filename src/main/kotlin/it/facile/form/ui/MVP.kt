@@ -14,7 +14,7 @@ interface PresenterApi<in T : View> {
 /** Base Class for all the presenters. It takes care of implementing the attach/detach view mechanism. */
 abstract class Presenter<T : View> : PresenterApi<T> {
     /** holds the view reference when it is attached. if the Presenter is not attached ot any View it is null. */
-    var v: T? = null
+    var view: T? = null
 
     /**
      * This method should be called every time a View is attached to the Presenter (e.g. configuration changes)
@@ -26,7 +26,7 @@ abstract class Presenter<T : View> : PresenterApi<T> {
      * @param view the [View] to be attached
      */
     override fun onAttach(view: T) {
-        v = view
+        this.view = view
     }
 
     /**
@@ -36,7 +36,7 @@ abstract class Presenter<T : View> : PresenterApi<T> {
      * (typically within onStop())
      */
     override fun onDetach() {
-        v = null
+        view = null
     }
 
     /**
@@ -49,4 +49,4 @@ abstract class Presenter<T : View> : PresenterApi<T> {
 }
 
 /** Base Interface for all the components (Activities, Fragments..) that act as views in MVP. */
-interface View {}
+interface View
