@@ -25,23 +25,23 @@ class IsEmail(override val errorMessage: String = "Field should be a valid email
 }
 
 class IsCellularPhone(override val errorMessage: String = "Field should be a valid phone number") : FieldRule {
-    val phoneETACSRegex = Regex("^3[0-9]{8}")
-    val phoneGSMRegex = Regex("^3[0-9]{9}")
+    val phoneRegex = Regex("^3[0-9]{8,9}")
     override fun verify(value: FieldValue) =
-            value.asText()?.text?.matchesAtLeastOne(phoneETACSRegex, phoneGSMRegex) ?: false
+            value.asText()?.text?.matches(phoneRegex) ?: false
 
     override fun observedKeys() = emptyList<KeyReader>()
 }
 
 class IsName(override val errorMessage: String = "Field should be a valid name") : FieldRule {
-    val regex1 = Regex("(.)\\1\\1")
-    val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE)
-    val regex3 = Regex("^[a-zòàùèéìíóáúäëïöü\\ '\\-]+$", RegexOption.IGNORE_CASE)
+    val regex1 = Regex("(.)\\1\\1", RegexOption.IGNORE_CASE) // Tre caratteri uguali consecutivi
+    val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE) // Almeno una consonante (j è una vocale)
+    val regex3 = Regex("^[a-zòàùèéìíóáúäëïöü '\\-]+$", RegexOption.IGNORE_CASE)
     val regex4 = Regex("^[a-z]", RegexOption.IGNORE_CASE)
 
-    override fun verify(value: FieldValue) = not(value.asText()?.text?.matches(regex1) ?: true) and
-            not(value.asText()?.text?.matches(regex2) ?: true) and
-            (value.asText()?.text?.containsMatchOf(regex3) ?: false) and
+    override fun verify(value: FieldValue) =
+            not(value.asText()?.text?.containsMatchOf(regex1) ?: false) and
+            not(value.asText()?.text?.matches(regex2) ?: false) and
+            (value.asText()?.text?.matches(regex3) ?: false) and
             (value.asText()?.text?.containsMatchOf(regex4) ?: false)
 
     override fun observedKeys() = emptyList<KeyReader>()
