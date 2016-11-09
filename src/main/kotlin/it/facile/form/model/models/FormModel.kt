@@ -23,6 +23,8 @@ data class FormModel(val storage: FormStorage,
                      val pages: ArrayList<PageModel> = arrayListOf<PageModel>(),
                      private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
+    var state: FormState = FormState.LOADING
+
     /** Enum representing the possibile form state:
      * - READY: all the dynamic values have been loaded successfully
      * - LOADING: there is some dynamic value still loading
@@ -83,7 +85,7 @@ data class FormModel(val storage: FormStorage,
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
     fun loadDynamicValues() {
-        formStateSubject.onNext(FormState.LOADING)
+        changeState(FormState.LOADING)
         fields().forEach {
             val config = it.configuration
             if (config is CouldHaveLoadingError) {
@@ -95,8 +97,8 @@ data class FormModel(val storage: FormStorage,
                 .mergeDelayError(possibleValues(), deferredConfigs())
                 .subscribe(
                         {},
-                        { formStateSubject.onNext(FormState.ERROR) },
-                        { formStateSubject.onNext(FormState.READY) })
+                        { changeState(FormState.ERROR) },
+                        { changeState(FormState.READY) })
     }
 
     fun hasFormError() = fields()
@@ -108,6 +110,11 @@ data class FormModel(val storage: FormStorage,
 
     fun addAction(pair: Pair<String, (FieldValue, FormStorage) -> Unit>) {
         actions.add(pair)
+    }
+
+    private fun changeState(newState: FormState) {
+        state = newState
+        formStateSubject.onNext(state)
     }
 
     private fun executeFieldAction(key: String) =
@@ -150,7 +157,11 @@ data class FormModel(val storage: FormStorage,
     }
 
     private fun possibleValues() = Observable.mergeDelayError(
-            fields().filter { it.configuration is FieldConfigPicker && it.configuration.possibleValues is ToBeRetrieved }
+            fields().filter {
+                it.configuration is FieldConfigPicker
+                        // Check if PossibleValues is ToBeRetrieved (look first into storage and then into configuration
+                        && (storage.getPossibleValues(it.key) ?: it.configuration.possibleValues) is ToBeRetrieved
+            }
                     .map {
                         val key = it.key
                         val config = it.configuration as FieldConfigPicker
