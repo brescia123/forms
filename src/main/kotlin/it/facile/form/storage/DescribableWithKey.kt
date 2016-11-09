@@ -7,18 +7,9 @@ interface DescribableWithKey {
     operator fun component2() = textDescription
 }
 
-infix fun Int.keyTo(that: String): DescribableWithKey {
-    val keyInt = this
-    return object : DescribableWithKey {
-        override val key: String = keyInt.toString()
-        override val textDescription: String = that
-    }
-}
+data class SimpleDescribableWithKey(override val key: String,
+                                    override val textDescription: String) : DescribableWithKey
 
-infix fun String.keyTo(that: String): DescribableWithKey {
-    val keyString = this
-    return object : DescribableWithKey {
-        override val key: String = keyString
-        override val textDescription: String = that
-    }
-}
+infix fun Int.keyTo(that: String): DescribableWithKey = SimpleDescribableWithKey(toString(), that)
+
+infix fun String.keyTo(that: String): DescribableWithKey = SimpleDescribableWithKey(this, that)
