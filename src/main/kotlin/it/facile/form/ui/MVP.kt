@@ -6,7 +6,7 @@ package it.facile.form.ui
  * @param T The type of view (which extends [View]) the presenter is controlling.
  */
 interface PresenterApi<in T : View> {
-    fun onAttach(view: T)
+    fun onAttach(v: T)
     fun onDetach()
     fun onDestroy()
 }
@@ -23,10 +23,10 @@ abstract class Presenter<T : View> : PresenterApi<T> {
      * network call is still alive and so the View has to display a ProgressBar).
      * (typically within onStart())
      *
-     * @param view the [View] to be attached
+     * @param v the [View] to be attached
      */
-    override fun onAttach(view: T) {
-        this.view = view
+    override fun onAttach(v: T) {
+        this.view = v
     }
 
     /**
