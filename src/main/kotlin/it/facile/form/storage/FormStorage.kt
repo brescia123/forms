@@ -32,7 +32,7 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
     /** Set the new selected value for the given key and notify the change.
      * If at the given key the value already present is equal to the given one it does nothing. */
     fun putValue(key: String, value: FieldValue, userMade: Boolean = false) {
-        if (value == values[key]?.value) return // No changes
+        if (value == getValue(key)) return // No changes
         values.put(key, Entry(value, isHidden(key), isDisabled(key)))
         notify(key, userMade)
     }
@@ -95,6 +95,7 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
         clearValue(key)
     }
 
+    /** Emits key of values changed and if it was an user-made change */
     fun observe(): Observable<Pair<String, Boolean>> = publishSubject.asObservable()
 
     private fun notify(key: String, userMade: Boolean) = publishSubject.onNext(key to userMade)

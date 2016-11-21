@@ -8,7 +8,7 @@ import it.facile.form.storage.FieldValue.Text
 class NotMissing(override val errorMessage: String = "Field should not be empty") : FieldRule {
     override fun verify(value: FieldValue) = when (value) {
         is FieldValue.Missing -> false
-        is Text -> value.text.length > 0
+        is Text -> value.text.isNotEmpty()
         else -> true
     }
 
@@ -33,15 +33,15 @@ class IsCellularPhone(override val errorMessage: String = "Field should be a val
 }
 
 class IsName(override val errorMessage: String = "Field should be a valid name") : FieldRule {
-    val regex1 = Regex("(.)\\1\\1", RegexOption.IGNORE_CASE) // Tre caratteri uguali consecutivi
-    val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE) // Almeno una consonante (j è una vocale)
+    val regex1 = Regex("(.)\\1\\1", RegexOption.IGNORE_CASE) // Three consecutive equal characters
+    val regex2 = Regex("^[bcdfghlmnpqrstvzkxw]+$", RegexOption.IGNORE_CASE) // Only consonant ("j" is vocal)
     val regex3 = Regex("^[a-zòàùèéìíóáúäëïöü '\\-]+$", RegexOption.IGNORE_CASE)
     val regex4 = Regex("^[a-z]", RegexOption.IGNORE_CASE)
 
     override fun verify(value: FieldValue) =
-            not(value.asText()?.text?.containsMatchOf(regex1) ?: false) and
-            not(value.asText()?.text?.matches(regex2) ?: false) and
-            (value.asText()?.text?.matches(regex3) ?: false) and
+            not(value.asText()?.text?.containsMatchOf(regex1) ?: false) and // There should not be three consecutive equal characters
+            not(value.asText()?.text?.matches(regex2) ?: false) and // The string should not be composed only by consonant ("j" is vocal)
+            (value.asText()?.text?.matches(regex3) ?: false) and // The string should contains only "a-zòàùèéìíóáúäëïöü "
             (value.asText()?.text?.containsMatchOf(regex4) ?: false)
 
     override fun observedKeys() = emptyList<KeyReader>()
