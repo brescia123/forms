@@ -56,7 +56,7 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
     /** Modify the field visibility and notify the change, if no value is found at key it does nothing.
      * If at the given key the visibility is equal to the given one it does nothing. */
     fun setVisibility(key: String, hidden: Boolean) {
-        if (values[key]?.hidden == hidden) return // No changes
+        if (isHidden(key) == hidden) return // No changes
         values.put(key, Entry(getValue(key), hidden, isDisabled(key)))
         notify(key, false)
     }
@@ -64,25 +64,32 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
     /** Put possible values for a particular key, clear the associated value and notify the change
      * If at the given key the possible values already present are equal the given ones it does nothing. */
     fun putPossibleValues(key: String, possibleValues: FieldPossibleValues) {
-        if (possibleValues == possibleValuesMap[key]) return // No changes
+        if (possibleValues == getPossibleValues(key)) return // No changes
         possibleValuesMap.put(key, possibleValues)
         clearValue(key)
     }
 
     /** Switch possible values for a particular key, switch the associated value and notify the change
-     * If at the given key the possible values already present are equal the given ones it does nothing. */
+     * If at the given key the possible values already present are equal the given ones it does nothing.
+     * If the old and new PossibleValues are of a different type ([Available] vs [ToBeRetrieved]) or,
+     * if both [Available], if the size are different or the set of keys are different,
+     * the selected value is cleared. */
     fun switchPossibleValues(key: String, possibleValues: FieldPossibleValues) {
-        if (possibleValues == possibleValuesMap[key]) return // No changes
+        val oldPossibleValues = getPossibleValues(key)
+        if (possibleValues == oldPossibleValues) return // No changes
         possibleValuesMap.put(key, possibleValues)
-        val currentValue = values[key]?.value
-        if (currentValue is Object) switchValueAtKey(key, currentValue)
-        notify(key, false)
+        val selectedValue = values[key]?.value
+        if (possibleValues.isCompatibleWith(oldPossibleValues) && selectedValue is Object) {
+            switchValueAtKey(key, selectedValue)
+        } else {
+            clearValue(key)
+        }
     }
 
     /** Modify the field value and visibility and notify the change.
      * If at the given key value and visibility are equal to the given ones it does nothing. */
     fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean) {
-        if (value == values[key]?.value && values[key]?.hidden == hidden) return // No changes
+        if (value == getValue(key) && hidden == isHidden(key)) return // No changes
         values.put(key, Entry(value, hidden, isDisabled(key)))
         notify(key, false)
     }
@@ -103,6 +110,12 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
     private fun switchValueAtKey(fieldKey: String, value: Object) {
         val fieldPossibleValues = possibleValuesMap[fieldKey]
         if (fieldPossibleValues is Available)
-            putValue(fieldKey, Object(fieldPossibleValues.list.filter { it.key == value.value.key }.first()))
+            putValue(fieldKey, Object(fieldPossibleValues.list.first { it.key == value.value.key }))
     }
+
+    private fun FieldPossibleValues.isCompatibleWith(possibleValues: FieldPossibleValues?) =
+            possibleValues is Available
+                    && this is Available
+                    && list.size == possibleValues.list.size
+                    && list.map { it.key }.containsAll(possibleValues.list.map { it.key })
 }

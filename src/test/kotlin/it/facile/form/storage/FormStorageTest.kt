@@ -3,6 +3,7 @@ package it.facile.form.storage
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.Dates
+import it.facile.form.FieldPossibleValuesGen
 import it.facile.form.FieldValueGen
 import it.facile.form.storage.FieldValue.*
 import it.facile.form.toSingle
@@ -13,7 +14,7 @@ class FormStorageTest : ShouldSpec() {
     lateinit var storage: FormStorage
     val nonExistingKeys = arrayOf("nonExistingKey1", "NonExistingKey2", "nonExistingKey3", "NonExistingKey4", "nonExistingKe5", "NonExistingKey6")
     val possibleValuesMap = mapOf(
-            "key3Object" to FieldPossibleValues.Available(listOf("e" keyTo "Desc")),
+            "key3Object" to FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")),
             "key8Object" to FieldPossibleValues.ToBeRetrieved(listOf("e" keyTo "Desc").toSingle())
     )
     val valuesTable = table(
@@ -86,7 +87,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "Form.putValue" {
+        "FormStorage.putValue" {
             should("put value at given key") {
                 forAll(Gen.string(), FieldValueGen) { key, value ->
                     storage.putValue(key, value)
@@ -107,7 +108,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "Form.enable" {
+        "FormStorage.enable" {
             should("enable value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.enable(key)
@@ -134,7 +135,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "Form.disable" {
+        "FormStorage.disable" {
             should("disable value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.disable(key)
@@ -161,8 +162,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-
-        "Form.clearValue" {
+        "FormStorage.clearValue" {
             should("clear value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.clearValue(key)
@@ -193,5 +193,159 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
+        "FormStorage.setVisibility" {
+            should("set correct visibility to value at given key") {
+                forAll(Gen.string(), Gen.bool()) { key, visibility ->
+                    storage.setVisibility(key, visibility)
+                    storage.isHidden(key) == visibility
+                }
+            }
+            should("notify the change") {
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                val expectedEvents = mutableListOf<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                forAll(Gen.string(), Gen.bool()) { key, visibility ->
+                    if (storage.isHidden(key) != visibility) expectedEvents.add(key to false)
+                    storage.setVisibility(key, visibility)
+                    true
+                }
+                testSubscriber.assertValues(*expectedEvents.toTypedArray())
+                testSubscriber.assertNoErrors()
+            }
+        }
+
+        "FormStorage.putPossibleValues" {
+            should("put possible values at given key") {
+                forAll(possibleValuesMap.entries.toTypedArray()) {
+                    val possibleValues = FieldPossibleValuesGen.generate()
+                    storage.putPossibleValues(it.key, possibleValues)
+                    storage.getPossibleValues(it.key) shouldBe possibleValues
+                }
+                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                    storage.putPossibleValues(key, possibleValues)
+                    storage.getPossibleValues(key) == possibleValues
+                }
+            }
+            should("clear value at given key") {
+                forAll(possibleValuesMap.entries.toTypedArray()) {
+                    val possibleValues = FieldPossibleValuesGen.generate()
+                    storage.putPossibleValues(it.key, possibleValues)
+                    if (storage.getPossibleValues(it.key) != possibleValues)
+                        storage.getValue(it.key) shouldBe Missing
+                }
+                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                    storage.putPossibleValues(key, possibleValues)
+                    if (storage.getPossibleValues(key) != possibleValues)
+                        storage.getValue(key) shouldBe Missing
+                    true
+                }
+            }
+            should("notify the change") {
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                val expectedEvents = mutableListOf<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                forAll(possibleValuesMap.entries.toTypedArray()) {
+                    val possibleValues = FieldPossibleValuesGen.generate()
+                    if (storage.getPossibleValues(it.key) != possibleValues) expectedEvents.add(it.key to false)
+                    storage.putPossibleValues(it.key, possibleValues)
+                }
+                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                    if (storage.getPossibleValues(key) != possibleValues) expectedEvents.add(key to false)
+                    storage.putPossibleValues(key, possibleValues)
+                    true
+                }
+                testSubscriber.assertValues(*expectedEvents.toTypedArray())
+                testSubscriber.assertNoErrors()
+            }
+        }
+
+        "FormStorage.switchPossibleValues" {
+            should("switch possible values at given key") {
+                forAll(possibleValuesMap.entries.toTypedArray()) {
+                    val possibleValues = FieldPossibleValuesGen.generate()
+                    storage.switchPossibleValues(it.key, possibleValues)
+                    storage.getPossibleValues(it.key) shouldBe possibleValues
+                }
+                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                    storage.switchPossibleValues(key, possibleValues)
+                    storage.getPossibleValues(key) == possibleValues
+                }
+            }
+            should("leave selected value if new and old PossibleValues are compatible") {
+                storage.putPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")))
+                storage.putValue("key3Object", Object("key1" keyTo "Desc1"))
+                storage.switchPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "DESC1", "key2" keyTo "DESC2")))
+                storage.getValue("key3Object") shouldBe Object("key1" keyTo "DESC1")
+            }
+            should("leave clear selected value if new and old PossibleValues are incompatible") {
+                storage.putPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")))
+                storage.putValue("key3Object", Object("key1" keyTo "Desc1"))
+                storage.switchPossibleValues("key3Object", FieldPossibleValues.Available(listOf("Key1" keyTo "DESC1", "key2" keyTo "DESC2")))
+                storage.getValue("key3Object") shouldBe Missing
+            }
+            should("notify the change") {
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                val expectedEvents = mutableListOf<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                forAll(possibleValuesMap.entries.toTypedArray()) {
+                    val possibleValues = FieldPossibleValuesGen.generate()
+                    if (storage.getPossibleValues(it.key) != possibleValues) expectedEvents.add(it.key to false)
+                    storage.switchPossibleValues(it.key, possibleValues)
+                }
+                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                    if (storage.getPossibleValues(key) != possibleValues) expectedEvents.add(key to false)
+                    storage.switchPossibleValues(key, possibleValues)
+                    true
+                }
+                testSubscriber.assertValues(*expectedEvents.toTypedArray())
+                testSubscriber.assertNoErrors()
+            }
+        }
+
+        "FormStorage.putValueAndSetVisibility" {
+            should("set correct visibility an put value at given key") {
+                forAll(Gen.string(), FieldValueGen, Gen.bool()) { key, value, visibility ->
+                    storage.putValueAndSetVisibility(key, value, visibility)
+                    storage.isHidden(key) == visibility && storage.getValue(key) == value
+                }
+            }
+            should("notify the change") {
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                val expectedEvents = mutableListOf<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                forAll(Gen.string(), FieldValueGen, Gen.bool()) { key, value, visibility ->
+                    if (storage.isHidden(key) != visibility || storage.getValue(key) != value)
+                        expectedEvents.add(key to false)
+                    storage.putValueAndSetVisibility(key, value, visibility)
+                    true
+                }
+                testSubscriber.assertValues(*expectedEvents.toTypedArray())
+                testSubscriber.assertNoErrors()
+            }
+        }
+
+        "FormStorage.clearPossibleValues" {
+            should("clear possible values at given key") {
+                storage.putPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")))
+                storage.clearPossibleValues("key3Object")
+                storage.getPossibleValues("key3Object") shouldBe null
+            }
+            should("not notify the change if values were not present") {
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                storage.clearPossibleValues("missingPossibleValuesKey")
+                testSubscriber.assertNoErrors()
+                testSubscriber.assertNoValues()
+            }
+            should("notify the change if values were present") {
+                storage.putPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")))
+                val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
+                storage.observe().subscribe(testSubscriber)
+                storage.clearPossibleValues("key3Object")
+                testSubscriber.assertNoErrors()
+                testSubscriber.assertValue("key3Object" to false)
+            }
+
+        }
     }
 }

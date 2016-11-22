@@ -1,6 +1,9 @@
 package it.facile.form
 
 import io.kotlintest.properties.Gen
+import it.facile.form.storage.FieldPossibleValues
+import it.facile.form.storage.FieldPossibleValues.Available
+import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.keyTo
 import java.util.*
@@ -28,6 +31,23 @@ object FieldValueObjectGen : Gen<FieldValue.Object> {
 object FieldValueGen : Gen<FieldValue> {
     override fun generate(): FieldValue =
             Gen.oneOf(listOf(FieldValueBoolGen, FieldValueTextGen, FieldValueDateValueGen, FieldValueMissingGen, FieldValueObjectGen))
+                    .generate()
+                    .generate()
+}
+
+object AvailablePossibleValueaGen : Gen<Available> {
+    override fun generate() =
+            Available((0..Random().nextInt(100)).map { Gen.string().generate() keyTo Gen.string().generate() })
+}
+
+object ToBeRetrievedPossibleValueaGen : Gen<ToBeRetrieved> {
+    override fun generate() =
+            ToBeRetrieved((0..Random().nextInt(100)).map { Gen.string().generate() keyTo Gen.string().generate() }.toSingle())
+}
+
+object FieldPossibleValuesGen : Gen<FieldPossibleValues> {
+    override fun generate(): FieldPossibleValues =
+            Gen.oneOf(listOf(ToBeRetrievedPossibleValueaGen, AvailablePossibleValueaGen))
                     .generate()
                     .generate()
 }
