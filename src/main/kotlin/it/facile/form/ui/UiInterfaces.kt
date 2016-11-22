@@ -2,7 +2,6 @@ package it.facile.form.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.adapters.FieldsLayouts
 import it.facile.form.ui.adapters.SectionsAdapter
@@ -125,7 +124,7 @@ interface PageFormView : FormView {
 
     fun getFieldsLayouts(): FieldsLayouts = FieldsLayouts()
 
-    fun getCustomPickerActions(): Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap()
+    fun getCustomPickerActions(): Map<String, ((FieldValue) -> Unit) -> Unit> = emptyMap()
 
     fun getCustomBehaviours(): Map<String, () -> Unit> = emptyMap()
 }

@@ -3,6 +3,7 @@ package it.facile.form
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.*
+import it.facile.form.FieldValueGen
 
 class BasicFieldRulesTest : ShouldSpec() {
     init {

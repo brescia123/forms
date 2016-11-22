@@ -8,73 +8,61 @@ import rx.Observable
 import rx.subjects.PublishSubject
 import java.util.*
 
-class FormStorage(defaultEntries: Map<String, Entry>) {
+class FormStorage(defaultEntries: Map<String, Entry>) : FormStorageApi {
     private val publishSubject: PublishSubject<Pair<String, Boolean>> = PublishSubject.create()
     private val possibleValuesMap = mutableMapOf<String, FieldPossibleValues>()
-    val values = HashMap(defaultEntries)
+    override val values = HashMap(defaultEntries)
 
     /* ---------- Reading methods ---------- */
 
-    fun getValue(key: String): FieldValue = values[key]?.value ?: Missing
+    override fun getValue(key: String): FieldValue = values[key]?.value ?: Missing
 
-    fun isHidden(key: String): Boolean = values[key]?.hidden ?: false
+    override fun isHidden(key: String): Boolean = values[key]?.hidden ?: false
 
-    fun isDisabled(key: String): Boolean = values[key]?.disabled ?: false
+    override fun isDisabled(key: String): Boolean = values[key]?.disabled ?: false
 
-    fun getPossibleValues(key: String): FieldPossibleValues? = possibleValuesMap[key]
+    override fun getPossibleValues(key: String): FieldPossibleValues? = possibleValuesMap[key]
 
-    fun ping(key: String) {
+    override fun ping(key: String) {
         notify(key, false)
     }
 
     /* ---------- Writing methods ---------- */
 
-    /** Set the new selected value for the given key and notify the change.
-     * If at the given key the value already present is equal to the given one it does nothing. */
-    fun putValue(key: String, value: FieldValue, userMade: Boolean = false) {
+    override fun putValue(key: String, value: FieldValue, userMade: Boolean) {
         if (value == getValue(key)) return // No changes
         values.put(key, Entry(value, isHidden(key), isDisabled(key)))
         notify(key, userMade)
     }
 
-    fun disable(key: String, userMade: Boolean = false) {
+    override fun disable(key: String, userMade: Boolean) {
         values.put(key, Entry(getValue(key), isHidden(key), true))
         notify(key, userMade)
     }
 
-    fun enable(key: String, userMade: Boolean = false) {
+    override fun enable(key: String, userMade: Boolean) {
         values.put(key, Entry(getValue(key), isHidden(key), false))
         notify(key, userMade)
     }
 
-    /** Clear the selected value for the given key and notify the change */
-    fun clearValue(key: String, userMade: Boolean = false) {
+    override fun clearValue(key: String, userMade: Boolean) {
         values.put(key, Entry(Missing, isHidden(key), isDisabled(key)))
         notify(key, userMade)
     }
 
-    /** Modify the field visibility and notify the change, if no value is found at key it does nothing.
-     * If at the given key the visibility is equal to the given one it does nothing. */
-    fun setVisibility(key: String, hidden: Boolean) {
+    override fun setVisibility(key: String, hidden: Boolean) {
         if (isHidden(key) == hidden) return // No changes
         values.put(key, Entry(getValue(key), hidden, isDisabled(key)))
         notify(key, false)
     }
 
-    /** Put possible values for a particular key, clear the associated value and notify the change
-     * If at the given key the possible values already present are equal the given ones it does nothing. */
-    fun putPossibleValues(key: String, possibleValues: FieldPossibleValues) {
+    override fun putPossibleValues(key: String, possibleValues: FieldPossibleValues) {
         if (possibleValues == getPossibleValues(key)) return // No changes
         possibleValuesMap.put(key, possibleValues)
         clearValue(key)
     }
 
-    /** Switch possible values for a particular key, switch the associated value and notify the change
-     * If at the given key the possible values already present are equal the given ones it does nothing.
-     * If the old and new PossibleValues are of a different type ([Available] vs [ToBeRetrieved]) or,
-     * if both [Available], if the size are different or the set of keys are different,
-     * the selected value is cleared. */
-    fun switchPossibleValues(key: String, possibleValues: FieldPossibleValues) {
+    override fun switchPossibleValues(key: String, possibleValues: FieldPossibleValues) {
         val oldPossibleValues = getPossibleValues(key)
         if (possibleValues == oldPossibleValues) return // No changes
         possibleValuesMap.put(key, possibleValues)
@@ -86,24 +74,19 @@ class FormStorage(defaultEntries: Map<String, Entry>) {
         }
     }
 
-    /** Modify the field value and visibility and notify the change.
-     * If at the given key value and visibility are equal to the given ones it does nothing. */
-    fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean) {
+    override fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean) {
         if (value == getValue(key) && hidden == isHidden(key)) return // No changes
         values.put(key, Entry(value, hidden, isDisabled(key)))
         notify(key, false)
     }
 
-    /** Clear possible values for the given key and and notify the change
-     * If at the given key there are no possible values it does nothing. */
-    fun clearPossibleValues(key: String) {
+    override fun clearPossibleValues(key: String) {
         if (not(possibleValuesMap.containsKey(key))) return
         possibleValuesMap.remove(key)
         clearValue(key)
     }
 
-    /** Emits key of values changed and if it was an user-made change */
-    fun observe(): Observable<Pair<String, Boolean>> = publishSubject.asObservable()
+    override fun observe(): Observable<Pair<String, Boolean>> = publishSubject.asObservable()
 
     private fun notify(key: String, userMade: Boolean) = publishSubject.onNext(key to userMade)
 

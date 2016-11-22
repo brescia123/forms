@@ -5,7 +5,6 @@ import android.support.v7.app.AlertDialog
 import android.text.method.LinkMovementMethod
 import android.view.View
 import it.facile.form.*
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.DescribableWithKey
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.DateValue
@@ -23,7 +22,7 @@ import java.util.*
 
 class FieldViewHolderText(itemView: View,
                           private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>,
-                          private val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>) :
+                          private val customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit>) :
         FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError, CanBeDisabled {
 
     private fun datePickerClickListener(position: Int, date: Date, minDate: Date, maxDate: Date): (View) -> Unit = {
@@ -77,7 +76,7 @@ class FieldViewHolderText(itemView: View,
                 itemView.isClickable = not(disabled)
             }
             is FieldViewModelStyle.DatePicker -> {
-                val date = style.selectedDate
+                val date = style.selectedDate ?: Dates.today()
                 val minDate = style.minDate
                 val maxDate = style.maxDate
                 itemView.setOnClickListener(if (viewModel.disabled) null else datePickerClickListener(position, date, minDate, maxDate))

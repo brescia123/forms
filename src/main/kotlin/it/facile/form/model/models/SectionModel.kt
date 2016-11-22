@@ -8,20 +8,13 @@ import it.facile.form.model.serialization.FieldSerializationStrategy.None
 import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.SectionViewModel
 
-data class SectionModel(val title: String) : FieldsContainer {
+data class SectionModel(val title: String, val fields: MutableList<FieldModel> = arrayListOf<FieldModel>()) : FieldsContainer {
 
-    val fields = arrayListOf<FieldModel>()
+    override fun fields() = fields.toList()
 
-    override fun fields(): List<FieldModel> {
-        return fields.toList()
-    }
-
-    fun buildSectionViewModel(storage: FormStorage): SectionViewModel {
-        return SectionViewModel(
-                title = title,
-                fields = fields.map { it.buildFieldViewModel(storage) }
-        )
-    }
+    fun buildSectionViewModel(storage: FormStorage) = SectionViewModel(
+            title = title,
+            fields = fields.map { it.buildFieldViewModel(storage) })
 
     /** Type-safe builder method to add a field */
     fun field(key: String,

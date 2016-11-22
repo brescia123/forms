@@ -3,7 +3,6 @@ package it.facile.form.ui.adapters
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import it.facile.form.model.CustomPickerId
 import it.facile.form.not
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.adapters.FieldViewHolders.FieldViewHolderBase
@@ -14,7 +13,7 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class FieldsAdapter(val viewModels: MutableList<FieldViewModel>,
-                    customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>,
+                    customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit>,
                     customBehaviours: Map<String, () -> Unit>,
                     fieldsLayouts: FieldsLayouts)
 : RecyclerView.Adapter<FieldViewHolderBase>() {

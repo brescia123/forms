@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import it.facile.form.SectionedRecyclerViewAdapter
 import it.facile.form.deferredNotifyItemChanged
 import it.facile.form.logD
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
@@ -15,7 +14,7 @@ import java.util.*
 
 class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
                       fieldsLayouts: FieldsLayouts = FieldsLayouts(),
-                      customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
+                      customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
                       customBehaviours: Map<String, () -> Unit> = emptyMap())
 : SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeaders.first, fieldsLayouts.sectionHeaders.second) {
     private val fieldsAdapter: FieldsAdapter

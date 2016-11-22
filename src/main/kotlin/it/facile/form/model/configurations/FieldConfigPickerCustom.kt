@@ -1,6 +1,5 @@
 package it.facile.form.model.configurations
 
-import it.facile.form.model.CustomPickerId
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRule
 import it.facile.form.model.FieldRulesValidator
@@ -13,7 +12,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.CustomPicker
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.ExceptionText
 
 class FieldConfigPickerCustom(label: String,
-                              val id: CustomPickerId,
+                              val id: String,
                               val placeHolder: String = "Select a value",
                               override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator {
 

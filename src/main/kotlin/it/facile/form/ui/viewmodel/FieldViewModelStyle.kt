@@ -1,6 +1,5 @@
 package it.facile.form.ui.viewmodel
 
-import it.facile.form.model.CustomPickerId
 import it.facile.form.model.InputTextType
 import it.facile.form.storage.DescribableWithKey
 import it.facile.form.ui.ViewTypeFactory
@@ -9,17 +8,49 @@ import java.util.*
 
 sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
 
-    object Empty : FieldViewModelStyle("Empty") { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class ExceptionText(val text: String) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class SimpleText(val text: String) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class InputText(val text: String, val inputTextType: InputTextType) : FieldViewModelStyle(text) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date, val dateText: String) : FieldViewModelStyle(dateText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class CustomPicker(val identifier: CustomPickerId, val valueText: String) : FieldViewModelStyle(valueText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle(valueText) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Action(val key: String, val identifier: String) : FieldViewModelStyle(key) { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
-    class Loading() : FieldViewModelStyle("Loading") { override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this) }
+    object Empty : FieldViewModelStyle("Empty") {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class ExceptionText(val text: String) : FieldViewModelStyle(text) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class SimpleText(val text: String) : FieldViewModelStyle(text) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class InputText(val text: String, val inputTextType: InputTextType) : FieldViewModelStyle(text) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class Checkbox(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class Toggle(val bool: Boolean, val boolText: String) : FieldViewModelStyle(boolText) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class DatePicker(val minDate: Date, val maxDate: Date, val selectedDate: Date?, val dateText: String) : FieldViewModelStyle(dateText) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class CustomPicker(val identifier: String, val valueText: String) : FieldViewModelStyle(valueText) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class Picker(val possibleValues: List<DescribableWithKey>, val valueText: String) : FieldViewModelStyle(valueText) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class Action(val key: String, val identifier: String) : FieldViewModelStyle(key) {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
+
+    class Loading() : FieldViewModelStyle("Loading") {
+        override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
+    }
 
     override fun toString(): String = textDescription
 
@@ -58,7 +89,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
         is InputText -> textDescription.hashCode() * 31 + text.hashCode()
         is Checkbox -> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()
         is Toggle -> (textDescription.hashCode() * 31 + bool.hashCode()) * 31 + boolText.hashCode()
-        is DatePicker -> (((textDescription.hashCode() * 31 + minDate.hashCode()) * 31 + maxDate.hashCode()) * 31 + selectedDate.hashCode()) * 31 + dateText.hashCode()
+        is DatePicker -> (((textDescription.hashCode() * 31 + minDate.hashCode()) * 31 + maxDate.hashCode()) * 31 + (selectedDate?.hashCode() ?: 0)) * 31 + dateText.hashCode()
         is CustomPicker -> (textDescription.hashCode() * 31 + identifier.hashCode()) * 31 + valueText.hashCode()
         is Picker -> (textDescription.hashCode() * 31 + possibleValues.hashCode()) * 31 + valueText.hashCode()
         is Loading -> textDescription.hashCode()

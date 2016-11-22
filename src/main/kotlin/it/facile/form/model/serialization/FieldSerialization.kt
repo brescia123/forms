@@ -30,8 +30,12 @@ sealed class FieldSerializationStrategy() {
     class MultipleKey(val serializers: List<FieldSerializer>) : FieldSerializationStrategy()
 }
 
-class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) {
-    fun serialize(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>? {
+interface FieldSerializationApi {
+    fun serialize(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>?
+}
+
+class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
+    override fun serialize(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>? {
 
         if (rule == NEVER) return null
 

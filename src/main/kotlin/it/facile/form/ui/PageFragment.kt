@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import it.facile.form.R
 import it.facile.form.logD
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.adapters.FieldsLayouts
 import it.facile.form.ui.adapters.SectionsAdapter
@@ -28,7 +27,7 @@ class PageFragment : Fragment() {
 
     lateinit var pageViewModel: PageViewModel
     var fieldsLayouts: FieldsLayouts = FieldsLayouts()
-    var customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit>? = null
+    var customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit>? = null
     var customBehaviours: Map<String, () -> Unit>? = null
     private var sectionsAdapter: SectionsAdapter? = null
     private val valueChangesSubject = PublishSubject.create<Pair<FieldPathSection, FieldValue>>()

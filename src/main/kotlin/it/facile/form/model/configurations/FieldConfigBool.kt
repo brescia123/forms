@@ -17,8 +17,6 @@ class FieldConfigBool(label: String,
 
     enum class ViewStyle { CHECKBOX, TOGGLE }
 
-    val defaultIfMissing = false
-
     override fun getViewModel(key: String, storage: FormStorage): FieldViewModel {
         return FieldViewModel(
                 label = label,
@@ -32,7 +30,7 @@ class FieldConfigBool(label: String,
         val value = storage.getValue(key)
         return when (value) {
             is Bool -> chooseViewModelStyle(value.bool)
-            is Missing -> chooseViewModelStyle(defaultIfMissing)
+            is Missing -> chooseViewModelStyle(false)
             else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }
     }

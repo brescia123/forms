@@ -3,7 +3,6 @@ package it.facile.form.ui.adapters
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import it.facile.form.model.CustomPickerId
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.FieldPathWithValue
 import it.facile.form.ui.PageFragment
@@ -15,7 +14,7 @@ import rx.subjects.PublishSubject
 
 class PagesAdapter(val pageViewModels: List<PageViewModel>,
                    val fieldsLayouts: FieldsLayouts = FieldsLayouts(),
-                   val customPickerActions: Map<CustomPickerId, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
+                   val customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
                    val customBehaviours: Map<String, () -> Unit> = emptyMap(),
                    fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 

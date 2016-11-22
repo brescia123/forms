@@ -5,18 +5,20 @@ import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 
 /* ---------- Configurations ---------- */
 
-abstract class FieldConfig(val label: String) : ViewModelGenerator, ViewModelStyleGenerator
+interface FieldConfigApi : ViewModelGenerator, ViewModelStyleGenerator {
+    val label: String
+}
+abstract class FieldConfig(override val label: String) : FieldConfigApi
 
 interface FieldsContainer {
     fun fields(): List<FieldModel>
 }
-
-interface CustomPickerId {}
 
 interface CouldHaveLoadingError {
     val errorMessage: String
@@ -39,9 +41,7 @@ interface FieldRulesValidator {
     val rules: (FormStorage) -> List<FieldRule>
     /** Return an error message if the value doesn't satisfy at least one rule, null otherwise */
     fun isValid(value: FieldValue, storage: FormStorage): String? {
-        rules(storage).map {
-            if (not(it.verify(value))) return it.errorMessage
-        }
+        rules(storage).forEach { if (not(it.verify(value))) return it.errorMessage }
         return null
     }
 }
@@ -72,7 +72,7 @@ interface WithKey {
 }
 
 /** [FormStorage] reader that allows the client to only read the storage for a predefined key */
-class KeyReader(override val key: String, private val storage: FormStorage) : WithKey {
+class KeyReader(override val key: String, private val storage: FormStorageApi) : WithKey {
 
     /** @see [FormStorage.getValue] */
     fun getValue(): FieldValue = storage.getValue(key)
@@ -83,4 +83,6 @@ class KeyReader(override val key: String, private val storage: FormStorage) : Wi
     /** @see [FormStorage.getPossibleValues] */
     fun getPossibleValues(): FieldPossibleValues? = storage.getPossibleValues(key)
 
+    /** @see [FormStorage.isDisabled] */
+    fun isDisabled(): Boolean = storage.isDisabled(key)
 }
