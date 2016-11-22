@@ -169,7 +169,6 @@ data class FormModel(val storage: FormStorage,
                         logD("Loading possible values for config at key: $key")
                         possibleValues.possibleValuesSingle
                                 .doOnSuccess {
-                                    logD("Success for key: $key")
                                     config.hasErrors = false
                                     storage.putPossibleValues(key, Available(it))
                                     // If there is a match between preselectKey and possible values keys put the selected value into the storage
@@ -178,7 +177,7 @@ data class FormModel(val storage: FormStorage,
                                     }
                                 }
                                 .doOnError {
-                                    logE("Error for key: $key")
+                                    logE("Error retrieving possible values for config at key: $key\n${it.message}")
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }
@@ -194,12 +193,12 @@ data class FormModel(val storage: FormStorage,
                         logD("Loading deferred configuration at key: $key")
                         config.deferredConfig
                                 .doOnSuccess { // Replace config with the loaded one and notify
-                                    logD("Success for key: $key")
                                     replaceConfig(key, it)
                                     storage.ping(key)
                                 }
                                 .doOnError { // Make config show the error and notify
-                                    logE("Error for key: $key")
+                                    logE("Error retrieving deferred configuration for key: $key\n${it.message}")
+                                    logE(it)
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }

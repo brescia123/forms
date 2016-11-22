@@ -1,5 +1,6 @@
 package it.facile.form.ui
 
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import it.facile.form.storage.FieldValue
@@ -118,6 +119,10 @@ interface PageFormView : FormView {
 
     override fun showErrors(show: Boolean) {
         sectionsAdapter?.showErrors(show)
+        if ((sectionsAdapter?.hasErrors() ?: false) and show)
+            Snackbar.make(getRecyclerView(),
+                    sectionsAdapter?.firstErrorMessage() ?: "Si è verificato un errore",
+                    Snackbar.LENGTH_SHORT)
     }
 
     fun getRecyclerView(): RecyclerView

@@ -21,15 +21,15 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
         formModel.loadDynamicValues()
     }
 
-    override fun onAttach(view: V) {
-        super.onAttach(view)
+    override fun onAttach(v: V) {
+        super.onAttach(v)
 
         // Initialize the View with the page ViewModels
-        view.init(formModel.pages.map { it.buildPageViewModel(formModel.storage) })  // Init view with viewModels
-        view.showErrors(stateErrorShown) // Restore state
+        v.init(formModel.pages.map { it.buildPageViewModel(formModel.storage) })  // Init view with viewModels
+        v.showErrors(stateErrorShown) // Restore state
 
         // Observe values from view (FieldPathValue) and notify new values to the model
-        view.observeValueChanges()
+        v.observeValueChanges()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .retry()
@@ -44,7 +44,7 @@ abstract class FormPresenter<V : FormView>() : Presenter<V>() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { view.updateField(it, formModel.getPage(it).buildPageViewModel(formModel.storage)) },
+                        { v.updateField(it, formModel.getPage(it).buildPageViewModel(formModel.storage)) },
                         { logE(it.message) })
                 .addTo(subscriptions)
 
