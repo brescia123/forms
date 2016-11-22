@@ -93,6 +93,7 @@ fun View.gone(animate: Boolean = false,
     else visibility = View.GONE
 }
 
+fun EditText.wrap(initialVal: Boolean = true) = Observable.create(EditTextOnSubscribe(this, initialVal))
 
 fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
                                                  top: Drawable? = null,

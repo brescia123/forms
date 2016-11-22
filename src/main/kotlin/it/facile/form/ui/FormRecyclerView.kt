@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import it.facile.form.logW
+import it.facile.form.ui.utils.FormDefaultItemAnimator
 
 class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : RecyclerView(context, attrs) {
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : this(context, attrs) {

@@ -52,8 +52,8 @@ class FieldViewHolderInputText(itemView: View,
         }
     }
 
-    private fun rxEditText(editText: EditText?) = RxTextChangedWrapper.wrap(editText, false)
-            .debounce(300, TimeUnit.MILLISECONDS)
+    private fun rxEditText(editText: EditText?) = editText?.wrap(false)
+            ?.debounce(300, TimeUnit.MILLISECONDS)
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
@@ -79,7 +79,7 @@ class FieldViewHolderInputText(itemView: View,
                 editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
                 // If new char typed notify new value
-                if (not(disabled)) subscription = rxEditText(editText).subscribe(
+                if (not(disabled)) subscription = rxEditText(editText)?.subscribe(
                         { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                         { logE(it) })
 

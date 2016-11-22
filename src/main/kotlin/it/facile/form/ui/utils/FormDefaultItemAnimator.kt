@@ -1,4 +1,4 @@
-package it.facile.form.ui
+package it.facile.form.ui.utils
 
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.RecyclerView
