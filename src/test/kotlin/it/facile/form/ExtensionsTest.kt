@@ -1,11 +1,10 @@
 package it.facile.form
 
-import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
 import org.junit.Assert
 import rx.observers.TestSubscriber
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 class ExtensionsTest : ShouldSpec() {
@@ -70,18 +69,32 @@ class ExtensionsTest : ShouldSpec() {
                 subscription.isUnsubscribed shouldBe true
             }
         }
-    }
-}
 
-
-class MapGenerator : Gen<Map<Any, Any>> {
-    override fun generate(): Map<Any, Any> {
-        val map = mutableMapOf<Any, Any>()
-        val keyGen = Gen.oneOf(listOf(Gen.bool(), Gen.double(), Gen.float(), Gen.int(), Gen.long(), Gen.string()))
-        val valueGen = Gen.oneOf(listOf(Gen.bool(), Gen.double(), Gen.float(), Gen.int(), Gen.long(), Gen.string()))
-        for (i in 0..Random().nextInt(100)) {
-            map.put(keyGen.generate().generate(), valueGen.generate().generate())
+        "Dates.create" {
+            should("create should create right date") {
+                val date = Dates.create(2016, 0, 1)
+                date.year() shouldBe 2016
+                date.month() shouldBe 0
+                date.dayOfMonth() shouldBe 1
+                val format = SimpleDateFormat()
+                format.format(date) shouldEqual date.format(format)
+            }
         }
-        return map
+
+        "String.containsLink" {
+            should("return true if string contains link") {
+                "http://www.google.it".containsLink() shouldBe true
+                "ciaohttp://www.google.it".containsLink() shouldBe true
+                "ciao http://www.google.it/path".containsLink() shouldBe true
+                "ciao https://www.google.it".containsLink() shouldBe true
+            }
+            should("return false if string does not contain link") {
+                "www.".containsLink() shouldBe false
+                "".containsLink() shouldBe false
+                "www.google".containsLink() shouldBe false
+            }
+        }
     }
 }
+
+

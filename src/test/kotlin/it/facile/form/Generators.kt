@@ -32,3 +32,14 @@ object FieldValueGen : Gen<FieldValue> {
                     .generate()
 }
 
+class MapGenerator : Gen<Map<Any, Any>> {
+    override fun generate(): Map<Any, Any> {
+        val map = mutableMapOf<Any, Any>()
+        val keyGen = Gen.oneOf(listOf(Gen.bool(), Gen.double(), Gen.float(), Gen.int(), Gen.long(), Gen.string()))
+        val valueGen = Gen.oneOf(listOf(Gen.bool(), Gen.double(), Gen.float(), Gen.int(), Gen.long(), Gen.string()))
+        for (i in 0..Random().nextInt(100)) {
+            map.put(keyGen.generate().generate(), valueGen.generate().generate())
+        }
+        return map
+    }
+}

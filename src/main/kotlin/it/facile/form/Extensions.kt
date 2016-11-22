@@ -27,6 +27,7 @@ fun <T1, T2> Map<T1, T2>.equalMap(other: Map<T1, T2>): Boolean {
 internal val cal: Calendar by lazy { Calendar.getInstance() }
 
 object Dates {
+    /** Create a date with the given year, month (Jan == 0) and day (first day of month == 1). */
     fun create(year: Int = -1, month: Int = -1, day: Int = -1): Date {
         cal.time = Date()
         if (year > -1) cal.set(Calendar.YEAR, year)
