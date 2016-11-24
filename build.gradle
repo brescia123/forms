@@ -11,8 +11,8 @@ allprojects {
 
 buildscript {
 
-    ext.kotlin_version = '1.0.4'
-    ext.support_version = '25.0.0'
+    ext.kotlin_version = '1.0.5-2'
+    ext.support_version = '25.0.1'
 
     repositories {
         jcenter()
@@ -58,5 +58,5 @@ dependencies {
     compile "io.reactivex:rxjava:1.1.6"
     compile "io.reactivex:rxandroid:1.2.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
