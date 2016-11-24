@@ -44,7 +44,7 @@ class ModelInterfacesTest : ShouldSpec() {
             }
         }
 
-        "KeyReader.isDisabled()" {
+        "KeyReader.isDisabled" {
             should("call FormStorage.isDisabled() with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).isDisabled()
@@ -52,8 +52,8 @@ class ModelInterfacesTest : ShouldSpec() {
             }
         }
 
-        "KeyReader.getPossibleValus" {
-            should("call FormStorage.getPossibleValus with right key") {
+        "KeyReader.getPossibleValues" {
+            should("call FormStorage.getPossibleValues with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).getPossibleValues()
                 Mockito.verify(storageMock).getPossibleValues("key")

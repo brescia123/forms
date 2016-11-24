@@ -48,6 +48,7 @@ interface FieldBuilder {
 
 /* ---------- EMPTY ---------- */
 
+/** Type-safe builder method to add an empty field */
 fun SectionModel.empty(label: String): FieldModel {
     val fieldModel = FieldModel("", NEVER_SERIALIZE, FieldConfigEmpty(label))
     fields.add(fieldModel)
@@ -65,6 +66,7 @@ class FieldCheckboxBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigBool(label, CHECKBOX, boolToStringConverter, rules))
 }
 
+/** Type-safe builder method to add a checkbox field */
 fun SectionModel.checkbox(key: String, init: FieldCheckboxBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldCheckboxBuilder(key).apply(init).build()
     fields.add(fieldModel)
@@ -82,6 +84,7 @@ class FieldToggleBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigBool(label, TOGGLE, boolToStringConverter, rules))
 }
 
+/** Type-safe builder method to add a toggle field */
 fun SectionModel.toggle(key: String, init: FieldToggleBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldToggleBuilder(key).apply(init).build()
     fields.add(fieldModel)
@@ -113,6 +116,7 @@ class FieldDeferredBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigDeferred(label, deferredConfig, errorMessage))
 }
 
+/** Type-safe builder method to add a deferred configuration field */
 fun SectionModel.deferred(key: String, init: FieldDeferredBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldDeferredBuilder(key).apply(init).build()
     fields.add(fieldModel)
@@ -130,6 +134,7 @@ class FieldInputTextBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigInputText(label, rules, inputTextType))
 }
 
+/** Type-safe builder method to add an input text field */
 fun SectionModel.input(key: String, init: FieldInputTextBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldInputTextBuilder(key).apply(init).build()
     fields.add(fieldModel)
@@ -149,6 +154,7 @@ class FieldPickerBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigPicker(label, possibleValues, placeHolder, errorMessage, rules))
 }
 
+/** Type-safe builder method to add a picker field */
 fun SectionModel.picker(key: String, init: FieldPickerBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldPickerBuilder(key).apply(init).build()
     fields.add(fieldModel)
@@ -165,6 +171,7 @@ class FieldPickerCustomBuilder(private val key: String, val customPickerId: Stri
     override fun build() = FieldModel(key, serialization, FieldConfigPickerCustom(label, customPickerId, placeHolder, rules))
 }
 
+/** Type-safe builder method to add a custom picker field */
 fun SectionModel.pickerCustom(key: String, customPickerId: String, init: FieldPickerCustomBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldPickerCustomBuilder(key, customPickerId).apply(init).build()
     fields.add(fieldModel)
@@ -185,6 +192,7 @@ class FieldConfigPickerDateBuilder(private val key: String) : FieldBuilder {
             FieldModel(key, serialization, FieldConfigPickerDate(label, minDate, maxDate, dateFormatter, placeHolder, rules))
 }
 
+/** Type-safe builder method to add a date picker field */
 fun SectionModel.pickerDate(key: String, init: FieldConfigPickerDateBuilder.() -> Unit): FieldModel {
     val fieldModel = FieldConfigPickerDateBuilder(key).apply(init).build()
     fields.add(fieldModel)
