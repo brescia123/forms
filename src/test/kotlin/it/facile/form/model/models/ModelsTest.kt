@@ -36,8 +36,8 @@ class ModelsTest : ShouldSpec() {
     }
 
     init {
-        "FormModel.serializeWith" {
-            should("should call FieldSerialization.serializeWith") {
+        "FormModel.serializeAs" {
+            should("should call FieldSerialization.serializeAs") {
                 forAll(Gen.string(), FieldConfigsGen) { key, config ->
                     val serializationMock: FieldSerializationApi = mock()
                     val fieldModel = FieldModel(key, serializationMock, config)

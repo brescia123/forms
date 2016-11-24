@@ -7,7 +7,9 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 
 
-class RemoteKey(vararg val path: String) {}
+val NEVER_SERIALIZE = NEVER serializeAs None
+
+class RemoteKey(vararg val path: String)
 
 fun RemoteKey.head() = path.first()
 fun RemoteKey.tail() = path.filterIndexed { i, _ignored -> i != 0 }
@@ -100,7 +102,7 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
     }
 }
 
-infix fun FieldSerializationRule.serializeWith(s: FieldSerializationStrategy) = FieldSerialization(this, s)
-infix fun FieldSerializationRule.serializeWith(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
-infix fun FieldSerializationRule.serializeWith(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
+infix fun FieldSerializationRule.serializeAs(s: FieldSerializationStrategy) = FieldSerialization(this, s)
+infix fun FieldSerializationRule.serializeAs(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
+infix fun FieldSerializationRule.serializeAs(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
 infix fun ((String) -> RemoteKey).to(v: (FieldValue) -> Any?) = FieldSerializer(this, v)
