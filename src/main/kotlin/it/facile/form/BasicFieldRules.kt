@@ -25,7 +25,7 @@ class IsEmail(override val errorMessage: String = "Field should be a valid email
 }
 
 class IsCellularPhone(override val errorMessage: String = "Field should be a valid phone number") : FieldRule {
-    val phoneRegex = Regex("^3[0-9]{8,9}")
+    val phoneRegex = Regex("^3[0-9]{9}")
     override fun verify(value: FieldValue) =
             value.asText()?.text?.matches(phoneRegex) ?: false
 
