@@ -32,7 +32,7 @@ interface CustomGen {
         }
 
         fun fieldModelList() = object : Gen<List<FieldModel>> {
-            override fun generate() = (0..Random().nextInt(25)).map { fieldModel().generate() }
+            override fun generate() = (1..(Random().nextInt(9) + 1)).map { fieldModel().generate() }
         }
 
         fun sectionModel() = object : Gen<SectionModel> {
@@ -44,7 +44,7 @@ interface CustomGen {
         }
 
         fun sectionModelList() = object : Gen<List<SectionModel>> {
-            override fun generate() = (0..Random().nextInt(10)).map { sectionModel().generate() }
+            override fun generate() = (1..(Random().nextInt(9) + 1)).map { sectionModel().generate() }
         }
 
         fun pageModel() = object : Gen<PageModel> {
@@ -56,12 +56,12 @@ interface CustomGen {
         }
 
         fun pageModelList() = object : Gen<List<PageModel>> {
-            override fun generate() = (0..Random().nextInt(10)).map { pageModel().generate() }
+            override fun generate() = (1..(Random().nextInt(9) + 1)).map { pageModel().generate() }
         }
 
 
-        fun formModel(storage: FormStorage = formStorage().generate()) = object : Gen<FormModel> {
-            override fun generate() = FormModel(storage, pageModelList().generate().toMutableList(), mutableListOf())
+        fun formModel(storage: FormStorageApi = formStorage().generate(), actions: MutableList<Pair<String, (FieldValue, FormStorageApi) -> Unit>> = mutableListOf()) = object : Gen<FormModel> {
+            override fun generate() = FormModel(storage, pageModelList().generate().toMutableList(), actions)
         }
 
 
@@ -69,16 +69,14 @@ interface CustomGen {
 
         fun fieldPath(formModel: FormModel = Companion.formModel().generate(), contained: Boolean = true) = object : Gen<FieldPath> {
             override fun generate(): FieldPath {
-                val random = Random()
-                val i = random.nextInt(2)
-                var pageIndex = random.nextInt(formModel.pages.lastIndex)
-                var sectionIndex = random.nextInt(formModel.pages[pageIndex].sections.lastIndex)
-                var fieldIndex = random.nextInt(formModel.pages[pageIndex].sections[sectionIndex].fields.lastIndex)
+                var pageIndex = formModel.pages.randomIndex()
+                var sectionIndex = formModel.pages[pageIndex].sections.randomIndex()
+                var fieldIndex = formModel.pages[pageIndex].sections[sectionIndex].fields.randomIndex()
                 if (!contained) {
-                    when (i) {
-                        0 -> pageIndex++
-                        1 -> sectionIndex++
-                        2 -> fieldIndex++
+                    when (Random().nextInt(2)) {
+                        0 -> pageIndex = formModel.pages.lastIndex + 1
+                        1 -> sectionIndex = formModel.pages[pageIndex].sections.lastIndex + 1
+                        2 -> fieldIndex = formModel.pages[pageIndex].sections[sectionIndex].fields.size
                     }
                 }
                 return FieldPath(fieldIndex, sectionIndex, pageIndex)
@@ -115,11 +113,11 @@ interface CustomGen {
         /* ---------- FieldPossibleValues ---------- */
 
         fun possibleValuesAvailable() = object : Gen<Available> {
-            override fun generate() = Available((0..Random().nextInt(100)).map { Gen.string().generate() keyTo Gen.string().generate() })
+            override fun generate() = Available((0..Random().nextInt(10)).map { Gen.string().generate() keyTo Gen.string().generate() })
         }
 
         fun possibleValuesToBeRetrieved() = object : Gen<ToBeRetrieved> {
-            override fun generate() = ToBeRetrieved((0..Random().nextInt(100)).map { Gen.string().generate() keyTo Gen.string().generate() }.toSingle())
+            override fun generate() = ToBeRetrieved((0..Random().nextInt(10)).map { Gen.string().generate() keyTo Gen.string().generate() }.toSingle())
         }
 
         fun possibleValues() = object : Gen<FieldPossibleValues> {
@@ -218,9 +216,9 @@ interface CustomGen {
         }
 
 
-        /* ---------- FormStorage ---------- */
+        /* ---------- FormStorageApi ---------- */
 
-        fun formStorage() = object : Gen<FormStorage> {
+        fun formStorage() = object : Gen<FormStorageApi> {
             override fun generate() = FormStorage((0..Random().nextInt(20))
                     .map { Gen.string().generate() to Entry(fieldValue().generate(), Gen.bool().generate(), Gen.bool().generate()) }.toMap())
         }
