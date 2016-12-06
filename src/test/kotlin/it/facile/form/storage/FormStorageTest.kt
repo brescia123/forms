@@ -10,7 +10,7 @@ import rx.observers.TestSubscriber
 
 class FormStorageTest : ShouldSpec() {
 
-    lateinit var storage: FormStorage
+    lateinit var storage: FormStorageApi
     val nonExistingKeys = arrayOf("nonExistingKey1", "NonExistingKey2", "nonExistingKey3", "NonExistingKey4", "nonExistingKe5", "NonExistingKey6")
     val possibleValuesMap = mapOf(
             "key3Object" to FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")),
@@ -39,7 +39,7 @@ class FormStorageTest : ShouldSpec() {
     }
 
     init {
-        "FormStorage.getValue" {
+        "FormStorageApi.getValue" {
             should("return value if present") {
                 forAll(valuesTable) { key, entry -> storage.getValue(key) shouldBe entry.value }
             }
@@ -48,7 +48,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.isHidden" {
+        "FormStorageApi.isHidden" {
             should("return the right hidden status if value is present") {
                 forAll(valuesTable) { key, entry -> storage.isHidden(key) shouldBe entry.hidden }
             }
@@ -57,7 +57,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.isDisabled" {
+        "FormStorageApi.isDisabled" {
             should("return the right disabled status if value is present") {
                 forAll(valuesTable) { key, entry -> storage.isDisabled(key) shouldBe entry.disabled }
             }
@@ -66,7 +66,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.getPossibleValues" {
+        "FormStorageApi.getPossibleValues" {
             should("return the right possible values if present") {
                 forAll(possibleValuesMap.toList().toTypedArray()) { storage.getPossibleValues(it.first) shouldBe it.second }
             }
@@ -75,7 +75,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.ping" {
+        "FormStorageApi.ping" {
             should("trigger an event for the given key") {
                 val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
                 storage.observe().subscribe(testSubscriber)
@@ -87,7 +87,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.putValue" {
+        "FormStorageApi.putValue" {
             should("put value at given key") {
                 forAll(Gen.string(), CustomGen.fieldValue()) { key, value ->
                     storage.putValue(key, value)
@@ -108,7 +108,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.enable" {
+        "FormStorageApi.enable" {
             should("enable value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.enable(key)
@@ -135,7 +135,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.disable" {
+        "FormStorageApi.disable" {
             should("disable value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.disable(key)
@@ -162,7 +162,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.clearValue" {
+        "FormStorageApi.clearValue" {
             should("clear value at given key") {
                 forAll(valuesTable) { key, entry ->
                     storage.clearValue(key)
@@ -195,7 +195,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.setVisibility" {
+        "FormStorageApi.setVisibility" {
             should("set correct visibility to value at given key") {
                 forAll(Gen.string(), Gen.bool()) { key, visibility ->
                     storage.setVisibility(key, visibility)
@@ -216,7 +216,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.putPossibleValues" {
+        "FormStorageApi.putPossibleValues" {
             should("put possible values at given key") {
                 forAll(possibleValuesMap.entries.toTypedArray()) {
                     val possibleValues = CustomGen.possibleValues().generate()
@@ -261,7 +261,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.switchPossibleValues" {
+        "FormStorageApi.switchPossibleValues" {
             should("switch possible values at given key") {
                 forAll(possibleValuesMap.entries.toTypedArray()) {
                     val possibleValues = CustomGen.possibleValues().generate()
@@ -304,7 +304,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.putValueAndSetVisibility" {
+        "FormStorageApi.putValueAndSetVisibility" {
             should("set correct visibility an put value at given key") {
                 forAll(Gen.string(), CustomGen.fieldValue(), Gen.bool()) { key, value, visibility ->
                     storage.putValueAndSetVisibility(key, value, visibility)
@@ -326,7 +326,7 @@ class FormStorageTest : ShouldSpec() {
             }
         }
 
-        "FormStorage.clearPossibleValues" {
+        "FormStorageApi.clearPossibleValues" {
             should("clear possible values at given key") {
                 storage.putPossibleValues("key3Object", FieldPossibleValues.Available(listOf("key1" keyTo "Desc1", "key2" keyTo "Desc2")))
                 storage.clearPossibleValues("key3Object")

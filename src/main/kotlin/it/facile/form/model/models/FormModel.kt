@@ -13,14 +13,14 @@ import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.storage.FieldValue
-import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import rx.subjects.PublishSubject
 
-data class FormModel(val storage: FormStorage,
+data class FormModel(val storage: FormStorageApi,
                      val pages: MutableList<PageModel> = arrayListOf<PageModel>(),
-                     private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
+                     private val actions: MutableList<Pair<String, (FieldValue, FormStorageApi) -> Unit>>) : FieldsContainer {
 
     var state: FormState = FormState.LOADING
 
@@ -100,14 +100,7 @@ data class FormModel(val storage: FormStorage,
                         { changeState(FormState.READY) })
     }
 
-    fun hasFormError() = fields()
-            .filter {
-                val hasError = (it.configuration as? FieldRulesValidator)?.isValid(storage.getValue(it.key), storage) != null
-                hasError and not(storage.isHidden(it.key))
-            }
-            .isNotEmpty()
-
-    fun addAction(pair: Pair<String, (FieldValue, FormStorage) -> Unit>) {
+    fun addAction(pair: Pair<String, (FieldValue, FormStorageApi) -> Unit>) {
         actions.add(pair)
     }
 
@@ -205,7 +198,7 @@ data class FormModel(val storage: FormStorage,
                     .map { it.toObservable() })
 
     companion object {
-        fun form(storage: FormStorage, actions: List<Pair<String, (FieldValue, FormStorage) -> Unit>>, init: FormModel.() -> Unit): FormModel {
+        fun form(storage: FormStorageApi, actions: List<Pair<String, (FieldValue, FormStorageApi) -> Unit>>, init: FormModel.() -> Unit): FormModel {
             val form = FormModel(storage, actions = actions.toMutableList())
             form.init()
             return form

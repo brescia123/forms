@@ -9,7 +9,7 @@ import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.storage.FieldValue.Missing
 import it.facile.form.storage.FieldValue.Object
-import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.*
@@ -19,12 +19,12 @@ class FieldConfigPicker(label: String,
                         val possibleValues: FieldPossibleValues,
                         val placeHolder: String = "Select a value",
                         override val errorMessage: String = "Loading error",
-                        override val rules: (FormStorage) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator, CouldHaveLoadingError {
+                        override val rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }) : FieldConfig(label), FieldRulesValidator, CouldHaveLoadingError {
 
     private var sub: Subscription? = null
     override var hasErrors = false
 
-    override fun getViewModel(key: String, storage: FormStorage) =
+    override fun getViewModel(key: String, storage: FormStorageApi) =
             FieldViewModel(
                     label = label,
                     style = getViewModelStyle(key, storage),
@@ -33,9 +33,9 @@ class FieldConfigPicker(label: String,
                     error = isValid(storage.getValue(key), storage))
 
 
-    val possibleValuesGenerator: (FormStorage, String) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }
+    val possibleValuesGenerator: (FormStorageApi, String) -> FieldPossibleValues = { storage, key -> storage.getPossibleValues(key) ?: possibleValues }
 
-    override fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle {
+    override fun getViewModelStyle(key: String, storage: FormStorageApi): FieldViewModelStyle {
         val value = storage.getValue(key)
         return if (hasErrors)
             ExceptionText(errorMessage)
@@ -47,7 +47,7 @@ class FieldConfigPicker(label: String,
             }
     }
 
-    private fun chooseViewModelStyle(storage: FormStorage, key: String, text: String): FieldViewModelStyle {
+    private fun chooseViewModelStyle(storage: FormStorageApi, key: String, text: String): FieldViewModelStyle {
         sub?.unsubscribe()
         val possibleValues = possibleValuesGenerator(storage, key)
         return when (possibleValues) {

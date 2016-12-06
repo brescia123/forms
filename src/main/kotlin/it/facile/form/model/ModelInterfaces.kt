@@ -4,7 +4,6 @@ import it.facile.form.model.models.FieldModel
 import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.FieldValue
-import it.facile.form.storage.FormStorage
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle
@@ -28,19 +27,19 @@ interface CouldHaveLoadingError {
 /* ---------- View Models ---------- */
 
 interface ViewModelGenerator {
-    fun getViewModel(key: String, storage: FormStorage): FieldViewModel
+    fun getViewModel(key: String, storage: FormStorageApi): FieldViewModel
 }
 
 interface ViewModelStyleGenerator {
-    fun getViewModelStyle(key: String, storage: FormStorage): FieldViewModelStyle
+    fun getViewModelStyle(key: String, storage: FormStorageApi): FieldViewModelStyle
 }
 
 /* ---------- Rules ---------- */
 
 interface FieldRulesValidator {
-    val rules: (FormStorage) -> List<FieldRule>
+    val rules: (FormStorageApi) -> List<FieldRule>
     /** Return an error message if the value doesn't satisfy at least one rule, null otherwise */
-    fun isValid(value: FieldValue, storage: FormStorage): String? {
+    fun isValid(value: FieldValue, storage: FormStorageApi): String? {
         rules(storage).forEach { if (not(it.verify(value))) return it.errorMessage }
         return null
     }
@@ -71,18 +70,18 @@ interface WithKey {
     val key: String
 }
 
-/** [FormStorage] reader that allows the client to only read the storage for a predefined key */
+/** [FormStorageApi] reader that allows the client to only read the storage for a predefined key */
 class KeyReader(override val key: String, private val storage: FormStorageApi) : WithKey {
 
-    /** @see [FormStorage.getValue] */
+    /** @see [FormStorageApi.getValue] */
     fun getValue(): FieldValue = storage.getValue(key)
 
-    /** @see [FormStorage.isHidden] */
+    /** @see [FormStorageApi.isHidden] */
     fun isHidden(): Boolean = storage.isHidden(key)
 
-    /** @see [FormStorage.getPossibleValues] */
+    /** @see [FormStorageApi.getPossibleValues] */
     fun getPossibleValues(): FieldPossibleValues? = storage.getPossibleValues(key)
 
-    /** @see [FormStorage.isDisabled] */
+    /** @see [FormStorageApi.isDisabled] */
     fun isDisabled(): Boolean = storage.isDisabled(key)
 }

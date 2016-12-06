@@ -4,7 +4,7 @@ import it.facile.form.model.serialization.FieldSerializationRule.IF_VISIBLE
 import it.facile.form.model.serialization.FieldSerializationRule.NEVER
 import it.facile.form.model.serialization.FieldSerializationStrategy.*
 import it.facile.form.storage.FieldValue
-import it.facile.form.storage.FormStorage
+import it.facile.form.storage.FormStorageApi
 import java.util.*
 
 val NEVER_SERIALIZE = NEVER serialize None
@@ -40,11 +40,11 @@ sealed class FieldSerializationStrategy() {
 }
 
 interface FieldSerializationApi {
-    fun apply(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>?
+    fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>?
 }
 
 class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
-    override fun apply(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>? {
+    override fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>? {
         if (rule == NEVER) return null
         if (rule == IF_VISIBLE && storage.isHidden(key)) return null
 

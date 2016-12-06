@@ -15,7 +15,7 @@ class ModelInterfacesTest : ShouldSpec() {
         "FieldRulesValidator.isValid" {
             should("return first error message found") {
                 val validator: FieldRulesValidator = object : FieldRulesValidator {
-                    override val rules = { s: FormStorage ->
+                    override val rules = { s: FormStorageApi ->
                         listOf(
                                 NotMissing("missingError"),
                                 IsEmail("emailError"))
@@ -29,7 +29,7 @@ class ModelInterfacesTest : ShouldSpec() {
         }
 
         "KeyReader.getValue" {
-            should("call FormStorage.getValue with right key") {
+            should("call FormStorageApi.getValue with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).getValue()
                 Mockito.verify(storageMock).getValue("key")
@@ -37,7 +37,7 @@ class ModelInterfacesTest : ShouldSpec() {
         }
 
         "KeyReader.isHidden" {
-            should("call FormStorage.isHidden with right key") {
+            should("call FormStorageApi.isHidden with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).isHidden()
                 Mockito.verify(storageMock).isHidden("key")
@@ -45,7 +45,7 @@ class ModelInterfacesTest : ShouldSpec() {
         }
 
         "KeyReader.isDisabled()" {
-            should("call FormStorage.isDisabled() with right key") {
+            should("call FormStorageApi.isDisabled() with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).isDisabled()
                 Mockito.verify(storageMock).isDisabled("key")
@@ -53,7 +53,7 @@ class ModelInterfacesTest : ShouldSpec() {
         }
 
         "KeyReader.getPossibleValus" {
-            should("call FormStorage.getPossibleValus with right key") {
+            should("call FormStorageApi.getPossibleValus with right key") {
                 val storageMock: FormStorageApi = mock()
                 KeyReader("key", storageMock).getPossibleValues()
                 Mockito.verify(storageMock).getPossibleValues("key")

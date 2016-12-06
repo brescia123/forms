@@ -8,19 +8,13 @@ data class FieldPath(val fieldIndex: Int, val sectionIndex: Int, val pageIndex: 
     companion object {
 
         fun buildForKey(key: String, formModel: FormModel): List<FieldPath> {
-            var pageIndex = 0
-            var fieldPaths = mutableListOf<FieldPath>()
-            for (page in formModel.pages) {
-                var sectionIndex = 0
-                for (section in page.sections) {
-                    var fieldIndex = 0
-                    for (field in section.fields) {
+            val fieldPaths = mutableListOf<FieldPath>()
+            for ((pageIndex, page) in formModel.pages.withIndex()) {
+                for ((sectionIndex, section) in page.sections.withIndex()) {
+                    for ((fieldIndex, field) in section.fields.withIndex()) {
                         if (field.key == key) fieldPaths.add(FieldPath(fieldIndex, sectionIndex, pageIndex))
-                        fieldIndex++
                     }
-                    sectionIndex++
                 }
-                pageIndex++
             }
             return fieldPaths
         }

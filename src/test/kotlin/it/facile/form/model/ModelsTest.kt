@@ -40,7 +40,7 @@ class ModelsTest : ShouldSpec() {
 
     init {
         "FormModel.apply" {
-            should("šcall FieldSerialization.apply") {
+            should("call FieldSerialization.apply") {
                 forAll(Gen.string(), CustomGen.fieldConfig()) { key, config ->
                     val serializationMock: FieldSerializationApi = mock()
                     val fieldModel = FieldModel(key, serializationMock, config)
