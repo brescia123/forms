@@ -3,7 +3,8 @@ package it.facile.form.model
 import io.kotlintest.mock.mock
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
-import it.facile.form.*
+import it.facile.form.CustomGen
+import it.facile.form.Dates
 import it.facile.form.model.models.FieldModel
 import it.facile.form.model.models.PageModel
 import it.facile.form.model.models.SectionModel
@@ -40,7 +41,7 @@ class ModelsTest : ShouldSpec() {
     init {
         "FormModel.apply" {
             should("šcall FieldSerialization.apply") {
-                forAll(Gen.string(), FieldConfigsGen) { key, config ->
+                forAll(Gen.string(), CustomGen.fieldConfig()) { key, config ->
                     val serializationMock: FieldSerializationApi = mock()
                     val fieldModel = FieldModel(key, serializationMock, config)
                     fieldModel.serialize(storage)
@@ -52,7 +53,7 @@ class ModelsTest : ShouldSpec() {
 
         "FormModel.buildFieldViewModel" {
             should("call FieldConfig.getViewModel") {
-                forAll(Gen.string(), FieldSerializationGen) { key, serialization ->
+                forAll(Gen.string(), CustomGen.fieldSerialization()) { key, serialization ->
                     val configMock: FieldConfigApi = mock()
                     val fieldModel = FieldModel(key, serialization, configMock)
                     fieldModel.buildFieldViewModel(storage)
@@ -65,7 +66,7 @@ class ModelsTest : ShouldSpec() {
         "SectionModel.buildFieldViewModel" {
             should("build correct SectionViewModel") {
                 forAll(Gen.string()) { title ->
-                    val fields = FieldModelListGen.generate()
+                    val fields = CustomGen.fieldModelList().generate()
                     val expectedFieldViewModels = fields.map { it.buildFieldViewModel(storage) }
                     val sectionModel = SectionModel(title, fields.toMutableList())
                     val sectionViewModel = sectionModel.buildSectionViewModel(storage)
@@ -78,7 +79,7 @@ class ModelsTest : ShouldSpec() {
         "PageModel.buildFieldViewModel" {
             should("build correct PageViewModel") {
                 forAll(Gen.string()) { title ->
-                    val sections = SectionModelListGen.generate()
+                    val sections = CustomGen.sectionModelList().generate()
                     val expectedSectionsViewModels = sections.map { it.buildSectionViewModel(storage) }
                     val pageModel = PageModel(title, sections.toMutableList())
                     val pageViewModel = pageModel.buildPageViewModel(storage)
@@ -87,7 +88,7 @@ class ModelsTest : ShouldSpec() {
             }
             should("build correct FieldModel list") {
                 forAll(Gen.string()) { title ->
-                    val sections = SectionModelListGen.generate()
+                    val sections = CustomGen.sectionModelList().generate()
                     val expectedFieldModels = sections.flatMap { it.fields }
                     val pageModel = PageModel(title, sections.toMutableList())
                     pageModel.fields() == expectedFieldModels

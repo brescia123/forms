@@ -15,7 +15,7 @@ class SerializationTest : ShouldSpec() {
     init {
         "FieldSerializer.apply" {
             should("call KeySerializer and ValueSerializer with right params") {
-                forAll(Gen.string(), FieldValueGen) { key, value ->
+                forAll(Gen.string(), CustomGen.fieldValue()) { key, value ->
                     val keySerializer: (String) -> RemoteKey = { RemoteKey(it) }
                     val valueSerializer: (FieldValue) -> Any? = { value.toString() }
                     val fieldSerializer = FieldSerializer(keySerializer, valueSerializer)
@@ -27,33 +27,33 @@ class SerializationTest : ShouldSpec() {
 
         "FieldSerialization.apply" {
             should("return null if rule is NEVER") {
-                forAll(FieldSerializationStrategyGen, Gen.string(), FormStorageGen) { strategy, key, storage ->
+                forAll(CustomGen.fieldSerializationStrategy(), Gen.string(), CustomGen.formStorage()) { strategy, key, storage ->
                     val serialization = FieldSerialization(NEVER, strategy)
                     serialization.apply(key, storage) == null
                 }
             }
             should("return null if rule is IF_VISIBLE and the field is hidden") {
-                forAll(FieldSerializationStrategyGen, Gen.string(), FormStorageGen) { strategy, key, storage ->
+                forAll(CustomGen.fieldSerializationStrategy(), Gen.string(), CustomGen.formStorage()) { strategy, key, storage ->
                     val serialization = FieldSerialization(IF_VISIBLE, strategy)
                     storage.setVisibility(key, hidden = true)
                     serialization.apply(key, storage) == null
                 }
             }
             should("return null if strategy is None") {
-                forAll(FieldSerializationRuleGen, Gen.string(), FormStorageGen) { rule, key, storage ->
+                forAll(CustomGen.fieldSerializationRule(), Gen.string(), CustomGen.formStorage()) { rule, key, storage ->
                     val serialization = FieldSerialization(rule, None)
                     serialization.apply(key, storage) == null
                 }
             }
             should("apply the correct serialization with default serializer and SingleKey") {
-                forAll(Gen.string(), FormStorageGen) { key, storage ->
+                forAll(Gen.string(), CustomGen.formStorage()) { key, storage ->
                     val defaultFieldSerializer = FieldSerializer()
                     val serialization = FieldSerialization(ALWAYS, SingleKey(defaultFieldSerializer))
                     serialization.apply(key, storage) == listOf(RemoteKey(key) to storage.getValue(key).toString())
                 }
             }
             should("apply the correct serialization with default serializer and MultipleKey") {
-                forAll(Gen.string(), FormStorageGen) { key, storage ->
+                forAll(Gen.string(), CustomGen.formStorage()) { key, storage ->
                     val keySerializer = { key: String -> RemoteKey("-$key-") }
                     val valueSerializer = { value: FieldValue -> "-$value-" }
                     val customFieldSerializer = FieldSerializer(keySerializer, valueSerializer)
@@ -74,13 +74,13 @@ class SerializationTest : ShouldSpec() {
 
         "NodeMap.fromRemoteKeyValue" {
             should("return a NodeMap with only one element") {
-                forAll(RemoteKeyGen, FieldValueGen) { remoteKey, value ->
+                forAll(CustomGen.remoteKey(), CustomGen.fieldValue()) { remoteKey, value ->
                     val nodeMap = NodeMap.empty().fromRemoteKeyValue(remoteKey to value)
                     nodeMap.size == 1
                 }
             }
             should("return a NodeMap with the right leaf and depth") {
-                forAll(RemoteKeyGen, FieldValueGen) { remoteKey, value ->
+                forAll(CustomGen.remoteKey(), CustomGen.fieldValue()) { remoteKey, value ->
                     val nodeMap = NodeMap.empty().fromRemoteKeyValue(remoteKey to value)
                     val leaf = (0..remoteKey.path.size - 2)
                             .fold(nodeMap) { innerNodeMap, i -> innerNodeMap[remoteKey.path[i]] as NodeMap }

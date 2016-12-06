@@ -2,9 +2,8 @@ package it.facile.form.storage
 
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
+import it.facile.form.CustomGen
 import it.facile.form.Dates
-import it.facile.form.FieldPossibleValuesGen
-import it.facile.form.FieldValueGen
 import it.facile.form.storage.FieldValue.*
 import it.facile.form.toSingle
 import rx.observers.TestSubscriber
@@ -90,7 +89,7 @@ class FormStorageTest : ShouldSpec() {
 
         "FormStorage.putValue" {
             should("put value at given key") {
-                forAll(Gen.string(), FieldValueGen) { key, value ->
+                forAll(Gen.string(), CustomGen.fieldValue()) { key, value ->
                     storage.putValue(key, value)
                     storage.getValue(key) == value
                 }
@@ -99,7 +98,7 @@ class FormStorageTest : ShouldSpec() {
                 val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
                 val expectedEvents = mutableListOf<Pair<String, Boolean>>()
                 storage.observe().subscribe(testSubscriber)
-                forAll(Gen.string(), FieldValueGen, Gen.bool()) { key, value, userMade ->
+                forAll(Gen.string(), CustomGen.fieldValue(), Gen.bool()) { key, value, userMade ->
                     if (storage.getValue(key) != value) expectedEvents.add(key to userMade)
                     storage.putValue(key, value, userMade)
                     true
@@ -220,23 +219,23 @@ class FormStorageTest : ShouldSpec() {
         "FormStorage.putPossibleValues" {
             should("put possible values at given key") {
                 forAll(possibleValuesMap.entries.toTypedArray()) {
-                    val possibleValues = FieldPossibleValuesGen.generate()
+                    val possibleValues = CustomGen.possibleValues().generate()
                     storage.putPossibleValues(it.key, possibleValues)
                     storage.getPossibleValues(it.key) shouldBe possibleValues
                 }
-                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                forAll(Gen.string(), CustomGen.possibleValues()) { key, possibleValues ->
                     storage.putPossibleValues(key, possibleValues)
                     storage.getPossibleValues(key) == possibleValues
                 }
             }
             should("clear value at given key") {
                 forAll(possibleValuesMap.entries.toTypedArray()) {
-                    val possibleValues = FieldPossibleValuesGen.generate()
+                    val possibleValues = CustomGen.possibleValues().generate()
                     storage.putPossibleValues(it.key, possibleValues)
                     if (storage.getPossibleValues(it.key) != possibleValues)
                         storage.getValue(it.key) shouldBe Missing
                 }
-                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                forAll(Gen.string(), CustomGen.possibleValues()) { key, possibleValues ->
                     storage.putPossibleValues(key, possibleValues)
                     if (storage.getPossibleValues(key) != possibleValues)
                         storage.getValue(key) shouldBe Missing
@@ -248,11 +247,11 @@ class FormStorageTest : ShouldSpec() {
                 val expectedEvents = mutableListOf<Pair<String, Boolean>>()
                 storage.observe().subscribe(testSubscriber)
                 forAll(possibleValuesMap.entries.toTypedArray()) {
-                    val possibleValues = FieldPossibleValuesGen.generate()
+                    val possibleValues = CustomGen.possibleValues().generate()
                     if (storage.getPossibleValues(it.key) != possibleValues) expectedEvents.add(it.key to false)
                     storage.putPossibleValues(it.key, possibleValues)
                 }
-                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                forAll(Gen.string(), CustomGen.possibleValues()) { key, possibleValues ->
                     if (storage.getPossibleValues(key) != possibleValues) expectedEvents.add(key to false)
                     storage.putPossibleValues(key, possibleValues)
                     true
@@ -265,11 +264,11 @@ class FormStorageTest : ShouldSpec() {
         "FormStorage.switchPossibleValues" {
             should("switch possible values at given key") {
                 forAll(possibleValuesMap.entries.toTypedArray()) {
-                    val possibleValues = FieldPossibleValuesGen.generate()
+                    val possibleValues = CustomGen.possibleValues().generate()
                     storage.switchPossibleValues(it.key, possibleValues)
                     storage.getPossibleValues(it.key) shouldBe possibleValues
                 }
-                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                forAll(Gen.string(), CustomGen.possibleValues()) { key, possibleValues ->
                     storage.switchPossibleValues(key, possibleValues)
                     storage.getPossibleValues(key) == possibleValues
                 }
@@ -291,11 +290,11 @@ class FormStorageTest : ShouldSpec() {
                 val expectedEvents = mutableListOf<Pair<String, Boolean>>()
                 storage.observe().subscribe(testSubscriber)
                 forAll(possibleValuesMap.entries.toTypedArray()) {
-                    val possibleValues = FieldPossibleValuesGen.generate()
+                    val possibleValues = CustomGen.possibleValues().generate()
                     if (storage.getPossibleValues(it.key) != possibleValues) expectedEvents.add(it.key to false)
                     storage.switchPossibleValues(it.key, possibleValues)
                 }
-                forAll(Gen.string(), FieldPossibleValuesGen) { key, possibleValues ->
+                forAll(Gen.string(), CustomGen.possibleValues()) { key, possibleValues ->
                     if (storage.getPossibleValues(key) != possibleValues) expectedEvents.add(key to false)
                     storage.switchPossibleValues(key, possibleValues)
                     true
@@ -307,7 +306,7 @@ class FormStorageTest : ShouldSpec() {
 
         "FormStorage.putValueAndSetVisibility" {
             should("set correct visibility an put value at given key") {
-                forAll(Gen.string(), FieldValueGen, Gen.bool()) { key, value, visibility ->
+                forAll(Gen.string(), CustomGen.fieldValue(), Gen.bool()) { key, value, visibility ->
                     storage.putValueAndSetVisibility(key, value, visibility)
                     storage.isHidden(key) == visibility && storage.getValue(key) == value
                 }
@@ -316,7 +315,7 @@ class FormStorageTest : ShouldSpec() {
                 val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
                 val expectedEvents = mutableListOf<Pair<String, Boolean>>()
                 storage.observe().subscribe(testSubscriber)
-                forAll(Gen.string(), FieldValueGen, Gen.bool()) { key, value, visibility ->
+                forAll(Gen.string(), CustomGen.fieldValue(), Gen.bool()) { key, value, visibility ->
                     if (storage.isHidden(key) != visibility || storage.getValue(key) != value)
                         expectedEvents.add(key to false)
                     storage.putValueAndSetVisibility(key, value, visibility)

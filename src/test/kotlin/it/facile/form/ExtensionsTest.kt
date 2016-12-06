@@ -1,7 +1,6 @@
 package it.facile.form
 
 import io.kotlintest.specs.ShouldSpec
-import it.facile.form.MapGenerator
 import org.junit.Assert
 import rx.observers.TestSubscriber
 import rx.subscriptions.CompositeSubscription
@@ -13,7 +12,7 @@ class ExtensionsTest : ShouldSpec() {
     init {
         "Map.equalMap" {
             should("return true when maps are equals") {
-                forAll(MapGenerator) { map: Map<Any, Any> ->
+                forAll(CustomGen.map()) { map: Map<Any, Any> ->
                     map.equalMap(map)
                 }
             }

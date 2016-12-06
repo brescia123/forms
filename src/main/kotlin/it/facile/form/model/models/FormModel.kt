@@ -17,10 +17,9 @@ import it.facile.form.storage.FormStorage
 import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
 import rx.subjects.PublishSubject
-import java.util.*
 
 data class FormModel(val storage: FormStorage,
-                     val pages: ArrayList<PageModel> = arrayListOf<PageModel>(),
+                     val pages: MutableList<PageModel> = arrayListOf<PageModel>(),
                      private val actions: MutableList<Pair<String, (FieldValue, FormStorage) -> Unit>>) : FieldsContainer {
 
     var state: FormState = FormState.LOADING

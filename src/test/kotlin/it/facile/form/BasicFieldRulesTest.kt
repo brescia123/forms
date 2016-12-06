@@ -3,7 +3,6 @@ package it.facile.form
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.*
-import it.facile.form.FieldValueGen
 
 class BasicFieldRulesTest : ShouldSpec() {
     init {
@@ -17,7 +16,7 @@ class BasicFieldRulesTest : ShouldSpec() {
                 notMissingRule.verify(FieldValue.Text("")) shouldBe false
             }
             should("return true is FieldValue is not Missing or empty string") {
-                forAll(FieldValueGen) { fieldValue: FieldValue ->
+                forAll(CustomGen.fieldValue()) { fieldValue: FieldValue ->
                     if (fieldValue != Missing && fieldValue.asText()?.text != "") {
                         notMissingRule.verify(fieldValue)
                     }
@@ -116,7 +115,7 @@ class BasicFieldRulesTest : ShouldSpec() {
                 shouldBeTrueRule.verify(Bool(false)) shouldBe false
             }
             should("return false if not Bool") {
-                forAll(FieldValueGen) {
+                forAll(CustomGen.fieldValue()) {
                     if (it is Bool) true
                     else shouldBeTrueRule.verify(it) == false
                 }
