@@ -5,12 +5,21 @@ import it.facile.form.model.serialization.FieldSerializationRule.NEVER
 import it.facile.form.model.serialization.FieldSerializationStrategy.*
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
+import java.util.*
 
+val NEVER_SERIALIZE = NEVER serialize None
 
-class RemoteKey(vararg val path: String) {}
+class RemoteKey(vararg val path: String) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is RemoteKey) return false
+        return Arrays.equals(other.path, path)
+    }
+
+    override fun hashCode(): Int = Arrays.hashCode(path)
+}
 
 fun RemoteKey.head() = path.first()
-fun RemoteKey.tail() = path.filterIndexed { i, _ignored -> i != 0 }
+fun RemoteKey.tail() = path.drop(1)
 fun RemoteKey.size() = path.size
 
 class FieldSerializer(val keySerializer: (String) -> RemoteKey = { key: String -> RemoteKey(key) },
@@ -31,19 +40,15 @@ sealed class FieldSerializationStrategy() {
 }
 
 interface FieldSerializationApi {
-    fun serialize(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>?
+    fun apply(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>?
 }
 
 class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
-    override fun serialize(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>? {
-
+    override fun apply(key: String, storage: FormStorage): List<Pair<RemoteKey, Any?>>? {
         if (rule == NEVER) return null
-
-        RemoteKey()
         if (rule == IF_VISIBLE && storage.isHidden(key)) return null
 
         val value: FieldValue = storage.getValue(key)
-
         return when (strategy) {
             None -> null
             is SingleKey -> listOf(strategy.serializer.serialize(key, value))

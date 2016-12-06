@@ -83,7 +83,8 @@ class FormStorageTest : ShouldSpec() {
                 forAll(valuesTable) { key, entry -> storage.ping(key) }
                 testSubscriber.assertNoErrors()
                 testSubscriber.assertValueCount(valuesTable.rows.size)
-                testSubscriber.assertValues(*valuesTable.rows.map { it.a to false }.toTypedArray())
+                val expectedValues = valuesTable.rows.map { it.a to false }
+                testSubscriber.assertValues(*expectedValues.toTypedArray())
             }
         }
 
@@ -180,7 +181,8 @@ class FormStorageTest : ShouldSpec() {
                     storage.clearValue(key)
                 }
                 testSubscriber.assertNoErrors()
-                testSubscriber.assertValues(*valuesTable.rows.map { it.a to false }.toTypedArray())
+                val expectedValues = valuesTable.rows.map { it.a to false }
+                testSubscriber.assertValues(*expectedValues.toTypedArray())
             }
             should("notify the change if user-made") {
                 val testSubscriber = TestSubscriber<Pair<String, Boolean>>()
@@ -189,7 +191,8 @@ class FormStorageTest : ShouldSpec() {
                     storage.clearValue(key, true)
                 }
                 testSubscriber.assertNoErrors()
-                testSubscriber.assertValues(*valuesTable.rows.map { it.a to true }.toTypedArray())
+                val expectedValues = valuesTable.rows.map { it.a to true }
+                testSubscriber.assertValues(*expectedValues.toTypedArray())
             }
         }
 

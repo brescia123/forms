@@ -25,7 +25,7 @@ data class FormModel(val storage: FormStorage,
 
     var state: FormState = FormState.LOADING
 
-    /** Enum representing the possibile form state:
+    /** Enum representing the possible form state:
      * - READY: all the dynamic values have been loaded successfully
      * - LOADING: there is some dynamic value still loading
      * - ERROR: some load error occurred

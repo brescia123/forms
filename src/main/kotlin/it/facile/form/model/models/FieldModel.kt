@@ -11,5 +11,5 @@ data class FieldModel(val key: String,
                       val serialization: FieldSerializationApi = FieldSerialization(NEVER, None),
                       val configuration: FieldConfigApi) {
     fun buildFieldViewModel(storage: FormStorage) = configuration.getViewModel(key, storage)
-    fun serialize(storage: FormStorage) = serialization.serialize(key, storage)
+    fun serialize(storage: FormStorage) = serialization.apply(key, storage)
 }
