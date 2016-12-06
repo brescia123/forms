@@ -7,7 +7,7 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
 import java.util.*
 
-val NEVER_SERIALIZE = NEVER serialize None
+val NEVER_SERIALIZE = NEVER serializeAs None
 
 class RemoteKey(vararg val path: String) {
     override fun equals(other: Any?): Boolean {
@@ -43,7 +43,7 @@ interface FieldSerializationApi {
     fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>?
 }
 
-class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
+data class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
     override fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>? {
         if (rule == NEVER) return null
         if (rule == IF_VISIBLE && storage.isHidden(key)) return null
@@ -105,7 +105,7 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
     }
 }
 
-infix fun FieldSerializationRule.serialize(s: FieldSerializationStrategy) = FieldSerialization(this, s)
-infix fun FieldSerializationRule.serialize(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
-infix fun FieldSerializationRule.serialize(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
+infix fun FieldSerializationRule.serializeAs(s: FieldSerializationStrategy) = FieldSerialization(this, s)
+infix fun FieldSerializationRule.serializeAs(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
+infix fun FieldSerializationRule.serializeAs(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
 infix fun ((String) -> RemoteKey).to(v: (FieldValue) -> Any?) = FieldSerializer(this, v)

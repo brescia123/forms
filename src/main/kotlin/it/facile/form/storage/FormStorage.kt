@@ -101,4 +101,8 @@ class FormStorage(defaultEntries: Map<String, Entry>) : FormStorageApi {
                     && this is Available
                     && list.size == possibleValues.list.size
                     && list.map { it.key }.containsAll(possibleValues.list.map { it.key })
+
+    companion object {
+        fun empty() = FormStorage(emptyMap())
+    }
 }

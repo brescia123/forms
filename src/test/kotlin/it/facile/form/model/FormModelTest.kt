@@ -5,7 +5,6 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.CustomGen
 import it.facile.form.anyKObject
-import it.facile.form.model.configurations.FieldConfigBool
 import it.facile.form.model.models.FormModel
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
@@ -91,19 +90,17 @@ class FormModelTest : ShouldSpec() {
                     override fun observedKeys(): List<WithKey> = listOf(observedKeyReader)
 
                 }
-                val model: FormModel = FormModel.form(storage, listOf()) {
+                val model: FormModel = form(storage, listOf()) {
                     page("page") {
                         section("section") {
-                            field(key = key,
-                                    config = FieldConfigBool(
-                                            label = "label",
-                                            viewStyle = FieldConfigBool.ViewStyle.CHECKBOX,
-                                            rules = { s -> listOf(rule) }))
-                            field(key = observedKey,
-                                    config = FieldConfigBool(
-                                            label = "label",
-                                            viewStyle = FieldConfigBool.ViewStyle.CHECKBOX,
-                                            rules = { s -> listOf() }))
+                            checkbox(key){
+                                label = "label"
+                                rules = { s -> listOf(rule) }
+                            }
+                            checkbox(observedKey) {
+                                label = "label"
+                                rules = { s -> listOf() }
+                            }
                         }
                     }
                 }

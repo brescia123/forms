@@ -67,14 +67,6 @@ data class FormModel(val storage: FormStorageApi,
         storage.putValue(key, value, true)
     }
 
-    /** Type-safe builder method to add a page */
-    fun page(title: String, init: PageModel.() -> Unit): PageModel {
-        val page = PageModel(title)
-        page.init()
-        pages.add(page)
-        return page
-    }
-
     /** Return the serialized version of this form */
     fun getSerialized(): NodeMap = fields()
             .map { it.serialize(storage) } // Serialize every single fields
@@ -197,11 +189,4 @@ data class FormModel(val storage: FormStorageApi,
                     }
                     .map { it.toObservable() })
 
-    companion object {
-        fun form(storage: FormStorageApi, actions: List<Pair<String, (FieldValue, FormStorageApi) -> Unit>>, init: FormModel.() -> Unit): FormModel {
-            val form = FormModel(storage, actions = actions.toMutableList())
-            form.init()
-            return form
-        }
-    }
 }
