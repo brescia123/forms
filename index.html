@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Forms by brescia123</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Forms</h1>
+      <h2 class="project-tagline">A library to easily create forms written in Kotlin</h2>
+      <a href="https://github.com/brescia123/forms" class="btn">View on GitHub</a>
+      <a href="https://github.com/brescia123/forms/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/brescia123/forms/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="form-library" class="anchor" href="#form-library" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Form library</h1>
+
+<p><em>Work in progress...</em></p>
+
+<h2>
+<a id="goal" class="anchor" href="#goal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Goal</h2>
+
+<p>The purpose of this library is to <em>abstract</em> the concept of a form composed by fields of various types
+(checkboxes, text inputs, pickers etc.) and allow to easily describe their structure and relationships.
+The goal is to be able to statically define a form in a single file that contains all the
+information needed to build and present it. For this reason the library provides both "model"
+components and UI components (Android stuff).</p>
+
+<p>Another feature is the possibility to define how the form should be "serialized" into a data structure
+composed by pair of key-values that could be easily converted into a JSON file or something equivalent.</p>
+
+<p>The library is written using <a href="kotlinlang.org">Kotlin</a> and its only dependency is RxJava.</p>
+
+<h2>
+<a id="structure" class="anchor" href="#structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure</h2>
+
+<p>The library is divided between three main logic modules:</p>
+
+<ul>
+<li>Storage (Kotlin only)</li>
+<li>Model (Kotlin only)</li>
+<li>UI (Android dependencies)</li>
+</ul>
+
+<p>In the future it will be dived in two separated modules allowing us to use the Model/Storage layer
+regardless of Android, maybe within the web world, thanks to Kotlin's ability to be compiled into
+JavaScript.</p>
+
+<h3>
+<a id="storage" class="anchor" href="#storage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Storage</h3>
+
+<p>The Storage is the place where all the values, defaults or entered by the user, are stored. It is
+basically a dictionary of keys (simple strings) and Entry with accessory methods used to manipulate it.</p>
+
+<div class="highlight highlight-source-Kotlin"><pre><span class="pl-c">// The definition of the entries stored within the Storage</span>
+<span class="pl-k">data</span> class <span class="pl-en">Entry</span>(<span class="pl-k">val</span> <span class="pl-smi">value</span><span class="pl-k">:</span> FieldValue, <span class="pl-k">val</span> <span class="pl-smi">hidden</span><span class="pl-k">:</span> <span class="pl-k">Boolean</span> <span class="pl-k">=</span> <span class="pl-c1">false</span>, <span class="pl-k">val</span> <span class="pl-smi">disabled</span><span class="pl-k">:</span> <span class="pl-k">Boolean</span> <span class="pl-k">=</span> <span class="pl-c1">false</span>)
+</pre></div>
+
+<p>Every entry contains information about its value, visibility and if it is enabled.
+Possible values are:</p>
+
+<ul>
+<li>Text - a simple string</li>
+<li>Bool - a simple boolean</li>
+<li>DateValue - a simple date</li>
+<li>Object - a generic object that should have a key and be describable (DescribableWithKey)</li>
+<li>Missing - represents the absence of the value</li>
+</ul>
+
+<h3>
+<a id="model" class="anchor" href="#model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Model</h3>
+
+<p>The Model is the key of the library in the sense that it allows you to define the form model that is
+its structure.</p>
+
+<p>A form could be structured into pages (PageModel), sections (SectionModel), and fields (FieldModel).</p>
+
+<h3>
+<a id="ui" class="anchor" href="#ui" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>UI</h3>
+
+<h2>
+<a id="modules-interaction" class="anchor" href="#modules-interaction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Modules interaction</h2>
+
+<h2>
+<a id="add-the-ui" class="anchor" href="#add-the-ui" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add the UI</h2>
+
+<h3>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup</h3>
+
+<p>In order to use the form UI, add <code>FormRecyclerView</code> to your layout</p>
+
+<pre><code>&lt;it.facile.form.ui.FormRecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"&gt;
+&lt;/it.facile.form.ui.FormRecyclerView&gt;
+</code></pre>
+
+<p><code>FormRecyclerView</code> is a simple <code>RecyclerView</code> with <code>LinearLayoutManager</code> as default layout manager and the
+<code>FormItemAnimator</code> as default item animator. (NB: to use a custom ItemAnimator make sure to extends
+<code>FormDefaultItemAnimator</code> to prevent problems with Input Text fields)</p>
+
+<p>Next you have should have your view (an <code>Activity</code>, a <code>Fragment</code> or whatever you want to contain the form)
+implement <code>FormView</code> interface and implement its methods:</p>
+
+<div class="highlight highlight-source-Kotlin"><pre><span class="pl-c">// Where your view receives the list of PageViewModel and initalizes the</span>
+<span class="pl-c">// components (recyclerview, adapters..) used to display them</span>
+<span class="pl-k">fun</span> <span class="pl-en">init</span>(<span class="pl-smi">pageViewModels</span><span class="pl-k">:</span> <span class="pl-k">List</span>&lt;PageViewModel&gt;)
+<span class="pl-c">// Where you should update a field with new informations</span>
+<span class="pl-k">fun</span> <span class="pl-en">updateField</span>(<span class="pl-smi">path</span><span class="pl-k">:</span> FieldPath,
+                <span class="pl-smi">viewModel</span><span class="pl-k">:</span> FieldViewModel,
+                <span class="pl-smi">sectionViewModel</span><span class="pl-k">:</span> SectionViewModel)
+<span class="pl-c">// With this method your should expose an Observable to that emits value entered by the user</span>
+<span class="pl-k">fun</span> <span class="pl-en">observeValueChanges</span>()<span class="pl-k">:</span> Observable&lt;FieldPathWithValue&gt;</pre></div>
+
+<p>The most important thing is <code>PageAdapter</code> used to display pages containing sections and fields using
+a <code>Fragment</code> for every form page. It should be instantiated with the list of <code>PageViewModel</code>
+available within <code>init()</code> method.</p>
+
+<p>Last but not least you have to instantiate a <code>FormPresenter</code> passing it the Model and to <strong>remember to call</strong>
+<code>onAttach()</code> and <code>onDetach()</code> methods typically within <code>onStop()</code> and <code>onStart()</code>.</p>
+
+<h3>
+<a id="custom-fields-layout" class="anchor" href="#custom-fields-layout" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Custom Fields layout</h3>
+
+<p>In order to use different layouts for fields you have to pass to <code>PagesAdapter</code> (or <code>SectionsAdapter</code> if you have
+a single page) a <code>FieldsLayouts</code>. Using Kotlin's named parameters you will be able to provide a layout
+id only for the fields that you want to customize:</p>
+
+<div class="highlight highlight-source-Kotlin"><pre><span class="pl-k">val</span> <span class="pl-en">fieldsLayouts</span> <span class="pl-k">=</span> FieldsLayouts(
+            text <span class="pl-k">=</span> R<span class="pl-k">.</span>layout<span class="pl-k">.</span>custom_text_layout,
+            checkBox<span class="pl-k">=</span> R<span class="pl-k">.</span>layout<span class="pl-k">.</span>custom_checkbox_layout)
+<span class="pl-k">val</span> <span class="pl-en">adapter</span> <span class="pl-k">=</span> PagesAdapter(pageViewModels, fieldsLayouts, supportFragmentManager)</pre></div>
+
+<p>The only rule to follow when implementing custom layouts is that they should include a predefined set
+of views with particular ids.</p>
+
+<h5>
+<a id="text-field" class="anchor" href="#text-field" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Text Field</h5>
+
+<ul>
+<li><code>textLabel</code></li>
+<li><code>textView</code></li>
+<li><code>textErrorText</code></li>
+<li><code>textErrorImage</code></li>
+</ul>
+
+<h5>
+<a id="input-text-field" class="anchor" href="#input-text-field" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Input Text Field</h5>
+
+<p>The input type is a particular one, in the sense that if you use Android support <code>TextInputLayout</code> you have to
+specify only its id (the view has all the feature to display label, error and value at the same time):</p>
+
+<ul>
+<li><code>inputValue</code></li>
+</ul>
+
+<p>If your are using a normal <code>EditText</code> and other views to show label, error text and error icon you have to specify the
+following ids:</p>
+
+<ul>
+<li><code>inputLabel</code></li>
+<li><code>inputEditText</code></li>
+<li><code>inputErrorText</code></li>
+<li><code>inputErrorImage</code></li>
+</ul>
+
+<h5>
+<a id="checkbox-field" class="anchor" href="#checkbox-field" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CheckBox Field</h5>
+
+<ul>
+<li><code>checkboxLabel</code></li>
+<li><code>checkboxView</code></li>
+<li><code>checkboxTextView</code></li>
+<li><code>checkboxErrorImage</code></li>
+</ul>
+
+<h5>
+<a id="toggle-field" class="anchor" href="#toggle-field" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Toggle Field</h5>
+
+<ul>
+<li><code>toggleLabel</code></li>
+<li><code>toggleView</code></li>
+<li><code>toggleTextView</code></li>
+<li><code>toggleErrorImage</code></li>
+</ul>
+
+<h5>
+<a id="exception" class="anchor" href="#exception" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Exception</h5>
+
+<ul>
+<li><code>exceptionLabel</code></li>
+<li><code>exceptionTextView</code></li>
+<li><code>exceptionImage</code></li>
+</ul>
+
+<h5>
+<a id="loading" class="anchor" href="#loading" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Loading</h5>
+
+<ul>
+<li><code>loadingLabel</code></li>
+<li><code>loadingProgressBar</code></li>
+</ul>
+
+<h5>
+<a id="section-header" class="anchor" href="#section-header" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Section Header</h5>
+
+<ul>
+<li><code>sectionTitle</code></li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/brescia123/forms">Forms</a> is maintained by <a href="https://github.com/brescia123">brescia123</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
