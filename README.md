@@ -2,7 +2,61 @@
 
 *Work in progress...*
 
-## Model definition
+## Goal
+
+The purpose of this library is to *abstract* the concept of a form composed by fields of various types
+(checkboxes, text inputs, pickers etc.) and allow to easily describe their structure and relationships.
+The goal is to be able to statically define a form in a single file that contains all the
+information needed to build and present it. For this reason the library provides both "model"
+components and UI components (Android stuff).
+
+Another feature is the possibility to define how the form should be "serialized" into a data structure
+composed by pair of key-values that could be easily converted into a JSON file or something equivalent.
+
+The library is written using [Kotlin](kotlinlang.org) and its only dependency is RxJava.
+
+## Structure
+
+The library is divided between three main logic modules:
+- Storage (Kotlin only)
+- Model (Kotlin only)
+- UI (Android dependencies)
+
+In the future it will be dived in two separated modules allowing us to use the Model/Storage layer
+regardless of Android, maybe within the web world, thanks to Kotlin's ability to be compiled into
+JavaScript.
+
+
+
+### Storage
+The Storage is the place where all the values, defaults or entered by the user, are stored. It is
+basically a dictionary of keys (simple strings) and Entry with accessory methods used to manipulate it.
+
+```kotlin
+// The definition of the entries stored within the Storage
+data class Entry(val value: FieldValue, val hidden: Boolean = false, val disabled: Boolean = false)
+
+```
+Every entry contains information about its value, visibility and if it is enabled.
+Possible values are:
+- Text - a simple string
+- Bool - a simple boolean
+- DateValue - a simple date
+- Object - a generic object that should have a key and be describable (DescribableWithKey)
+- Missing - represents the absence of the value
+
+### Model
+The Model is the key of the library in the sense that it allows you to define the form model that is
+its structure.
+
+A form could be structured into pages (PageModel), sections (SectionModel), and fields (FieldModel).
+
+
+
+
+### UI
+
+## Modules interaction
 
 ## Add the UI
 
