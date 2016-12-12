@@ -92,6 +92,13 @@ data class FormModel(val storage: FormStorageApi,
                         { changeState(FormState.READY) })
     }
 
+    fun hasFormError() = fields()
+            .filter {
+                val hasError = (it.configuration as? FieldRulesValidator)?.isValid(storage.getValue(it.key), storage) != null
+                hasError and not(storage.isHidden(it.key))
+            }
+            .isNotEmpty()
+
     fun addAction(pair: Pair<String, (FieldValue, FormStorageApi) -> Unit>) {
         actions.add(pair)
     }
