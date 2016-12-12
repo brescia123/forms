@@ -11,7 +11,7 @@ allprojects {
 
 buildscript {
 
-    ext.kotlin_version = '1.0.5-2'
+    ext.kotlin_version = '1.0.4'
     ext.support_version = '25.0.1'
 
     repositories {
