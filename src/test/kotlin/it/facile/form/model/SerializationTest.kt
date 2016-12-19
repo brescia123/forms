@@ -2,7 +2,7 @@ package it.facile.form.model
 
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
-import it.facile.form.*
+import it.facile.form.CustomGen
 import it.facile.form.model.serialization.FieldSerialization
 import it.facile.form.model.serialization.FieldSerializationRule.*
 import it.facile.form.model.serialization.FieldSerializationStrategy.*
@@ -72,16 +72,16 @@ class SerializationTest : ShouldSpec() {
             }
         }
 
-        "NodeMap.fromRemoteKeyValue" {
+        "NodeMap.withRemoteKeyValue" {
             should("return a NodeMap with only one element") {
                 forAll(CustomGen.remoteKey(), CustomGen.fieldValue()) { remoteKey, value ->
-                    val nodeMap = NodeMap.empty().fromRemoteKeyValue(remoteKey to value)
+                    val nodeMap = NodeMap.from(remoteKey to value)
                     nodeMap.size == 1
                 }
             }
             should("return a NodeMap with the right leaf and depth") {
                 forAll(CustomGen.remoteKey(), CustomGen.fieldValue()) { remoteKey, value ->
-                    val nodeMap = NodeMap.empty().fromRemoteKeyValue(remoteKey to value)
+                    val nodeMap = NodeMap.from(remoteKey to value)
                     val leaf = (0..remoteKey.path.size - 2)
                             .fold(nodeMap) { innerNodeMap, i -> innerNodeMap[remoteKey.path[i]] as NodeMap }
                     leaf[remoteKey.path.last()] == value

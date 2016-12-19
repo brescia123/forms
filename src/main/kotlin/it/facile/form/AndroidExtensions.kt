@@ -46,7 +46,7 @@ inline fun <reified T : Any> T.logW(text: Any?) {
 /* ---------- View ---------- */
 
 fun View.visible(animate: Boolean = false,
-                 animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
+                 animDuration: Long = 200) {
     if (visibility == View.VISIBLE) return
     if (animate) {
         alpha = 0.0f
@@ -64,7 +64,7 @@ fun View.visible(animate: Boolean = false,
 }
 
 fun View.invisible(animate: Boolean = false,
-                                animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
+                   animDuration: Long = 200) {
     if (visibility == View.INVISIBLE) return
     if (animate) animate()
             .alpha(0.0f)
@@ -79,7 +79,7 @@ fun View.invisible(animate: Boolean = false,
 }
 
 fun View.gone(animate: Boolean = false,
-                           animDuration: Long = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
+              animDuration: Long = 200) {
     if (visibility == View.GONE) return
     if (animate) animate()
             .alpha(0.0f)

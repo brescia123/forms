@@ -64,7 +64,7 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
 
     /** This method return a [NodeMap] build from a path specified inside a [RemoteKey] using as leaf
      * the value contained within the [remoteKeyValue] second element. */
-    fun fromRemoteKeyValue(remoteKeyValue: Pair<RemoteKey, Any?>): NodeMap {
+    fun withRemoteKeyValue(remoteKeyValue: Pair<RemoteKey, Any?>): NodeMap {
 
         val (key, value) = remoteKeyValue
 
@@ -79,9 +79,9 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
         val node = get(head)
         val tailRemoteKey = RemoteKey(*key.tail().toTypedArray())
         if (containsKey(head) && node is NodeMap) {
-            put(head, node.fromRemoteKeyValue(tailRemoteKey to value))
+            put(head, node.withRemoteKeyValue(tailRemoteKey to value))
         } else {
-            put(head, NodeMap(mutableMapOf()).fromRemoteKeyValue(tailRemoteKey to value))
+            put(head, NodeMap(mutableMapOf()).withRemoteKeyValue(tailRemoteKey to value))
         }
         return this
     }
@@ -102,6 +102,7 @@ data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?>
 
     companion object {
         fun empty() = NodeMap(mutableMapOf())
+        fun from(remoteKeyValue: Pair<RemoteKey, Any?>) = NodeMap.empty().withRemoteKeyValue(remoteKeyValue)
     }
 }
 
