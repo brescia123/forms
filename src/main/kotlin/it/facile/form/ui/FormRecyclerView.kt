@@ -23,7 +23,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
-class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : RecyclerView(context, attrs) {
+open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : RecyclerView(context, attrs) {
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : this(context, attrs) {
         RecyclerView(context, attrs, defStyle)
     }
