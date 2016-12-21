@@ -16,11 +16,16 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldPath
 import rx.Observable
+import rx.Scheduler
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 
 data class FormModel(val storage: FormStorageApi,
                      val pages: MutableList<PageModel> = arrayListOf<PageModel>(),
-                     private val actions: MutableList<Pair<String, (FieldValue, FormStorageApi) -> Unit>>) : FieldsContainer {
+                     private val actions: MutableList<Pair<String, (FieldValue, FormStorageApi) -> Unit>>,
+                     val workScheduler: Scheduler = Schedulers.io(),
+                     val resultScheduler: Scheduler = AndroidSchedulers.mainThread()) : FieldsContainer {
 
     var state: FormState = FormState.LOADING
 
@@ -86,6 +91,8 @@ data class FormModel(val storage: FormStorageApi,
         }
         Observable
                 .mergeDelayError(possibleValues(), deferredConfigs())
+                .subscribeOn(workScheduler)
+                .observeOn(resultScheduler)
                 .subscribe(
                         {},
                         { changeState(FormState.ERROR) },
