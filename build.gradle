@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -59,4 +60,5 @@ dependencies {
     compile "io.reactivex:rxandroid:1.2.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile "com.github.brescia123:jsonnode:0.1.2"
 }

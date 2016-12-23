@@ -8,13 +8,15 @@ import it.facile.form.model.FieldRulesValidator
 import it.facile.form.model.FieldsContainer
 import it.facile.form.model.configurations.FieldConfigDeferred
 import it.facile.form.model.configurations.FieldConfigPicker
-import it.facile.form.model.serialization.NodeMap
 import it.facile.form.not
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldPath
+import it.gbresciani.jsonnode.Node
+import it.gbresciani.jsonnode.Node.ObjectNode
+import it.gbresciani.jsonnode.NodePath
 import rx.Observable
 import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
@@ -73,11 +75,11 @@ data class FormModel(val storage: FormStorageApi,
     }
 
     /** Return the serialized version of this form */
-    fun getSerialized(): NodeMap = fields()
+    fun getNodeRepresentation(): ObjectNode = fields()
             .map { it.serialize(storage) } // Serialize every single fields
             .filter { it != null } // Filter non serializable fields
             .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
-            .fold(NodeMap.empty(), NodeMap::withRemoteKeyValue) // Build the node map
+            .fold(ObjectNode()) { acc: ObjectNode, pair: Pair<NodePath, Node> -> acc.with(pair.second, at = pair.first) } // Build the node map
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
     fun loadDynamicValues() {

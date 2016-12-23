@@ -1,112 +1,75 @@
 package it.facile.form.model.serialization
 
-import it.facile.form.model.serialization.FieldSerializationRule.IF_VISIBLE
-import it.facile.form.model.serialization.FieldSerializationRule.NEVER
-import it.facile.form.model.serialization.FieldSerializationStrategy.*
+import it.facile.form.model.serialization.FieldConversionRule.IF_VISIBLE
+import it.facile.form.model.serialization.FieldConversionRule.NEVER
+import it.facile.form.model.serialization.FieldConversionStrategy.*
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
-import java.util.*
+import it.gbresciani.jsonnode.Node
+import it.gbresciani.jsonnode.Node.ObjectNode
+import it.gbresciani.jsonnode.NodePath
 
-val NEVER_SERIALIZE = NEVER serializeWith None
+val NEVER_CONVERT = NEVER convertWith None
 
-class RemoteKey(vararg val path: String) {
-    override fun equals(other: Any?): Boolean {
-        if (other !is RemoteKey) return false
-        return Arrays.equals(other.path, path)
-    }
 
-    override fun hashCode(): Int = Arrays.hashCode(path)
+fun FieldValue.toNode() = when (this) {
+    FieldValue.Missing -> Node.Null
+    is FieldValue.Text -> Node.Text(text)
+    is FieldValue.Bool -> Node.Bool(bool)
+    is FieldValue.DateValue -> Node.Text(date.toString())
+    is FieldValue.Object -> Node.ObjectNode.empty().with(value.textDescription, at = value.key)
 }
 
-fun RemoteKey.head() = path.first()
-fun RemoteKey.tail() = path.drop(1)
-fun RemoteKey.size() = path.size
-
-class FieldSerializer(val keySerializer: (String) -> RemoteKey = { key: String -> RemoteKey(key) },
-                      val valueSerializer: (FieldValue) -> Any? = FieldValue::toString) {
-    fun serialize(key: String, value: FieldValue) = keySerializer(key) to valueSerializer(value)
+class FieldToObjectNodeConverter(val keyToNodePath: (String) -> NodePath = { key -> NodePath(key) },
+                                 val valueToNode: (FieldValue) -> Node = FieldValue::toNode) {
+    fun convert(key: String, value: FieldValue) = ObjectNode().with(valueToNode(value), at = keyToNodePath(key))
 }
 
-enum class FieldSerializationRule {
+class FieldSerializer(val keyToNodePath: (String) -> NodePath = { key -> NodePath(key) },
+                      val valueToNode: (FieldValue) -> Node = FieldValue::toNode) {
+    fun serialize(key: String, value: FieldValue) = keyToNodePath(key) to valueToNode(value)
+}
+
+enum class FieldConversionRule {
     IF_VISIBLE,
     ALWAYS,
     NEVER
 }
 
-sealed class FieldSerializationStrategy() {
-    object None : FieldSerializationStrategy()
-    class SingleKey(val serializer: FieldSerializer = FieldSerializer()) : FieldSerializationStrategy()
-    class MultipleKey(val serializers: List<FieldSerializer>) : FieldSerializationStrategy()
+sealed class FieldConversionStrategy() {
+    object None : FieldConversionStrategy()
+    class SingleKey(val converter: FieldToObjectNodeConverter = FieldToObjectNodeConverter()) : FieldConversionStrategy()
+    class MultipleKey(val converters: List<FieldToObjectNodeConverter>) : FieldConversionStrategy()
+}
+
+interface FieldConversionApi {
+    fun apply(key: String, storage: FormStorageApi): ObjectNode?
 }
 
 interface FieldSerializationApi {
-    fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>?
+    fun apply(key: String, storage: FormStorageApi): List<Pair<NodePath, Node>>?
 }
 
-data class FieldSerialization(val rule: FieldSerializationRule, val strategy: FieldSerializationStrategy) : FieldSerializationApi {
-    override fun apply(key: String, storage: FormStorageApi): List<Pair<RemoteKey, Any?>>? {
+
+data class FieldConversion(val rule: FieldConversionRule, val strategy: FieldConversionStrategy) : FieldConversionApi {
+    override fun apply(key: String, storage: FormStorageApi): ObjectNode? {
         if (rule == NEVER) return null
         if (rule == IF_VISIBLE && storage.isHidden(key)) return null
 
         val value: FieldValue = storage.getValue(key)
         return when (strategy) {
             None -> null
-            is SingleKey -> listOf(strategy.serializer.serialize(key, value))
-            is MultipleKey -> strategy.serializers.map { it.serialize(key, value) }
+            is SingleKey -> strategy.converter.convert(key, value)
+            is MultipleKey -> strategy.converters.fold(ObjectNode()) { acc, converter ->
+                acc.with(converter.valueToNode(value), at = converter.keyToNodePath(key))
+            }
         }
     }
 }
 
-/** Class delegating to a mutable map of String and Any? */
-data class NodeMap(val map: MutableMap<String, Any?>) : MutableMap<String, Any?> by map {
 
-    constructor(vararg pairs: Pair<String, Any?>) : this(mutableMapOf(*pairs))
+infix fun FieldConversionRule.convertWith(s: FieldConversionStrategy) = FieldConversion(this, s)
 
-    /** This method return a [NodeMap] build from a path specified inside a [RemoteKey] using as leaf
-     * the value contained within the [remoteKeyValue] second element. */
-    fun withRemoteKeyValue(remoteKeyValue: Pair<RemoteKey, Any?>): NodeMap {
-
-        val (key, value) = remoteKeyValue
-
-        if (key.size() == 0) return this
-
-        if (key.size() == 1) {
-            put(key.head(), value)
-            return this
-        }
-
-        val head = key.head()
-        val node = get(head)
-        val tailRemoteKey = RemoteKey(*key.tail().toTypedArray())
-        if (containsKey(head) && node is NodeMap) {
-            put(head, node.withRemoteKeyValue(tailRemoteKey to value))
-        } else {
-            put(head, NodeMap(mutableMapOf()).withRemoteKeyValue(tailRemoteKey to value))
-        }
-        return this
-    }
-
-    /** Merge this NodeMap with the given one and return a new NodeMap  */
-    fun with(nodeMap: NodeMap?): NodeMap {
-        val temp = mutableMapOf(*map.toList().toTypedArray())
-        temp.putAll(nodeMap?.map ?: emptyMap())
-        return NodeMap(temp)
-    }
-
-    /** Merge this NodeMap with the given pair and return a new NodeMap  */
-    fun with(pair: Pair<String, Any?>): NodeMap {
-        val temp = mutableMapOf(*map.toList().toTypedArray())
-        temp.put(pair.first, pair.second)
-        return NodeMap(temp)
-    }
-
-    companion object {
-        fun empty() = NodeMap(mutableMapOf())
-        fun from(remoteKeyValue: Pair<RemoteKey, Any?>) = NodeMap.empty().withRemoteKeyValue(remoteKeyValue)
-    }
-}
-
-infix fun FieldSerializationRule.serializeWith(s: FieldSerializationStrategy) = FieldSerialization(this, s)
-infix fun FieldSerializationRule.serializeAs(s: FieldSerializer) = FieldSerialization(this, SingleKey(s))
-infix fun FieldSerializationRule.serializeAs(s: List<FieldSerializer>) = FieldSerialization(this, MultipleKey(s))
-infix fun ((String) -> RemoteKey).to(v: (FieldValue) -> Any?) = FieldSerializer(this, v)
+infix fun FieldConversionRule.serializeAs(s: FieldToObjectNodeConverter) = FieldConversion(this, SingleKey(s))
+infix fun FieldConversionRule.serializeAs(s: List<FieldToObjectNodeConverter>) = FieldConversion(this, MultipleKey(s))
+infix fun ((String) -> NodePath).to(v: (FieldValue) -> Node) = FieldToObjectNodeConverter(this, v)
