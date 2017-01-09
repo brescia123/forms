@@ -8,7 +8,7 @@ import it.facile.form.Dates
 import it.facile.form.model.models.FieldModel
 import it.facile.form.model.models.PageModel
 import it.facile.form.model.models.SectionModel
-import it.facile.form.model.serialization.FieldSerializationApi
+import it.facile.form.model.representation.FieldRepresentationApi
 import it.facile.form.storage.Entry
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
@@ -39,13 +39,13 @@ class ModelsTest : ShouldSpec() {
     }
 
     init {
-        "FormModel.apply" {
-            should("call FieldSerialization.apply") {
+        "FieldModel.buildRepresentation" {
+            should("call FieldRepresentation.build") {
                 forAll(Gen.string(), CustomGen.fieldConfig()) { key, config ->
-                    val serializationMock: FieldSerializationApi = mock()
-                    val fieldModel = FieldModel(key, serializationMock, config)
-                    fieldModel.serialize(storage)
-                    Mockito.verify(serializationMock).apply(key, storage)
+                    val representationMock: FieldRepresentationApi = mock()
+                    val fieldModel = FieldModel(key, representationMock, config)
+                    fieldModel.buildRepresentation(storage)
+                    Mockito.verify(representationMock).build(key, storage)
                     true
                 }
             }
@@ -53,9 +53,9 @@ class ModelsTest : ShouldSpec() {
 
         "FormModel.buildFieldViewModel" {
             should("call FieldConfig.getViewModel") {
-                forAll(Gen.string(), CustomGen.fieldSerialization()) { key, serialization ->
+                forAll(Gen.string(), CustomGen.fieldRepresentation()) { key, representation ->
                     val configMock: FieldConfigApi = mock()
-                    val fieldModel = FieldModel(key, serialization, configMock)
+                    val fieldModel = FieldModel(key, representation, configMock)
                     fieldModel.buildFieldViewModel(storage)
                     Mockito.verify(configMock).getViewModel(key, storage)
                     true

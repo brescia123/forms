@@ -14,9 +14,7 @@ import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldPath
-import it.gbresciani.jsonnode.Node
 import it.gbresciani.jsonnode.Node.ObjectNode
-import it.gbresciani.jsonnode.NodePath
 import rx.Observable
 import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
@@ -74,12 +72,11 @@ data class FormModel(val storage: FormStorageApi,
         storage.putValue(key, value, true)
     }
 
-    /** Return the serialized version of this form */
+    /** Return the representation of this form */
     fun getNodeRepresentation(): ObjectNode = fields()
-            .map { it.serialize(storage) } // Serialize every single fields
-            .filter { it != null } // Filter non serializable fields
-            .flatMapTo(mutableListOf(), { list -> list!!.asIterable() }) // Flatten list
-            .fold(ObjectNode()) { acc: ObjectNode, pair: Pair<NodePath, Node> -> acc.with(pair.second, at = pair.first) } // Build the node map
+            .map { it.buildRepresentation(storage) } // Build representation for every field
+            .filter { it != null }.map { it!! } // Filter fields without representation
+            .reduce(ObjectNode::merge)
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
     fun loadDynamicValues() {
@@ -152,7 +149,7 @@ data class FormModel(val storage: FormStorageApi,
         paths.map {
             pages[it.pageIndex]
                     .sections[it.sectionIndex]
-                    .fields[it.fieldIndex] = FieldModel(key, findFieldModelByFieldPath(it).serialization, newConfig)
+                    .fields[it.fieldIndex] = FieldModel(key, findFieldModelByFieldPath(it).representation, newConfig)
         }
     }
 

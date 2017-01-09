@@ -2,11 +2,8 @@ package it.facile.form
 
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.model.*
-import it.facile.form.model.serialization.FieldSerializationRule.ALWAYS
-import it.facile.form.model.serialization.FieldSerializationStrategy.MultipleKey
-import it.facile.form.model.serialization.FieldSerializationStrategy.SingleKey
-import it.facile.form.model.serialization.serializeAs
-import it.facile.form.model.serialization.serializeWith
+import it.facile.form.model.representation.FieldRepresentationRule.ALWAYS
+import it.facile.form.model.representation.representAs
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.keyTo
 import it.facile.form.ui.viewmodel.FieldPath
@@ -32,7 +29,6 @@ class FormDSLTest : ShouldSpec() {
                     label = "Checkbox Field Label"
                     boolToStringConverter = { if (it == true) "Yes" else "No" }
                     rules = { listOf(NotMissing()) }
-                    serialization = ALWAYS serializeWith MultipleKey(listOf())
                 }
                 checkbox(FIELDKEY6) {}
                 picker(FIELDKEY2) {
@@ -68,7 +64,6 @@ class FormDSLTest : ShouldSpec() {
                     label = "Toggle Field Label"
                     boolToStringConverter = { if (it == true) "OK" else "KO" }
                     rules = { listOf(NotMissing()) }
-                    serialization = ALWAYS serializeWith SingleKey()
                 }
             }
         }

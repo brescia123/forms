@@ -8,8 +8,8 @@ import it.facile.form.model.models.FieldModel
 import it.facile.form.model.models.FormModel
 import it.facile.form.model.models.PageModel
 import it.facile.form.model.models.SectionModel
-import it.facile.form.model.serialization.FieldSerializationApi
-import it.facile.form.model.serialization.NEVER_SERIALIZE
+import it.facile.form.model.representation.FieldRepresentation
+import it.facile.form.model.representation.FieldRepresentationRule.NEVER
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
@@ -51,7 +51,7 @@ interface FieldBuilder {
 
 /** Type-safe builder method to add an empty field */
 fun SectionModel.empty(label: String): FieldModel {
-    val fieldModel = FieldModel("", NEVER_SERIALIZE, FieldConfigEmpty(label))
+    val fieldModel = FieldModel(key = "", configuration = FieldConfigEmpty(label))
     fields.add(fieldModel)
     return fieldModel
 }
@@ -62,9 +62,9 @@ class FieldCheckboxBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var boolToStringConverter: ((Boolean) -> String) = { "" }
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigBool(label, CHECKBOX, boolToStringConverter, rules))
+            FieldModel(key, representation, FieldConfigBool(label, CHECKBOX, boolToStringConverter, rules))
 }
 
 /** Type-safe builder method to add a checkbox field */
@@ -80,9 +80,9 @@ class FieldToggleBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var boolToStringConverter: ((Boolean) -> String) = { "" }
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigBool(label, TOGGLE, boolToStringConverter, rules))
+            FieldModel(key, representation, FieldConfigBool(label, TOGGLE, boolToStringConverter, rules))
 }
 
 /** Type-safe builder method to add a toggle field */
@@ -96,8 +96,8 @@ fun SectionModel.toggle(key: String, init: FieldToggleBuilder.() -> Unit): Field
 
 class FieldCustomBehaviourBuilder(private val key: String, val behaviourId: String) : FieldBuilder {
     var label: String = ""
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
-    override fun build() = FieldModel(key, serialization, FieldConfigCustomBehaviour(label, behaviourId))
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
+    override fun build() = FieldModel(key, representation, FieldConfigCustomBehaviour(label, behaviourId))
 }
 
 fun SectionModel.customBehaviour(key: String, customBehaviourId: String, init: FieldCustomBehaviourBuilder.() -> Unit): FieldModel {
@@ -112,9 +112,9 @@ class FieldDeferredBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var deferredConfig: Single<FieldConfig> = FieldConfigEmpty(label).toSingle()
     var errorMessage: String = "Loading error"
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigDeferred(label, deferredConfig, errorMessage))
+            FieldModel(key, representation, FieldConfigDeferred(label, deferredConfig, errorMessage))
 }
 
 /** Type-safe builder method to add a deferred configuration field */
@@ -130,9 +130,9 @@ class FieldInputTextBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
     var inputTextType: InputTextType = InputTextType.TEXT
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigInputText(label, rules, inputTextType))
+            FieldModel(key, representation, FieldConfigInputText(label, rules, inputTextType))
 }
 
 /** Type-safe builder method to add an input text field */
@@ -150,9 +150,9 @@ class FieldPickerBuilder(private val key: String) : FieldBuilder {
     var placeHolder: String = "Select a value"
     var errorMessage: String = "Loading error"
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigPicker(label, possibleValues, placeHolder, errorMessage, rules))
+            FieldModel(key, representation, FieldConfigPicker(label, possibleValues, placeHolder, errorMessage, rules))
 }
 
 /** Type-safe builder method to add a picker field */
@@ -168,8 +168,8 @@ class FieldPickerCustomBuilder(private val key: String, val customPickerId: Stri
     var label: String = ""
     var placeHolder: String = "Select a value"
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
-    override fun build() = FieldModel(key, serialization, FieldConfigPickerCustom(label, customPickerId, placeHolder, rules))
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
+    override fun build() = FieldModel(key, representation, FieldConfigPickerCustom(label, customPickerId, placeHolder, rules))
 }
 
 /** Type-safe builder method to add a custom picker field */
@@ -188,9 +188,9 @@ class FieldConfigPickerDateBuilder(private val key: String) : FieldBuilder {
     var dateFormatter: DateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
     var placeHolder: String = "Select a date"
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var serialization: FieldSerializationApi = NEVER_SERIALIZE
+    var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, serialization, FieldConfigPickerDate(label, minDate, maxDate, dateFormatter, placeHolder, rules))
+            FieldModel(key, representation, FieldConfigPickerDate(label, minDate, maxDate, dateFormatter, placeHolder, rules))
 }
 
 /** Type-safe builder method to add a date picker field */

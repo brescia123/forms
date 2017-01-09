@@ -9,11 +9,12 @@ import it.facile.form.model.models.FieldModel
 import it.facile.form.model.models.FormModel
 import it.facile.form.model.models.PageModel
 import it.facile.form.model.models.SectionModel
-import it.facile.form.model.serialization.*
+import it.facile.form.model.representation.*
 import it.facile.form.storage.*
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.ui.viewmodel.FieldPath
+import it.gbresciani.jsonnode.NodePath
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
@@ -28,7 +29,7 @@ interface CustomGen {
             override fun generate(): FieldModel = FieldModel(
                     key = Gen.string().generate(),
                     configuration = fieldConfig().generate(),
-                    serialization = fieldSerialization().generate())
+                    representation = fieldRepresentation().generate())
         }
 
         fun fieldModelList() = object : Gen<List<FieldModel>> {
@@ -194,25 +195,15 @@ interface CustomGen {
         }
 
 
-        /* ---------- FieldSerialization ---------- */
+        /* ---------- FieldRepresentation ---------- */
 
-        fun fieldSerialization() = object : Gen<FieldSerializationApi> {
-            override fun generate() = FieldSerialization(
-                    rule = fieldSerializationRule().generate(),
-                    strategy = fieldSerializationStrategy().generate())
+        fun fieldRepresentation() = object : Gen<FieldRepresentation> {
+            override fun generate() = FieldRepresentation(
+                    rule = fieldRepresentationRule().generate())
         }
 
-        fun fieldSerializationRule() = object : Gen<FieldSerializationRule> {
-            override fun generate() = FieldSerializationRule.values()[Random().nextInt(FieldSerializationRule.values().size)]
-        }
-
-        fun fieldSerializationStrategy() = object : Gen<FieldSerializationStrategy> {
-            override fun generate(): FieldSerializationStrategy = when (Random().nextInt(3)) {
-                0 -> FieldSerializationStrategy.None
-                1 -> FieldSerializationStrategy.SingleKey()
-                2 -> FieldSerializationStrategy.MultipleKey(listOf(FieldSerializer()))
-                else -> FieldSerializationStrategy.None
-            }
+        fun fieldRepresentationRule() = object : Gen<FieldRepresentationRule> {
+            override fun generate() = FieldRepresentationRule.values()[Random().nextInt(FieldRepresentationRule.values().size)]
         }
 
 
@@ -226,8 +217,8 @@ interface CustomGen {
 
         /* ---------- RemoteKey ---------- */
 
-        fun remoteKey() = object : Gen<RemoteKey> {
-            override fun generate() = RemoteKey(*(0..Random().nextInt(5)).map { Gen.string().generate() }.toTypedArray())
+        fun remoteKey() = object : Gen<NodePath> {
+            override fun generate() = NodePath(*(0..Random().nextInt(5)).map { Gen.string().generate() }.toTypedArray())
         }
 
 
