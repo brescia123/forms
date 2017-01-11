@@ -136,7 +136,7 @@ class FieldViewHolderInputText(itemView: View,
 
     fun InputTextType.toAndroidInputType() = when (this) {
         InputTextType.TEXT -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-        InputTextType.CAP_WORDS -> InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+        InputTextType.CAP_WORDS -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         InputTextType.EMAIL -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         InputTextType.PHONE -> InputType.TYPE_CLASS_PHONE
         InputTextType.NUMBER -> InputType.TYPE_CLASS_NUMBER
