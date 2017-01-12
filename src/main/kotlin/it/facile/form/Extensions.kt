@@ -83,6 +83,8 @@ fun Subscription.addTo(compositeSubscription: CompositeSubscription) {
 fun not(boolean: Boolean) = boolean.not()
 
 fun FieldValue.asObject() = this as? FieldValue.Object
+fun FieldValue.asObjectKey() = (this as? FieldValue.Object)?.value?.key
+fun FieldValue.asObjectDescription() = (this as? FieldValue.Object)?.value?.textDescription
 fun FieldValue.asDate() = this as? FieldValue.DateValue
 fun FieldValue.asText() = this as? FieldValue.Text
 fun FieldValue.asBool() = this as? FieldValue.Bool
