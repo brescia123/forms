@@ -23,77 +23,77 @@ class FormStorage(defaultEntries: Map<String, Entry>) : FormStorageApi {
 
     override fun getPossibleValues(key: String): FieldPossibleValues? = possibleValuesMap[key]
 
-    override fun ping(key: String) {
-        notify(key, false)
+    override fun ping(key: String, executeActions: Boolean) {
+        notify(key, executeActions)
     }
 
     /* ---------- Writing methods ---------- */
 
-    override fun putValue(key: String, value: FieldValue, userMade: Boolean) {
+    override fun putValue(key: String, value: FieldValue, executeActions: Boolean) {
         if (value == getValue(key)) return // No changes
         values.put(key, Entry(value, isHidden(key), isDisabled(key)))
-        notify(key, userMade)
+        notify(key, executeActions)
     }
 
-    override fun disable(key: String, userMade: Boolean) {
+    override fun disable(key: String, executeActions: Boolean) {
         values.put(key, Entry(getValue(key), isHidden(key), true))
-        notify(key, userMade)
+        notify(key, executeActions)
     }
 
-    override fun enable(key: String, userMade: Boolean) {
+    override fun enable(key: String, executeActions: Boolean) {
         values.put(key, Entry(getValue(key), isHidden(key), false))
-        notify(key, userMade)
+        notify(key, executeActions)
     }
 
-    override fun clearValue(key: String, userMade: Boolean) {
+    override fun clearValue(key: String, executeActions: Boolean) {
         values.put(key, Entry(Missing, isHidden(key), isDisabled(key)))
-        notify(key, userMade)
+        notify(key, executeActions)
     }
 
-    override fun setVisibility(key: String, hidden: Boolean) {
+    override fun setVisibility(key: String, hidden: Boolean, executeActions: Boolean) {
         if (isHidden(key) == hidden) return // No changes
         values.put(key, Entry(getValue(key), hidden, isDisabled(key)))
-        notify(key, false)
+        notify(key, executeActions)
     }
 
-    override fun putPossibleValues(key: String, possibleValues: FieldPossibleValues) {
+    override fun putPossibleValues(key: String, possibleValues: FieldPossibleValues, executeActions: Boolean) {
         if (possibleValues == getPossibleValues(key)) return // No changes
         possibleValuesMap.put(key, possibleValues)
-        clearValue(key)
+        clearValue(key, executeActions)
     }
 
-    override fun switchPossibleValues(key: String, possibleValues: FieldPossibleValues) {
+    override fun switchPossibleValues(key: String, possibleValues: FieldPossibleValues, executeActions: Boolean) {
         val oldPossibleValues = getPossibleValues(key)
         if (possibleValues == oldPossibleValues) return // No changes
         possibleValuesMap.put(key, possibleValues)
         val selectedValue = values[key]?.value
         if (possibleValues.isCompatibleWith(oldPossibleValues) && selectedValue is Object) {
-            switchValueAtKey(key, selectedValue)
+            switchValueAtKey(key, selectedValue, executeActions)
         } else {
-            clearValue(key)
+            clearValue(key, executeActions)
         }
     }
 
-    override fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean) {
+    override fun putValueAndSetVisibility(key: String, value: FieldValue, hidden: Boolean, executeActions: Boolean) {
         if (value == getValue(key) && hidden == isHidden(key)) return // No changes
         values.put(key, Entry(value, hidden, isDisabled(key)))
-        notify(key, false)
+        notify(key, executeActions)
     }
 
-    override fun clearPossibleValues(key: String) {
+    override fun clearPossibleValues(key: String, executeActions: Boolean) {
         if (not(possibleValuesMap.containsKey(key))) return
         possibleValuesMap.remove(key)
-        clearValue(key)
+        clearValue(key, executeActions)
     }
 
     override fun observe(): Observable<Pair<String, Boolean>> = publishSubject.asObservable()
 
-    private fun notify(key: String, userMade: Boolean) = publishSubject.onNext(key to userMade)
+    private fun notify(key: String, executeActions: Boolean) = publishSubject.onNext(key to executeActions)
 
-    private fun switchValueAtKey(fieldKey: String, value: Object) {
+    private fun switchValueAtKey(fieldKey: String, value: Object, executeActions: Boolean) {
         val fieldPossibleValues = possibleValuesMap[fieldKey]
         if (fieldPossibleValues is Available)
-            putValue(fieldKey, Object(fieldPossibleValues.list.first { it.key == value.value.key }))
+            putValue(fieldKey, Object(fieldPossibleValues.list.first { it.key == value.value.key }), executeActions)
     }
 
     private fun FieldPossibleValues.isCompatibleWith(possibleValues: FieldPossibleValues?) =
