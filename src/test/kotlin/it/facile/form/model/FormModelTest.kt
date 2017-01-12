@@ -57,7 +57,7 @@ class FormModelTest : ShouldSpec() {
                     model.addAction(key to { v, s -> actionExecuted = true })
                     model.observeChanges().subscribe({}, {})
                     val valueAlreadyPresent = value == storage.getValue(key)
-                    storage.putValue(key, value, userMade = true)
+                    storage.putValue(key, value, executeAction = true)
                     actionExecuted != valueAlreadyPresent
                 }
             }
@@ -70,7 +70,7 @@ class FormModelTest : ShouldSpec() {
                     val key = Gen.string().generate()
                     model.addAction(key to { v, s -> actionExecuted = true })
                     model.observeChanges().subscribe({}, {})
-                    storage.putValue(key, value, userMade = false)
+                    storage.putValue(key, value, executeAction = false)
                     actionExecuted == false
                 }
             }
@@ -93,7 +93,7 @@ class FormModelTest : ShouldSpec() {
                 val model: FormModel = form(storage, listOf()) {
                     page("page") {
                         section("section") {
-                            checkbox(key){
+                            checkbox(key) {
                                 label = "label"
                                 rules = { s -> listOf(rule) }
                             }
