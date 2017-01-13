@@ -34,7 +34,7 @@ android {
         versionCode 1
         versionName "0.1"
     }
-    buildTypes {
+    buildTypes {z
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -60,5 +60,5 @@ dependencies {
     compile "io.reactivex:rxandroid:1.2.1"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile "com.github.brescia123:jsonnode:1.0.2"
+    compile "com.github.brescia123:jsonnode:1.0.4"
 }
