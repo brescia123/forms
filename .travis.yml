@@ -1,6 +1,10 @@
 language: android
+
 jdk:
   - oraclejdk8
+
+sudo: true
+
 android:
   components:
     - tools
@@ -17,6 +21,18 @@ android:
     
     
 before_script:
+  # Stop useless services
+  - sudo service postgresql stop || true
+  - sudo service mysql stop || true
+  - sudo service memcached stop || true
+  - sudo service bootlogd stop || true
+  - sudo service elasticsearch stop || true
+  - sudo service mongodb stop || true
+  - sudo service neo4j stop || true
+  - sudo service cassandra stop || true
+  - sudo service riak stop || true
+  - sudo service rsync stop || true
+  - sudo service x11-common stop || true
   - echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter platform-tools
   # Accept License of Constraint Layout
   - mkdir -p $ANDROID_HOME/licenses/
