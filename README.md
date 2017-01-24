@@ -1,5 +1,8 @@
 # Form library
 
+[![](https://jitpack.io/v/brescia123/forms.svg)](https://jitpack.io/#brescia123/forms)
+[![Build Status](https://travis-ci.org/brescia123/forms.svg?branch=master)](https://travis-ci.org/brescia123/forms)
+
 *Work in progress...*
 
 ## Goal

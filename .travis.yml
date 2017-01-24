@@ -1,14 +1,18 @@
 language: android
+
 jdk:
   - oraclejdk8
+
+sudo: true
+
 android:
   components:
-    - platform-tools
+    - tools
     - tools
 
     - build-tools-24.0.3
 
-    - android-24
+    - android-25
 
     - extra-google-google_play_services
     - extra-google-m2repository
@@ -17,6 +21,19 @@ android:
     
     
 before_script:
+  # Stop useless services
+  - sudo service postgresql stop || true
+  - sudo service mysql stop || true
+  - sudo service memcached stop || true
+  - sudo service bootlogd stop || true
+  - sudo service elasticsearch stop || true
+  - sudo service mongodb stop || true
+  - sudo service neo4j stop || true
+  - sudo service cassandra stop || true
+  - sudo service riak stop || true
+  - sudo service rsync stop || true
+  - sudo service x11-common stop || true
+  - echo y | $ANDROID_HOME/tools/android --silent update sdk --no-ui --all --filter platform-tools
   # Accept License of Constraint Layout
   - mkdir -p $ANDROID_HOME/licenses/
   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
@@ -24,4 +41,7 @@ before_script:
   # Download dependencies and avoi exit if there is an error (ConstraintLayout install error fix)
   - ./gradlew dependencies || true
   
+after_script:
+  - cat /home/travis/build/brescia123/forms/build/outputs/lint-results-debug.xml
+ 
 script: ./gradlew build connectedCheck

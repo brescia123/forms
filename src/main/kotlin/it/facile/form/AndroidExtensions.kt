@@ -102,12 +102,6 @@ fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
     this.setCompoundDrawables(left, top, right, bottom)
 }
 
-fun Context.getColor(@android.support.annotation.ColorInt id: Int, theme: Resources.Theme? = null) = if (Build.VERSION.SDK_INT >= 23) {
-    resources.getColor(id, theme)
-} else {
-    resources.getColor(id)
-}
-
 fun Context.PXtoDP(px: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, resources.displayMetrics).toInt()
 fun Context.DPtoPX(dp: Int): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, dp.toFloat(), resources.displayMetrics).toInt()
 fun Handler.postDelayed(delayMillis: Long, r: () -> Unit) {
