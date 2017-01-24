@@ -4,6 +4,7 @@ jdk:
 android:
   components:
     - tools
+    - tools
 
     - build-tools-24.0.3
 
