@@ -24,4 +24,9 @@ before_script:
   # Download dependencies and avoi exit if there is an error (ConstraintLayout install error fix)
   - ./gradlew dependencies || true
   
-script: ./gradlew build connectedCheck
+script: 
+  - ./gradlew build connectedCheck
+  - ./gradlew jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
