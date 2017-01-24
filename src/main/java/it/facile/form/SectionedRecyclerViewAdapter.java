@@ -78,6 +78,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (isSectionHeaderPosition(position)) {
             ((SectionViewHolder) holder).bind(awareSections.get(position));
