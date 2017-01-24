@@ -1,22 +1,26 @@
-language: android
+language: java
 jdk:
   - oraclejdk8
-android:
-  components:
-    - platform-tools
-    - tools
-
-    - build-tools-24.0.3
-
-    - android-24
-
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-19
     
-    
+env:
+  ANDROID_COMPILE_SDK: "25"
+  ANDROID_BUILD_TOOLS: "24.0.3"
+  ANDROID_SDK_TOOLS: "25.2.5"
+  
 before_script:
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/tools_r${ANDROID_SDK_TOOLS}-linux.zip
+  - unzip android-sdk.zip -d android-sdk
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter android-${ANDROID_COMPILE_SDK}
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter platform-tools
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter build-tools-${ANDROID_BUILD_TOOLS}
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter extra-android-m2repository
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter extra-google-google_play_services
+  - echo y | android-sdk/tools/android --silent update sdk --no-ui --all --filter extra-google-m2repository
+  - export ANDROID_HOME=$PWD/android-sdk
+  - export PATH=$PATH:$PWD/android-sdk/tools/
+  - chmod +x ./gradlew
   # Accept License of Constraint Layout
   - mkdir -p $ANDROID_HOME/licenses/
   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
@@ -24,12 +28,4 @@ before_script:
   # Download dependencies and avoi exit if there is an error (ConstraintLayout install error fix)
   - ./gradlew dependencies || true
   
-after_script:
-  - cat /home/travis/build/brescia123/forms/build/outputs/lint-results-debug.xml
-  
-script: 
-  - ./gradlew build connectedCheck
-  - ./gradlew jacocoTestReport
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+script: ./gradlew build connectedCheck
