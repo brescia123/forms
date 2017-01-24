@@ -24,6 +24,9 @@ before_script:
   # Download dependencies and avoi exit if there is an error (ConstraintLayout install error fix)
   - ./gradlew dependencies || true
   
+after_script:
+  - cat /home/travis/build/brescia123/forms/build/outputs/lint-results-debug.xml
+  
 script: 
   - ./gradlew build connectedCheck
   - ./gradlew jacocoTestReport
