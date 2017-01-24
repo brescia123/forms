@@ -9,12 +9,14 @@ import it.facile.form.model.models.FieldModel
 import it.facile.form.model.models.FormModel
 import it.facile.form.model.models.PageModel
 import it.facile.form.model.models.SectionModel
-import it.facile.form.model.representation.*
+import it.facile.form.model.representation.FieldRepresentation
+import it.facile.form.model.representation.FieldRepresentationRule
 import it.facile.form.storage.*
 import it.facile.form.storage.FieldPossibleValues.Available
 import it.facile.form.storage.FieldPossibleValues.ToBeRetrieved
 import it.facile.form.ui.viewmodel.FieldPath
 import it.gbresciani.jsonnode.NodePath
+import rx.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
@@ -62,7 +64,7 @@ interface CustomGen {
 
 
         fun formModel(storage: FormStorageApi = formStorage().generate(), actions: MutableList<Pair<String, (FieldValue, FormStorageApi) -> Unit>> = mutableListOf()) = object : Gen<FormModel> {
-            override fun generate() = FormModel(storage, pageModelList().generate().toMutableList(), actions)
+            override fun generate() = FormModel(storage, pageModelList().generate().toMutableList(), actions, Schedulers.immediate(), Schedulers.immediate())
         }
 
 

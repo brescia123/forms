@@ -15,12 +15,23 @@ import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.toSingle
+import rx.Scheduler
 import rx.Single
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.text.DateFormat
 import java.util.*
 
-fun form(storage: FormStorageApi = FormStorage.empty(), actions: List<Pair<String, (FieldValue, FormStorageApi) -> Unit>> = emptyList(), init: FormModel.() -> Unit): FormModel {
-    val form = FormModel(storage, actions = actions.toMutableList())
+fun form(storage: FormStorageApi = FormStorage.empty(),
+         actions: List<Pair<String, (FieldValue, FormStorageApi) -> Unit>> = emptyList(),
+         workScheduler: Scheduler = Schedulers.io(),
+         resultScheduler: Scheduler = AndroidSchedulers.mainThread(),
+         init: FormModel.() -> Unit): FormModel {
+    val form = FormModel(
+            storage = storage,
+            actions = actions.toMutableList(),
+            workScheduler = workScheduler,
+            resultScheduler = resultScheduler)
     form.init()
     return form
 }

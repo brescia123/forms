@@ -2,11 +2,10 @@ package it.facile.form
 
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.model.*
-import it.facile.form.model.representation.FieldRepresentationRule.ALWAYS
-import it.facile.form.model.representation.representAs
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.keyTo
 import it.facile.form.ui.viewmodel.FieldPath
+import rx.schedulers.Schedulers.immediate
 
 class FormDSLTest : ShouldSpec() {
     private val PAGE1_TITLE = "Page 1 Title"
@@ -22,7 +21,7 @@ class FormDSLTest : ShouldSpec() {
     private val FIELDKEY6 = "fieldKey6"
     private val FIELDKEY7 = "fieldKey7"
 
-    val form = form {
+    val form = form(workScheduler = immediate(), resultScheduler = immediate()) {
         page(PAGE1_TITLE) {
             section(SECTION1_TITLE) {
                 checkbox(FIELDKEY1) {

@@ -13,6 +13,7 @@ import org.mockito.Matchers.anyBoolean
 import org.mockito.Matchers.anyString
 import org.mockito.Mockito.*
 import rx.observers.TestSubscriber
+import rx.schedulers.Schedulers.immediate
 
 class FormModelTest : ShouldSpec() {
     init {
@@ -22,7 +23,7 @@ class FormModelTest : ShouldSpec() {
                 forAll(Gen.string()) { title ->
                     val pages = CustomGen.pageModelList().generate()
                     val expectedFieldModels = pages.flatMap { it.fields() }
-                    val pageModel = FormModel(CustomGen.formStorage().generate(), pages.toMutableList(), mutableListOf())
+                    val pageModel = FormModel(CustomGen.formStorage().generate(), pages.toMutableList(), mutableListOf(), immediate(), immediate())
                     pageModel.fields() == expectedFieldModels
                 }
             }
@@ -90,7 +91,7 @@ class FormModelTest : ShouldSpec() {
                     override fun observedKeys(): List<WithKey> = listOf(observedKeyReader)
 
                 }
-                val model: FormModel = form(storage, listOf()) {
+                val model: FormModel = form(storage, listOf(), immediate(), immediate()) {
                     page("page") {
                         section("section") {
                             checkbox(key) {

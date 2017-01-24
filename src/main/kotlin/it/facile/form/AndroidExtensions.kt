@@ -103,9 +103,9 @@ fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
 }
 
 fun Context.getColor(@android.support.annotation.ColorInt id: Int, theme: Resources.Theme? = null) = if (Build.VERSION.SDK_INT >= 23) {
-    getColor(id)
-} else {
     resources.getColor(id, theme)
+} else {
+    resources.getColor(id)
 }
 
 fun Context.PXtoDP(px: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, resources.displayMetrics).toInt()
