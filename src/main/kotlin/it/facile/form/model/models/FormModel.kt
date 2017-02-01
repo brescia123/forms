@@ -1,7 +1,5 @@
 package it.facile.form.model.models
 
-import it.facile.form.logD
-import it.facile.form.logE
 import it.facile.form.model.CouldHaveLoadingError
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
@@ -58,7 +56,6 @@ data class FormModel(val storage: FormStorageApi,
             .map { it.first } // Get rid of userMade boolean information
             .flatMap { Observable.just(it).mergeWith(Observable.from(interestedKeys[it] ?: emptyList())) } // Merge with interested keys
             .flatMap { Observable.from(findFieldPathByKey(it)) } // Emit for every FieldPath associated to the field key
-            .doOnError { logE(it.message) } // Log errors
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
 
     /** Observable that emit [FormState] every time it changes */
@@ -163,7 +160,6 @@ data class FormModel(val storage: FormStorageApi,
                         val key = it.key
                         val config = it.configuration as FieldConfigPicker
                         val possibleValues = config.possibleValues as ToBeRetrieved
-                        logD("Loading possible values for config at key: $key")
                         possibleValues.possibleValuesSingle
                                 .doOnSuccess {
                                     config.hasErrors = false
@@ -174,7 +170,6 @@ data class FormModel(val storage: FormStorageApi,
                                     }
                                 }
                                 .doOnError {
-                                    logE("Error retrieving possible values for config at key: $key\n${it.message}")
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }
@@ -187,15 +182,12 @@ data class FormModel(val storage: FormStorageApi,
                     .map {
                         val key = it.key
                         val config = it.configuration as FieldConfigDeferred
-                        logD("Loading deferred configuration at key: $key")
                         config.deferredConfig
                                 .doOnSuccess { // Replace config with the loaded one and notify
                                     replaceConfig(key, it)
                                     storage.ping(key)
                                 }
                                 .doOnError { // Make config show the error and notify
-                                    logE("Error retrieving deferred configuration for key: $key\n${it.message}")
-                                    logE(it)
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }
