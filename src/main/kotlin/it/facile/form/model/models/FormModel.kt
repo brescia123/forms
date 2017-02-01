@@ -77,23 +77,25 @@ data class FormModel(val storage: FormStorageApi,
             .reduce(ObjectNode::merge)
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
-    fun loadDynamicValues() {
-        changeState(FormState.LOADING)
-        fields().forEach {
-            val config = it.configuration
-            if (config is CouldHaveLoadingError) {
-                config.hasErrors = false
-                storage.ping(it.key)
+    fun init() {
+        if (state != FormState.LOADING) {
+            changeState(FormState.LOADING)
+            fields().forEach {
+                val config = it.configuration
+                if (config is CouldHaveLoadingError) {
+                    config.hasErrors = false
+                    storage.ping(it.key)
+                }
             }
+            Observable
+                    .mergeDelayError(possibleValues(), deferredConfigs())
+                    .subscribeOn(workScheduler)
+                    .observeOn(resultScheduler)
+                    .subscribe(
+                            {},
+                            { changeState(FormState.ERROR) },
+                            { changeState(FormState.READY) })
         }
-        Observable
-                .mergeDelayError(possibleValues(), deferredConfigs())
-                .subscribeOn(workScheduler)
-                .observeOn(resultScheduler)
-                .subscribe(
-                        {},
-                        { changeState(FormState.ERROR) },
-                        { changeState(FormState.READY) })
     }
 
     fun hasFormError() = fields()
