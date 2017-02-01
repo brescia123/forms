@@ -33,6 +33,7 @@ data class FormModel(val storage: FormStorageApi,
      * - ERROR: some load error occurred
      */
     enum class FormState {
+        NOT_INITIALIZED,
         READY,
         LOADING,
         ERROR

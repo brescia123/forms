@@ -109,6 +109,7 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
                     .subscribe(
                             {
                                 when (it) {
+                                    NOT_INITIALIZED -> formLoadingErrorSnackbar.dismiss()
                                     READY -> formLoadingErrorSnackbar.dismiss()
                                     LOADING -> formLoadingErrorSnackbar.dismiss()
                                     ERROR -> formLoadingErrorSnackbar.show()
