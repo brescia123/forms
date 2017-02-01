@@ -17,7 +17,7 @@ import rx.Observable
 import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subjects.PublishSubject
+import rx.subjects.BehaviorSubject
 
 data class FormModel(val storage: FormStorageApi,
                      val pages: MutableList<PageModel> = arrayListOf<PageModel>(),
@@ -39,7 +39,7 @@ data class FormModel(val storage: FormStorageApi,
         ERROR
     }
 
-    private val formStateSubject = PublishSubject.create<FormState>()
+    private val formStateSubject = BehaviorSubject.create(FormState.NOT_INITIALIZED)
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
