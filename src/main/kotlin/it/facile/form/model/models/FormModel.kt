@@ -77,7 +77,7 @@ data class FormModel(val storage: FormStorageApi,
             .reduce(ObjectNode::merge)
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
-    fun init() {
+    fun initialize() {
         if (state != FormState.LOADING) {
             changeState(FormState.LOADING)
             fields().forEach {

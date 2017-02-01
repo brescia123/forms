@@ -33,7 +33,7 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         Snackbar.make(this, errorMessage, Snackbar.LENGTH_INDEFINITE)
                 .setAction(retryMessage, {
                     // Defer retry to allow the snackbar to fade away
-                    Handler().postDelayed({ formModel.init() }, 400)
+                    Handler().postDelayed({ formModel.initialize() }, 400)
                 })
     }
 
@@ -120,7 +120,7 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         }
 
         // Start dynamic loading
-        formModel.init()
+        formModel.initialize()
     }
 
     private fun initView(sectionsAdapter: SectionsAdapter) {
