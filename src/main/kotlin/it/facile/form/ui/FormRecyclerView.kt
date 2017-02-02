@@ -33,7 +33,7 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         Snackbar.make(this, errorMessage, Snackbar.LENGTH_INDEFINITE)
                 .setAction(retryMessage, {
                     // Defer retry to allow the snackbar to fade away
-                    Handler().postDelayed({ formModel.loadDynamicValues() }, 400)
+                    Handler().postDelayed({ formModel.initialize() }, 400)
                 })
     }
 
@@ -92,7 +92,6 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
 
         // Observe paths from model (FieldPath) and update the View
         formModel.observeChanges()
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { it.pageIndex == pageIndex }
                 .map { it to formModel.pages[pageIndex].buildPageViewModel(formModel.storage).sections[it.sectionIndex] }
@@ -104,11 +103,11 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         // Observe model loading state if we want to be notified about errors
         if (errorVisualization) {
             formModel.observeFormState()
-                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             {
                                 when (it) {
+                                    NOT_INITIALIZED -> formLoadingErrorSnackbar.dismiss()
                                     READY -> formLoadingErrorSnackbar.dismiss()
                                     LOADING -> formLoadingErrorSnackbar.dismiss()
                                     ERROR -> formLoadingErrorSnackbar.show()
@@ -121,7 +120,7 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         }
 
         // Start dynamic loading
-        formModel.loadDynamicValues()
+        formModel.initialize()
     }
 
     private fun initView(sectionsAdapter: SectionsAdapter) {

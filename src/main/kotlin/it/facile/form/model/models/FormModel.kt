@@ -1,7 +1,5 @@
 package it.facile.form.model.models
 
-import it.facile.form.logD
-import it.facile.form.logE
 import it.facile.form.model.CouldHaveLoadingError
 import it.facile.form.model.FieldConfig
 import it.facile.form.model.FieldRulesValidator
@@ -19,7 +17,7 @@ import rx.Observable
 import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import rx.subjects.PublishSubject
+import rx.subjects.BehaviorSubject
 
 data class FormModel(val storage: FormStorageApi,
                      val pages: MutableList<PageModel> = arrayListOf<PageModel>(),
@@ -35,12 +33,13 @@ data class FormModel(val storage: FormStorageApi,
      * - ERROR: some load error occurred
      */
     enum class FormState {
+        NOT_INITIALIZED,
         READY,
         LOADING,
         ERROR
     }
 
-    private val formStateSubject = PublishSubject.create<FormState>()
+    private val formStateSubject = BehaviorSubject.create(FormState.NOT_INITIALIZED)
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
@@ -58,7 +57,6 @@ data class FormModel(val storage: FormStorageApi,
             .map { it.first } // Get rid of userMade boolean information
             .flatMap { Observable.just(it).mergeWith(Observable.from(interestedKeys[it] ?: emptyList())) } // Merge with interested keys
             .flatMap { Observable.from(findFieldPathByKey(it)) } // Emit for every FieldPath associated to the field key
-            .doOnError { logE(it.message) } // Log errors
             .retry() // Resubscribe if some errors occurs to continue the flow of notifications
 
     /** Observable that emit [FormState] every time it changes */
@@ -79,7 +77,8 @@ data class FormModel(val storage: FormStorageApi,
             .reduce(ObjectNode::merge)
 
     /** Load all the [FieldConfigDeferred] and [ToBeRetrieved] that has to be loaded  */
-    fun loadDynamicValues() {
+    fun initialize() {
+        if (state == FormState.LOADING) return
         changeState(FormState.LOADING)
         fields().forEach {
             val config = it.configuration
@@ -97,6 +96,7 @@ data class FormModel(val storage: FormStorageApi,
                         { changeState(FormState.ERROR) },
                         { changeState(FormState.READY) })
     }
+    
 
     fun hasFormError() = fields()
             .filter {
@@ -163,7 +163,6 @@ data class FormModel(val storage: FormStorageApi,
                         val key = it.key
                         val config = it.configuration as FieldConfigPicker
                         val possibleValues = config.possibleValues as ToBeRetrieved
-                        logD("Loading possible values for config at key: $key")
                         possibleValues.possibleValuesSingle
                                 .doOnSuccess {
                                     config.hasErrors = false
@@ -174,7 +173,6 @@ data class FormModel(val storage: FormStorageApi,
                                     }
                                 }
                                 .doOnError {
-                                    logE("Error retrieving possible values for config at key: $key\n${it.message}")
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }
@@ -187,15 +185,12 @@ data class FormModel(val storage: FormStorageApi,
                     .map {
                         val key = it.key
                         val config = it.configuration as FieldConfigDeferred
-                        logD("Loading deferred configuration at key: $key")
                         config.deferredConfig
                                 .doOnSuccess { // Replace config with the loaded one and notify
                                     replaceConfig(key, it)
                                     storage.ping(key)
                                 }
                                 .doOnError { // Make config show the error and notify
-                                    logE("Error retrieving deferred configuration for key: $key\n${it.message}")
-                                    logE(it)
                                     config.hasErrors = true
                                     storage.ping(key)
                                 }
