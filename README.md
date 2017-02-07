@@ -149,8 +149,9 @@ TODO
 Work in progress...
 
 TODO:
-[x] - Sections RecyclerView
-[ ] - Pages ViewAdapter
+
+- [x] Sections RecyclerView
+- [ ] Pages ViewAdapter
 
 ### Setup
 
