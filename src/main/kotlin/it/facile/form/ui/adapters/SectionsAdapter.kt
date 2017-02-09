@@ -57,7 +57,7 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
         } // Same view model
 
         val sectionIndex = absolutePosition.calculateSectionIndex()
-        val isSectionTitleChanged = sectionViewModel.title != sectionViewModels[sectionIndex!!].title
+        val isSectionChanged = sectionViewModel.title != sectionViewModels[sectionIndex!!].title || viewModel.isHidden() != oldViewModel.isHidden()
         val isViewModelChanged = viewModel != oldViewModel
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
@@ -70,10 +70,10 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
                 logD("Updating...")
                 if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
                     deferredNotifyItemChanged(sectionedPosition)
-                    if (isSectionTitleChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
+                    if (isSectionChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
                 } else {
                     notifyItemChanged(sectionedPosition)
-                    if (isSectionTitleChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
+                    if (isSectionChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
                 }
             } else {
                 logD("Not updating because viewModel is the same")
