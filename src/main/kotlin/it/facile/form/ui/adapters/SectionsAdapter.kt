@@ -19,7 +19,7 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
 : SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeaders.first, fieldsLayouts.sectionHeaders.second) {
     private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
-    private var sectionViewModels = sectionViewModels.toMutableList()
+    private val sectionViewModels = sectionViewModels.toMutableList()
 
     init {
         setAwareSections(sectionViewModels.buildPositionAwareList())
@@ -39,12 +39,12 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
 
     /**
      * Updates the field at the given [FieldPath] taking care of notifying the changes when
-     * appropriate using the provided [SectionViewModel].
+     * appropriate using the provided [FieldViewModel].
      */
-    fun updateField(path: FieldPath, sectionViewModel: SectionViewModel) {
+    fun updateField(path: FieldPath, fieldViewModel: FieldViewModel) {
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
-        val fieldViewModel = sectionViewModel.fields[path.fieldIndex]
         val oldFieldViewModel = fieldsAdapter.getViewModel(absolutePosition)
+
         logD("Position $absolutePosition: new fieldViewModel update request:\n" +
                 "old: $oldFieldViewModel\n" +
                 "new: $fieldViewModel\n")
@@ -57,31 +57,60 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
             return
         } // Same view model
 
-        val sectionIndex = absolutePosition.calculateSectionIndex()
-        val oldSectionViewModel =sectionViewModels[sectionIndex!!]
-        val isSectionChanged = sectionViewModel.title != oldSectionViewModel.title || sectionViewModel.isHidden() != oldSectionViewModel.isHidden()
-        val isViewModelChanged = fieldViewModel != oldFieldViewModel
-
+        val isFieldViewModelChanged = fieldViewModel != oldFieldViewModel
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, fieldViewModel)
-        setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
-
 
         recyclerViews.map {
-            if (isViewModelChanged or areErrorsVisible()) {
+            if (isFieldViewModelChanged or areErrorsVisible()) {
                 logD("Updating...")
                 if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
                     deferredNotifyItemChanged(sectionedPosition)
-                    if (isSectionChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
                 } else {
                     notifyItemChanged(sectionedPosition)
-                    if (isSectionChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
                 }
             } else {
-                logD("Not updating because fieldViewModel is the same")
+                logD("Not updating because viewModel is the same")
             }
         }
-        sectionViewModels[sectionIndex!!] = sectionViewModel
+    }
+
+    /**
+     * Updates the field at the given [FieldPath] taking care of notifying the changes when
+     * appropriate using the provided [SectionViewModel].
+     */
+    fun updateSection(path: FieldPath, sectionViewModel: SectionViewModel) {
+        val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
+        val sectionIndex = absolutePosition.calculateSectionIndex()
+        val oldSectionViewModel = this.sectionViewModels[sectionIndex!!]
+        val isSectionViewModelChanged = sectionViewModel.title != oldSectionViewModel.title || sectionViewModel.isHidden() != oldSectionViewModel.isHidden()
+
+        logD("Position $absolutePosition: new sectionViewModel update request:\n")
+        if (absolutePosition >= fieldsAdapter.itemCount) {
+            logD("Not updating because position is out of bound")
+            return
+        } // No field at given position
+        if (sectionViewModel == oldSectionViewModel) {
+            logD("Not updating because sectionViewModels are the same")
+            return
+        } // Same view model
+
+        setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
+        if (isSectionViewModelChanged) {
+            recyclerViews.map {
+                if (isSectionViewModelChanged or areErrorsVisible()) {
+                    logD("Updating...")
+                    if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
+                        deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
+                    } else {
+                        notifyItemChanged(awareSections.keyAt(sectionIndex))
+                    }
+                } else {
+                    logD("Not updating because viewModel is the same")
+                }
+            }
+            this.sectionViewModels[sectionIndex] = sectionViewModel
+        }
     }
 
     /**

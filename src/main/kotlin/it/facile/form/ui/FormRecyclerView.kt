@@ -18,6 +18,7 @@ import it.facile.form.ui.adapters.SectionsAdapter
 import it.facile.form.ui.utils.FormDefaultItemAnimator
 import it.facile.form.ui.viewmodel.FieldPath
 import it.facile.form.ui.viewmodel.FieldPathSection
+import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -94,10 +95,9 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         formModel.observeChanges()
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { it.pageIndex == pageIndex }
-                .map { it to formModel.pages[pageIndex].buildPageViewModel(formModel.storage).sections[it.sectionIndex] }
-                .subscribe(
-                        { updateViewIfSet(it.first, it.second) }, // TODO: use deconstruction
-                        { logE(it.message) })
+                .doOnNext { updateFieldIfSet(it, formModel.getField(it).buildFieldViewModel(formModel.storage)) }
+                .doOnNext { updateSectionIfSet(it, formModel.getSection(it).buildSectionViewModel(formModel.storage)) }
+                .subscribe({}, { logE(it.message) })
                 .addTo(subscriptions)
 
         // Observe model loading state if we want to be notified about errors
@@ -139,8 +139,12 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
         formModel.notifyValueChanged(FieldPath(fieldPathSection.fieldIndex, fieldPathSection.sectionIndex, pageIndex), value)
     }
 
-    private fun updateViewIfSet(fieldPath: FieldPath, sectionViewModel: SectionViewModel) {
-        (adapter as? SectionsAdapter)?.updateField(fieldPath, sectionViewModel)
+    private fun updateFieldIfSet(fieldPath: FieldPath, fieldViewModel: FieldViewModel) {
+        (adapter as? SectionsAdapter)?.updateField(fieldPath, fieldViewModel)
+    }
+
+    private fun updateSectionIfSet(fieldPath: FieldPath, sectionViewModel: SectionViewModel) {
+        (adapter as? SectionsAdapter)?.updateSection(fieldPath, sectionViewModel)
     }
 
 }
