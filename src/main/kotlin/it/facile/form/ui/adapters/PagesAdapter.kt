@@ -44,8 +44,8 @@ class PagesAdapter(val pageViewModels: List<PageViewModel>,
      * Updates the [PageFragment] at the that contains the fields at the given [FieldPath] using the
      * provided [PageViewModel].
      */
-    fun updateField(path: FieldPath, pageViewModel: PageViewModel) {
-        pageFragments[path.pageIndex]?.updateField(path, pageViewModel)
+    fun updatePage(path: FieldPath, pageViewModel: PageViewModel) {
+        pageFragments[path.pageIndex]?.updatePage(path, pageViewModel)
     }
 
     fun observeValueChanges(): Observable<FieldPathWithValue> = valueChangesSubject.asObservable()

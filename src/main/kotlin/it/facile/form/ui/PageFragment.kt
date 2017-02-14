@@ -56,11 +56,17 @@ class PageFragment : Fragment() {
      * Updates the page and the section containing the field at the given [FieldPath] using
      * the provided [PageViewModel].
      */
-    fun updateField(path: FieldPath, newPageViewModel: PageViewModel) {
+    fun updatePage(path: FieldPath, newPageViewModel: PageViewModel) {
         //TODO: use pageViewModel.title
         pageViewModel = newPageViewModel
+
+        //update section
         val sectionViewModel = pageViewModel.sections[path.sectionIndex]
-        sectionsAdapter?.updateField(path, sectionViewModel)
+        sectionsAdapter?.updateSection(path, sectionViewModel)
+
+        //update field
+        val fieldViewModel = pageViewModel.sections[path.sectionIndex].fields[path.fieldIndex]
+        sectionsAdapter?.updateField(path, fieldViewModel)
     }
 
     fun observeValueChanges(): Observable<Pair<FieldPathSection, FieldValue>> = valueChangesSubject.asObservable()
@@ -69,7 +75,7 @@ class PageFragment : Fragment() {
     fun checkErrors(show: Boolean) {
         sectionsAdapter?.let {
             formRecyclerView.clearFocus()
-            it.showErrors(show  )
+            it.showErrors(show)
             if (it.areErrorsVisible() && it.hasErrors()) {
                 logD("First error position: ${it.firstErrorPosition()}")
                 formRecyclerView.smoothScrollToPosition(it.firstErrorPosition())
