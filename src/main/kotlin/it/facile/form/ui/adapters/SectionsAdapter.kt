@@ -120,7 +120,7 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
     /** Toggles the errors visibility notifying the changes to the adapter */
     fun showErrors(show: Boolean) {
         fieldsAdapter.showErrors(show)
-        if (show) fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
+        fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
     }
 
     /** Returns the sectioned position of the first occurred error, -1 if no errors are present */
