@@ -57,20 +57,15 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
             return
         } // Same field view model
 
-        val isFieldViewModelChanged = fieldViewModel != oldFieldViewModel
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
         fieldsAdapter.setFieldViewModel(absolutePosition, newFieldViewModel)
 
         recyclerViews.map {
-            if (isFieldViewModelChanged or areErrorsVisible()) {
-                logD("Updating...")
-                if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
-                    deferredNotifyItemChanged(sectionedPosition)
-                } else {
-                    notifyItemChanged(sectionedPosition)
-                }
+            logD("Updating...")
+            if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
+                deferredNotifyItemChanged(sectionedPosition)
             } else {
-                logD("Not updating because viewModel is the same")
+                notifyItemChanged(sectionedPosition)
             }
         }
     }
