@@ -78,7 +78,6 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
         val sectionIndex = absolutePosition.calculateSectionIndex()
         val oldSectionViewModel = this.sectionViewModels[sectionIndex!!]
-        val isSectionViewModelChanged = sectionViewModel.title != oldSectionViewModel.title || sectionViewModel.isHidden() != oldSectionViewModel.isHidden()
 
         logD("Position $absolutePosition: new sectionViewModel update request:\n")
         if (absolutePosition >= fieldsAdapter.itemCount) {
@@ -88,25 +87,20 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
         if (newSectionViewModel == oldSectionViewModel) {
             logD("Not updating because sectionViewModels are the same")
             return
-        } // Same view model
+        } // Same section view model
 
-        setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
-        if (isSectionViewModelChanged) {
-            recyclerViews.map {
-                if (isSectionViewModelChanged or areErrorsVisible()) {
-                    logD("Updating...")
-                    if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
-                        deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
-                    } else {
-                        notifyItemChanged(awareSections.keyAt(sectionIndex))
-                    }
-                } else {
-                    logD("Not updating because viewModel is the same")
-                }
+        setAwareSection(newSectionViewModel.buildPositionAware(sectionIndex))
+        recyclerViews.map {
+            logD("Updating...")
+            if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
+                deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
+            } else {
+                notifyItemChanged(awareSections.keyAt(sectionIndex))
             }
-            this.sectionViewModels[sectionIndex] = sectionViewModel
         }
+        sectionViewModels[sectionIndex] = newSectionViewModel
     }
+
 
     /**
      * Returns an [Observable] emitting a [Pair] with the [FieldPathSection] of the field that has a
