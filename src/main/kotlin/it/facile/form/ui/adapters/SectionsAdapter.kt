@@ -41,25 +41,25 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
      * Updates the field at the given [FieldPath] taking care of notifying the changes when
      * appropriate using the provided [FieldViewModel].
      */
-    fun updateField(path: FieldPath, fieldViewModel: FieldViewModel) {
+    fun updateField(path: FieldPath, newFieldViewModel: FieldViewModel) {
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
         val oldFieldViewModel = fieldsAdapter.getViewModel(absolutePosition)
 
         logD("Position $absolutePosition: new fieldViewModel update request:\n" +
                 "old: $oldFieldViewModel\n" +
-                "new: $fieldViewModel\n")
+                "new: $newFieldViewModel\n")
         if (absolutePosition >= fieldsAdapter.itemCount) {
             logD("Not updating because position is out of bound")
             return
         } // No field at given position
-        if (fieldViewModel == oldFieldViewModel) {
-            logD("Not updating because viewModels are the same")
+        if (newFieldViewModel == oldFieldViewModel) {
+            logD("Not updating because fieldViewModels are the same")
             return
-        } // Same view model
+        } // Same field view model
 
         val isFieldViewModelChanged = fieldViewModel != oldFieldViewModel
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
-        fieldsAdapter.setFieldViewModel(absolutePosition, fieldViewModel)
+        fieldsAdapter.setFieldViewModel(absolutePosition, newFieldViewModel)
 
         recyclerViews.map {
             if (isFieldViewModelChanged or areErrorsVisible()) {
@@ -76,10 +76,10 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
     }
 
     /**
-     * Updates the field at the given [FieldPath] taking care of notifying the changes when
+     * Updates the section at the given [FieldPath] taking care of notifying the changes when
      * appropriate using the provided [SectionViewModel].
      */
-    fun updateSection(path: FieldPath, sectionViewModel: SectionViewModel) {
+    fun updateSection(path: FieldPath, newSectionViewModel: SectionViewModel) {
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
         val sectionIndex = absolutePosition.calculateSectionIndex()
         val oldSectionViewModel = this.sectionViewModels[sectionIndex!!]
@@ -89,8 +89,8 @@ class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
         if (absolutePosition >= fieldsAdapter.itemCount) {
             logD("Not updating because position is out of bound")
             return
-        } // No field at given position
-        if (sectionViewModel == oldSectionViewModel) {
+        } // No section at given position
+        if (newSectionViewModel == oldSectionViewModel) {
             logD("Not updating because sectionViewModels are the same")
             return
         } // Same view model
