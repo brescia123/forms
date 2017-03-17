@@ -75,4 +75,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.github.brescia123:jsonnode:1.1.0-beta"
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'com.android.support.constraint:constraint-layout-solver:1.0.0-beta5'
+
 }
