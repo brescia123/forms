@@ -13,6 +13,10 @@ import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import android.view.WindowManager
+import org.junit.Before
+
+
 
 
 @RunWith(AndroidJUnit4::class)
@@ -21,6 +25,18 @@ class FormRecyclerViewTest {
     @Rule @JvmField
     val mActivityRule = ActivityTestRule(
             MainActivityTest::class.java)
+
+
+    @Before
+    fun unlockScreen() {
+        val activity = mActivityRule.activity
+        val wakeUpDevice = Runnable {
+            activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+        activity.runOnUiThread(wakeUpDevice)
+    }
 
     @Test
     fun Should_Show_Form_Errors_If_Presents() {
