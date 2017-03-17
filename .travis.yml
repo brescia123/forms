@@ -7,7 +7,7 @@ sudo: true
 
 env:
   global:
-    - ANDROID_TARGET=android-25
+    - ANDROID_TARGET=android-19
     - ANDROID_ABI=armeabi-v7a
     - ANDROID_TAG=google_apis
     - ADB_INSTALL_TIMEOUT=10
@@ -25,7 +25,7 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-19
-    - sys-img-armeabi-v7a-google_apis-25
+    - sys-img-armeabi-v7a-google_apis19
 
 cache:
   directories:
