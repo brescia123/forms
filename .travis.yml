@@ -69,4 +69,4 @@ after_script:
  
 script:
   - adb devices
-  - ./gradlew build connectedCheck --stacktrace
+  - ./gradlew connectedCheck --stacktrace
