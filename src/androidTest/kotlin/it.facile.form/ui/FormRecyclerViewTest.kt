@@ -7,16 +7,14 @@ import android.support.test.espresso.contrib.RecyclerViewActions.scrollTo
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import android.view.WindowManager
 import it.facile.form.R
 import it.facile.form.SectionedRecyclerViewAdapter
 import org.hamcrest.Matchers.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import android.view.WindowManager
-import org.junit.Before
-
-
 
 
 @RunWith(AndroidJUnit4::class)
@@ -39,7 +37,7 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Show_Form_Errors_If_Presents() {
+    fun anyFieldViewsInErrorState_showErrorImage_whenRequired() {
         onView(withId(R.id.showErrorsCheckBox))
                 .perform(click())
 
@@ -64,7 +62,7 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Open_Dialog_On_Click_Picker_Field() {
+    fun pickerField_openDialog_whenClicked() {
         onView(withText("Attuale fornitore"))
                 .perform(click())
         onView(withClassName(containsString("Dialog")))
@@ -72,14 +70,14 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Check_Toggle_On_Click_Toggle_Field() {
+    fun toggleField_becomeChecked_whenClicked() {
         onView(withClassName(containsString("SwitchCompat")))
                 .perform(click())
                 .check(matches(isChecked()))
     }
 
     @Test
-    fun Should_Uncheck_Toggle_On_Double_Click_Toggle_Field() {
+    fun toggleField_becomeUnchecked_whenDoubleClicked() {
         onView(withClassName(containsString("SwitchCompat")))
                 .perform(click())
                 .perform(click())
@@ -87,14 +85,14 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Check_Checkbox_On_Click_Checkbox_Field() {
+    fun checkboxField_becomeChecked_whenClicked() {
         onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
                 .perform(click())
                 .check(matches(isChecked()))
     }
 
     @Test
-    fun Should_Uncheck_Checkbox_On_Double_Click_Checkbox_Field() {
+    fun checkboxField_becomeUnchecked_whenDoubleClicked() {
         onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
                 .perform(click())
                 .perform(click())
@@ -102,7 +100,7 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Display_Field_After_Visibility_Changed() {
+    fun fieldView_mustBeDisplayed_whenVisibilityChangeToTrue() {
         onView(withText("Utenza")).perform(click())
         onView(withText("Business")).perform(click())
 
@@ -114,7 +112,7 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Not_Display_Field_After_Visibility_Changed() {
+    fun fieldView_mustNotBeDisplayed_whenVisibilityChangeToFalse() {
         onView(withText("Utenza")).perform(click())
         onView(withText("Business")).perform(click())
 
@@ -127,7 +125,7 @@ class FormRecyclerViewTest {
     }
 
     @Test
-    fun Should_Not_Display_Section_Title_If_All_Fields_Are_Hidden() {
+    fun sectionTitle_mustNotBeDisplayed_whenAllFieldsAreHidden() {
         onView(withText("Utenza")).perform(click())
         onView(withText("Business")).perform(click())
 
