@@ -67,4 +67,6 @@ after_script:
   - adb emu kill
   - cat /home/travis/build/brescia123/forms/build/outputs/lint-results-debug.xml
  
-script: ./gradlew build connectedCheck --stacktrace
+script:
+  - adb devices
+  - ./gradlew build connectedCheck --stacktrace
