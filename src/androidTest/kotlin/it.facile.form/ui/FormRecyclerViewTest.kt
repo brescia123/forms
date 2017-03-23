@@ -50,6 +50,9 @@ class FormRecyclerViewTest {
                 .check(matches(isDisplayed()))
 
         //CheckBox
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
         onView(allOf(withParent(withChild(withText("Cucina"))), withId(R.id.checkboxErrorImage)))
                 .check(matches(isDisplayed()))
 
@@ -86,6 +89,10 @@ class FormRecyclerViewTest {
 
     @Test
     fun checkboxField_becomeChecked_whenClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
+
         onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
                 .perform(click())
                 .check(matches(isChecked()))
@@ -93,6 +100,10 @@ class FormRecyclerViewTest {
 
     @Test
     fun checkboxField_becomeUnchecked_whenDoubleClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
+
         onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
                 .perform(click())
                 .perform(click())

@@ -7,25 +7,19 @@ sudo: true
 
 env:
   global:
-    - ANDROID_TARGET=android-23
+    - ANDROID_TARGET=android-22
     - ANDROID_ABI=armeabi-v7a
-    - ANDROID_TAG=google_apis
-    - ADB_INSTALL_TIMEOUT=10
 
 android:
   components:
-    - tools
-#    - tools
-
     - build-tools-24.0.3
-
-    - android-23
-
+    - android-22
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-19
-    - sys-img-armeabi-v7a-google_apis-23
+
+    - sys-img-armeabi-v7a-android-22
 
 cache:
   directories:
@@ -55,7 +49,7 @@ before_script:
   - echo "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_HOME/licenses/android-sdk-preview-license
   # Download dependencies and avoi exit if there is an error (ConstraintLayout install error fix)
   - ./gradlew dependencies || true
-  - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI --tag $ANDROID_TAG
+  - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-audio -no-window & #-no-skin gives problem
   - android-wait-for-emulator
   - adb shell settings put global window_animation_scale 0 &
@@ -69,4 +63,4 @@ after_script:
  
 script:
   - adb devices
-  - ./gradlew connectedCheck --stacktrace
+  - ./gradlew connectedAndroidTest --stacktrace
