@@ -42,10 +42,16 @@ class FormRecyclerViewTest {
                 .perform(click())
 
         //Picker
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.textView), withParent(withChild(withText("Utenza")))))))
         onView(allOf(withParent(withChild(withText("Utenza"))), withId(R.id.textErrorImage)))
                 .check(matches(isDisplayed()))
 
         //Toggle
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.toggleView), withParent(withChild(withText("Nuova fornitura")))))))
         onView(allOf(withParent(withChild(withText("Nuova fornitura"))), withId(R.id.toggleErrorImage)))
                 .check(matches(isDisplayed()))
 
@@ -66,6 +72,9 @@ class FormRecyclerViewTest {
 
     @Test
     fun pickerField_openDialog_whenClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.textView), withParent(withChild(withText("Attuale fornitore")))))))
         onView(withText("Attuale fornitore"))
                 .perform(click())
         onView(withClassName(containsString("Dialog")))
@@ -74,6 +83,9 @@ class FormRecyclerViewTest {
 
     @Test
     fun toggleField_becomeChecked_whenClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.toggleView), withClassName(containsString("SwitchCompat"))))))
         onView(withClassName(containsString("SwitchCompat")))
                 .perform(click())
                 .check(matches(isChecked()))
@@ -81,6 +93,9 @@ class FormRecyclerViewTest {
 
     @Test
     fun toggleField_becomeUnchecked_whenDoubleClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView))
+                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
+                (hasDescendant(allOf(withId(R.id.toggleView), withClassName(containsString("SwitchCompat"))))))
         onView(withClassName(containsString("SwitchCompat")))
                 .perform(click())
                 .perform(click())
