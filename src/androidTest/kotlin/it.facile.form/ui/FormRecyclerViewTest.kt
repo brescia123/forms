@@ -21,12 +21,11 @@ import org.junit.runner.RunWith
 class FormRecyclerViewTest {
 
     @Rule @JvmField
-    val mActivityRule = ActivityTestRule(
-            MainActivityTest::class.java)
-
+    val mActivityRule = ActivityTestRule(MainActivityTest::class.java, true, false)
 
     @Before
     fun unlockScreen() {
+        mActivityRule.launchActivity(null)
         val activity = mActivityRule.activity
         val wakeUpDevice = Runnable {
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
