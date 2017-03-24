@@ -5,21 +5,11 @@ import android.view.View
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
-fun hasTextInputLayoutHintText(expectedErrorText: String) =
+fun hasTextInputLayoutHintText(expectedText: String) =
         object : TypeSafeMatcher<View>() {
-
-            override fun matchesSafely(view: View): Boolean {
-                if (view !is TextInputLayout) {
-                    return false
-                }
-
-                val error = view.hint ?: false
-                val hint = error.toString()
-
-                return expectedErrorText.equals(hint)
-            }
-
             override fun describeTo(description: Description) {
+                description.appendText("View with hint text: " + expectedText)
             }
-        }
 
+            override fun matchesSafely(view: View) = (view as? TextInputLayout)?.hint.toString() == expectedText
+        }
