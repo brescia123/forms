@@ -1,5 +1,6 @@
 package it.facile.form.model
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.mock.mock
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
@@ -13,8 +14,10 @@ import it.facile.form.storage.Entry
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorage
 import it.facile.form.storage.keyTo
+import org.junit.runner.RunWith
 import org.mockito.Mockito
 
+@RunWith(KTestJUnitRunner::class)
 class ModelsTest : ShouldSpec() {
 
     var storage = FormStorage(emptyMap())

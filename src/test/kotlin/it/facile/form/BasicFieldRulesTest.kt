@@ -1,9 +1,12 @@
 package it.facile.form
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FieldValue.*
+import org.junit.runner.RunWith
 
+@RunWith(KTestJUnitRunner::class)
 class BasicFieldRulesTest : ShouldSpec() {
     init {
         "NotMissing.verify" {

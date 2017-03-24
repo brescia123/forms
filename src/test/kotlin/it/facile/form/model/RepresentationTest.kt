@@ -1,12 +1,15 @@
 package it.facile.form.model
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.CustomGen
 import it.facile.form.model.representation.FieldRepresentation
 import it.facile.form.model.representation.FieldRepresentationRule.IF_VISIBLE
 import it.facile.form.model.representation.FieldRepresentationRule.NEVER
+import org.junit.runner.RunWith
 
+@RunWith(KTestJUnitRunner::class)
 class RepresentationTest : ShouldSpec() {
     init {
 

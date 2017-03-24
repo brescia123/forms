@@ -1,12 +1,15 @@
 package it.facile.form
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.specs.ShouldSpec
 import org.junit.Assert
+import org.junit.runner.RunWith
 import rx.observers.TestSubscriber
 import rx.subscriptions.CompositeSubscription
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
+@RunWith(KTestJUnitRunner::class)
 class ExtensionsTest : ShouldSpec() {
 
     init {
