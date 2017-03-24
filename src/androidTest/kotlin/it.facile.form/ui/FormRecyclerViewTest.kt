@@ -3,7 +3,9 @@ package it.facile.form.ui
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.RecyclerViewActions.scrollTo
+import android.support.test.espresso.contrib.RecyclerViewActions
+import android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
@@ -27,139 +29,132 @@ class FormRecyclerViewTest {
     fun unlockScreen() {
         mActivityRule.launchActivity(null)
         val activity = mActivityRule.activity
-        val wakeUpDevice = Runnable {
+        activity.runOnUiThread {
             activity.window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                     WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        activity.runOnUiThread(wakeUpDevice)
+
+
     }
 
     @Test
-    fun anyFieldViewsInErrorState_showErrorImage_whenRequired() {
-        onView(withId(R.id.showErrorsCheckBox))
+    fun fieldPicker_showErrorImage_whenInErrorState() {
+        val errorImageFieldPickerMatcher = allOf(withParent(withChild(withText("FieldPicker (Position 1)"))), withId(R.id.textErrorImage))
+
+        onView(withId(R.id.showErrorsCheckBox)).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(1))
+
+        onView(errorImageFieldPickerMatcher).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fieldToggle_showErrorImage_whenInErrorState() {
+        val errorImageFieldToggleMatcher = allOf(withParent(withChild(withText("FieldToggle (Position 2)"))), withId(R.id.toggleErrorImage))
+
+        onView(withId(R.id.showErrorsCheckBox)).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(2))
+
+        onView(errorImageFieldToggleMatcher).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fieldCheckbox_showErrorImage_whenInErrorState() {
+        val errorImageFieldCheckboxMatcher = allOf(withParent(withChild(withText("Checkbox (Position 7)"))), withId(R.id.checkboxErrorImage))
+
+        onView(withId(R.id.showErrorsCheckBox)).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(7))
+
+        onView(errorImageFieldCheckboxMatcher).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fieldInput_showErrorImage_whenInErrorState() {
+        val errorTextFieldInputMatcher = withText(containsString("Input (Position 14)"))
+
+        onView(withId(R.id.showErrorsCheckBox)).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(14))
+
+        onView(errorTextFieldInputMatcher).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fieldPicker_openDialog_whenClicked() {
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(3))
+
+        onView(withText("FieldPicker (Position 3)"))
                 .perform(click())
-
-        //Picker
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.textView), withParent(withChild(withText("Utenza")))))))
-        onView(allOf(withParent(withChild(withText("Utenza"))), withId(R.id.textErrorImage)))
-                .check(matches(isDisplayed()))
-
-        //Toggle
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.toggleView), withParent(withChild(withText("Nuova fornitura")))))))
-        onView(allOf(withParent(withChild(withText("Nuova fornitura"))), withId(R.id.toggleErrorImage)))
-                .check(matches(isDisplayed()))
-
-        //CheckBox
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
-        onView(allOf(withParent(withChild(withText("Cucina"))), withId(R.id.checkboxErrorImage)))
-                .check(matches(isDisplayed()))
-
-        //Input
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(hasTextInputLayoutHintText("Nome"))))
-        onView(withText(containsString("seleziona il campoNome")))
+                .inRoot(RootMatchers.isDialog())
                 .check(matches(isDisplayed()))
     }
 
     @Test
-    fun pickerField_openDialog_whenClicked() {
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.textView), withParent(withChild(withText("Attuale fornitore")))))))
-        onView(withText("Attuale fornitore"))
-                .perform(click())
-        onView(withClassName(containsString("Dialog")))
-                .check(matches(isDisplayed()))
-    }
+    fun fieldToggle_becomeChecked_whenClicked() {
+        val fieldToggleMatcher = allOf(withId(R.id.toggleView), withParent(withChild(withText("FieldToggle (Position 2)"))))
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(2))
 
-    @Test
-    fun toggleField_becomeChecked_whenClicked() {
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.toggleView), withClassName(containsString("SwitchCompat"))))))
-        onView(withClassName(containsString("SwitchCompat")))
+        onView(fieldToggleMatcher)
                 .perform(click())
                 .check(matches(isChecked()))
     }
 
     @Test
-    fun toggleField_becomeUnchecked_whenDoubleClicked() {
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.toggleView), withClassName(containsString("SwitchCompat"))))))
-        onView(withClassName(containsString("SwitchCompat")))
+    fun fieldToggle_becomeUnchecked_whenDoubleClicked() {
+        val fieldToggleMatcher = allOf(withId(R.id.toggleView), withParent(withChild(withText("FieldToggle (Position 2)"))))
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(2))
+
+        onView(fieldToggleMatcher)
                 .perform(click())
                 .perform(click())
                 .check(matches(isNotChecked()))
     }
 
     @Test
-    fun checkboxField_becomeChecked_whenClicked() {
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
+    fun fieldCheckbox_becomeChecked_whenClicked() {
+        val fieldCheckboxMatcher = allOf(withId(R.id.checkboxView), withParent(withChild(withText("Checkbox (Position 7)"))))
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(6))
 
-        onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
+        onView(fieldCheckboxMatcher)
                 .perform(click())
                 .check(matches(isChecked()))
     }
 
     @Test
-    fun checkboxField_becomeUnchecked_whenDoubleClicked() {
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))))
+    fun fieldCheckbox_becomeUnchecked_whenDoubleClicked() {
+        val fieldCheckboxMatcher = allOf(withId(R.id.checkboxView), withParent(withChild(withText("Checkbox (Position 7)"))))
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(6))
 
-        onView(allOf(withId(R.id.checkboxView), withParent(withChild(withText(containsString("Cucina"))))))
+        onView(fieldCheckboxMatcher)
                 .perform(click())
                 .perform(click())
                 .check(matches(not(isChecked())))
     }
 
     @Test
-    fun fieldView_mustBeDisplayed_whenVisibilityChangeToTrue() {
-        onView(withText("Utenza")).perform(click())
-        onView(withText("Business")).perform(click())
+    fun fieldView_shouldBeDisplayed_whenVisibilityChangeToTrue() {
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(1, click()))
+        onView(withText("Group 2")).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(17))
 
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(hasTextInputLayoutHintText("Ragione Sociale"))))
-        onView(hasTextInputLayoutHintText("Ragione Sociale"))
-                .check(matches(isDisplayed()))
+        onView(hasTextInputLayoutHintText("Input (Position 17)")).check(matches(isDisplayed()))
     }
 
     @Test
-    fun fieldView_mustNotBeDisplayed_whenVisibilityChangeToFalse() {
-        onView(withText("Utenza")).perform(click())
-        onView(withText("Business")).perform(click())
+    fun fieldView_shouldNotBeDisplayed_whenVisibilityChangeToFalse() {
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(1, click()))
+        onView(withText("Group 2")).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(14))
 
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(hasTextInputLayoutHintText("Cognome"))))
-
-        onView(hasTextInputLayoutHintText("Cognome"))
-                .check(matches(not(isDisplayed())))
+        onView(hasTextInputLayoutHintText("Input (Position 14)")).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun sectionTitle_mustNotBeDisplayed_whenAllFieldsAreHidden() {
-        onView(withText("Utenza")).perform(click())
-        onView(withText("Business")).perform(click())
+    fun sectionTitle_shouldNotBeDisplayed_whenAllItsFieldsAreHidden() {
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(1, click()))
+        onView(withText("Group 2")).perform(click())
+        onView(withId(R.id.singlePageFormRecyclerView)).perform(scrollToPosition<SectionedRecyclerViewAdapter.SectionViewHolder>(10))
 
-        onView(withId(R.id.singlePageFormRecyclerView))
-                .perform(scrollTo<SectionedRecyclerViewAdapter.SectionViewHolder>
-                (hasDescendant(withText("Utilizzo del gas"))))
-
-        onView(withText("Utilizzo del gas"))
-                .check(matches(not(isDisplayed())))
+        onView(withText("Section2 (Position 10)")).check(matches(not(isDisplayed())))
     }
 }
 
