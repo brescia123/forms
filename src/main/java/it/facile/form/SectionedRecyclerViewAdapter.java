@@ -165,7 +165,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
         originalHeight = i;
     }
 
-    private class SectionViewHolder extends RecyclerView.ViewHolder {
+    public class SectionViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTextView;
 
         public SectionViewHolder(View itemView, int titleResourceId) {

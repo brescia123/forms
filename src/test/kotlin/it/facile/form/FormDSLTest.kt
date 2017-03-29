@@ -1,12 +1,15 @@
 package it.facile.form
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.model.*
 import it.facile.form.storage.FieldPossibleValues
 import it.facile.form.storage.keyTo
 import it.facile.form.ui.viewmodel.FieldPath
+import org.junit.runner.RunWith
 import rx.schedulers.Schedulers.immediate
 
+@RunWith(KTestJUnitRunner::class)
 class FormDSLTest : ShouldSpec() {
     private val PAGE1_TITLE = "Page 1 Title"
     private val PAGE2_TITLE = "Page 2 Title"

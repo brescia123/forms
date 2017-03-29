@@ -12,13 +12,14 @@ import it.facile.form.ui.viewmodel.SectionViewModel
 import rx.Observable
 import java.util.*
 
-class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
+class SectionsAdapter(sectionViewModels: List<SectionViewModel>,
                       fieldsLayouts: FieldsLayouts = FieldsLayouts(),
                       customPickerActions: Map<String, ((FieldValue) -> Unit) -> Unit> = emptyMap(),
                       customBehaviours: Map<String, () -> Unit> = emptyMap())
 : SectionedRecyclerViewAdapter(fieldsLayouts.sectionHeaders.first, fieldsLayouts.sectionHeaders.second) {
     private val fieldsAdapter: FieldsAdapter
     private val recyclerViews: MutableList<RecyclerView> = mutableListOf()
+    private val sectionViewModels = sectionViewModels.toMutableList()
 
     init {
         setAwareSections(sectionViewModels.buildPositionAwareList())
@@ -38,48 +39,68 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
 
     /**
      * Updates the field at the given [FieldPath] taking care of notifying the changes when
-     * appropriate using the provided [SectionViewModel].
+     * appropriate using the provided [FieldViewModel].
      */
-    fun updateField(path: FieldPath, sectionViewModel: SectionViewModel) {
+    fun updateField(path: FieldPath, newFieldViewModel: FieldViewModel) {
         val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
-        val viewModel = sectionViewModel.fields[path.fieldIndex]
-        val oldViewModel = fieldsAdapter.getViewModel(absolutePosition)
+        val oldFieldViewModel = fieldsAdapter.getViewModel(absolutePosition)
+
         logD("Position $absolutePosition: new fieldViewModel update request:\n" +
-                "old: $oldViewModel\n" +
-                "new: $viewModel\n")
+                "old: $oldFieldViewModel\n" +
+                "new: $newFieldViewModel\n")
         if (absolutePosition >= fieldsAdapter.itemCount) {
             logD("Not updating because position is out of bound")
             return
         } // No field at given position
-        if (viewModel == oldViewModel) {
-            logD("Not updating because viewModels are the same")
+        if (newFieldViewModel == oldFieldViewModel) {
+            logD("Not updating because fieldViewModels are the same")
             return
-        } // Same view model
-
-        val sectionIndex = absolutePosition.calculateSectionIndex()
-        val isSectionTitleChanged = sectionViewModel.title != sectionViewModels[sectionIndex!!].title
-        val isViewModelChanged = viewModel != oldViewModel
+        } // Same field view model
 
         val sectionedPosition = positionToSectionedPosition(absolutePosition)
-        fieldsAdapter.setFieldViewModel(absolutePosition, viewModel)
-        setAwareSection(sectionViewModel.buildPositionAware(sectionIndex))
-
+        fieldsAdapter.setFieldViewModel(absolutePosition, newFieldViewModel)
 
         recyclerViews.map {
-            if (isViewModelChanged or areErrorsVisible()) {
-                logD("Updating...")
-                if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
-                    deferredNotifyItemChanged(sectionedPosition)
-                    if (isSectionTitleChanged) deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
-                } else {
-                    notifyItemChanged(sectionedPosition)
-                    if (isSectionTitleChanged) notifyItemChanged(awareSections.keyAt(sectionIndex))
-                }
+            logD("Updating...")
+            if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
+                deferredNotifyItemChanged(sectionedPosition)
             } else {
-                logD("Not updating because viewModel is the same")
+                notifyItemChanged(sectionedPosition)
             }
         }
     }
+
+    /**
+     * Updates the section at the given [FieldPath] taking care of notifying the changes when
+     * appropriate using the provided [SectionViewModel].
+     */
+    fun updateSection(path: FieldPath, newSectionViewModel: SectionViewModel) {
+        val absolutePosition = path.buildAbsoluteFieldPosition(sectionViewModels)
+        val sectionIndex = absolutePosition.calculateSectionIndex()
+        val oldSectionViewModel = this.sectionViewModels[sectionIndex!!]
+
+        logD("Position $absolutePosition: new sectionViewModel update request:\n")
+        if (absolutePosition >= fieldsAdapter.itemCount) {
+            logD("Not updating because position is out of bound")
+            return
+        } // No section at given position
+        if (newSectionViewModel == oldSectionViewModel) {
+            logD("Not updating because sectionViewModels are the same")
+            return
+        } // Same section view model
+
+        setAwareSection(newSectionViewModel.buildPositionAware(sectionIndex))
+        recyclerViews.map {
+            logD("Updating...")
+            if (it.isComputingLayout) { // Defer view update if RecyclerView is computing layout
+                deferredNotifyItemChanged(awareSections.keyAt(sectionIndex))
+            } else {
+                notifyItemChanged(awareSections.keyAt(sectionIndex))
+            }
+        }
+        sectionViewModels[sectionIndex] = newSectionViewModel
+    }
+
 
     /**
      * Returns an [Observable] emitting a [Pair] with the [FieldPathSection] of the field that has a
@@ -99,7 +120,7 @@ class SectionsAdapter(val sectionViewModels: List<SectionViewModel>,
     /** Toggles the errors visibility notifying the changes to the adapter */
     fun showErrors(show: Boolean) {
         fieldsAdapter.showErrors(show)
-        if (show) fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
+        fieldsAdapter.errorPositions().map { notifyItemChanged(positionToSectionedPosition(it)) }
     }
 
     /** Returns the sectioned position of the first occurred error, -1 if no errors are present */
