@@ -38,15 +38,7 @@ class MainActivityTest : AppCompatActivity() {
         if (sectionsAdapter == null) {
             sectionsAdapter = SectionsAdapter(
                     sectionViewModels = sectionViewModels,
-                    fieldsLayouts = FieldsLayouts(
-                            customBehaviours = R.layout.form_field_custom_behaviours,
-                            text = R.layout.form_field_text,
-                            toggle = R.layout.form_field_toggle,
-                            checkBox = R.layout.form_field_checkbox,
-                            inputText = R.layout.form_field_input_text,
-                            exceptionText = R.layout.form_field_exception_text,
-                            loading = R.layout.form_field_loading,
-                            sectionHeaders = R.layout.form_section_header to null))
+                    fieldsLayouts = FieldsLayouts())
             formRecyclerView.adapter = sectionsAdapter
         }
     }
