@@ -1,13 +1,16 @@
 package it.facile.form.storage
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.CustomGen
 import it.facile.form.Dates
 import it.facile.form.storage.FieldValue.*
 import it.facile.form.toSingle
+import org.junit.runner.RunWith
 import rx.observers.TestSubscriber
 
+@RunWith(KTestJUnitRunner::class)
 class FormStorageTest : ShouldSpec() {
 
     lateinit var storage: FormStorageApi

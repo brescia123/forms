@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/showErrorsCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Mostra errori nel form" />
+
+
+    <it.facile.form.ui.FormRecyclerView
+        android:id="@+id/singlePageFormRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/showErrorsCheckBox"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+        app:errorMessage="ERRORE GENERICO"
+        app:retryMessage="Riprova" />
+</RelativeLayout>

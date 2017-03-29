@@ -1,5 +1,6 @@
 package it.facile.form.model
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.mock.mock
 import io.kotlintest.specs.ShouldSpec
 import it.facile.form.IsEmail
@@ -8,8 +9,10 @@ import it.facile.form.storage.FieldValue.Missing
 import it.facile.form.storage.FieldValue.Text
 import it.facile.form.storage.FormStorage
 import it.facile.form.storage.FormStorageApi
+import org.junit.runner.RunWith
 import org.mockito.Mockito
 
+@RunWith(KTestJUnitRunner::class)
 class ModelInterfacesTest : ShouldSpec() {
     init {
         "FieldRulesValidator.isValid" {

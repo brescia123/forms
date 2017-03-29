@@ -1,5 +1,6 @@
 package it.facile.form.model
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.mock.mock
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
@@ -9,12 +10,14 @@ import it.facile.form.model.models.FormModel
 import it.facile.form.storage.FieldValue
 import it.facile.form.storage.FormStorageApi
 import it.facile.form.ui.viewmodel.FieldPath
+import org.junit.runner.RunWith
 import org.mockito.Matchers.anyBoolean
 import org.mockito.Matchers.anyString
 import org.mockito.Mockito.*
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers.immediate
 
+@RunWith(KTestJUnitRunner::class)
 class FormModelTest : ShouldSpec() {
     init {
 

@@ -1,8 +1,11 @@
 package it.facile.form.storage
 
+import io.kotlintest.KTestJUnitRunner
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.ShouldSpec
+import org.junit.runner.RunWith
 
+@RunWith(KTestJUnitRunner::class)
 class DescribableWithKeyTest : ShouldSpec() {
     init {
         "Int.keyTo" {
