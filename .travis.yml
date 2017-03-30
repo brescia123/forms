@@ -64,3 +64,5 @@ after_script:
 script:
   - adb devices
   - ./gradlew connectedAndroidTest --stacktrace
+  - ./gradlew test --stacktrace
+
