@@ -25,9 +25,10 @@ data class FormModel(val storage: FormStorageApi,
                      val workScheduler: Scheduler = Schedulers.io(),
                      val resultScheduler: Scheduler = AndroidSchedulers.mainThread()) : FieldsContainer {
 
-    var state: FormState = FormState.LOADING
+    private var state: FormState = FormState.NOT_INITIALIZED
 
     /** Enum representing the possible form state:
+     * - NOT_INITIALIZED: initial form state
      * - READY: all the dynamic values have been loaded successfully
      * - LOADING: there is some dynamic value still loading
      * - ERROR: some load error occurred
@@ -39,7 +40,7 @@ data class FormModel(val storage: FormStorageApi,
         ERROR
     }
 
-    private val formStateSubject = BehaviorSubject.create(FormState.NOT_INITIALIZED)
+    private val formStateSubject = BehaviorSubject.create(state)
     private val interestedKeys: MutableMap<String, MutableList<String>> by lazy { observeActionsKeys() }
 
     override fun fields(): List<FieldModel> = pages.fold(mutableListOf<FieldModel>(), { models, page ->
