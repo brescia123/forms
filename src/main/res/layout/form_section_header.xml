@@ -10,7 +10,7 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="1.5dp"
         android:background="@color/gray_400"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,7 +36,7 @@
         tools:text="Section"/>
 
     <View
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0.5dp"
         android:background="@color/gray_400"
         app:layout_constraintBottom_toBottomOf="parent"
