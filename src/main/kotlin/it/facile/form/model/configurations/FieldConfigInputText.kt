@@ -11,9 +11,8 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 
 class FieldConfigInputText(label: String,
                            override val rules: (FormStorageApi) -> List<FieldRule> = { emptyList() },
-                           override val inputTextConfig: InputTextConfig = InputTextConfig(inputTextType = InputTextType.TEXT,
-                                                                                            lines = 1,
-                                                                                            maxLines = 1))
+                           override val inputTextConfig:
+                           InputTextConfig = InputTextConfig(inputTextType = InputTextType.Text))
                             : FieldConfig(label), FieldRulesValidator, FieldInputMode {
 
     override fun getViewModel(key: String, storage: FormStorageApi): FieldViewModel {
