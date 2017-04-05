@@ -58,6 +58,8 @@ interface FieldInputMode {
     val inputTextType: InputTextType
 }
 
+data class InputTextConfig (val inputTextType: InputTextType, val lines: Int, val maxLines: Int)
+
 enum class InputTextType {
     TEXT,
     CAP_WORDS,
