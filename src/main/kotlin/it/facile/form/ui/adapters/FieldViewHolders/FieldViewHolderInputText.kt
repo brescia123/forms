@@ -67,7 +67,15 @@ class FieldViewHolderInputText(itemView: View,
         subscription?.unsubscribe()
         when (style) {
             is InputText -> {
-                if (isInputTypeChanged(style, editText)) editText?.inputType = style.inputTextType.toAndroidInputType()
+                //set lines
+                editText?.maxLines = style.inputTextConfig.maxLines
+                editText?.setLines(style.inputTextConfig.lines)
+
+                if (isInputTypeChanged(style, editText)) editText?.inputType = style.inputTextConfig.inputTextType.toAndroidInputType()
+
+                if(((style.inputTextConfig.maxLines > 1) or (style.inputTextConfig.lines > 1))){
+                    editText?.inputType = style.inputTextConfig.inputTextType.toAndroidInputType() or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                }
                 // Listen for new values:
 
                 // If ENTER on keyboard tapped notify new value
@@ -105,7 +113,7 @@ class FieldViewHolderInputText(itemView: View,
             viewModel.style.textDescription != editText?.text.toString()
 
     private fun isInputTypeChanged(style: InputText, editText: EditText?) =
-            editText?.inputType != style.inputTextType.toAndroidInputType()
+            editText?.inputType != style.inputTextConfig.inputTextType.toAndroidInputType()
 
     private val hasInputValue by lazy { itemView.findViewById(R.id.inputValue) != null }
     private val hasErrorTextView by lazy { itemView.findViewById(R.id.inputErrorText) != null }
