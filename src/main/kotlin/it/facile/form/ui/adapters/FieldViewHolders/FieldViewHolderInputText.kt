@@ -74,7 +74,7 @@ class FieldViewHolderInputText(itemView: View,
                 if (isInputTypeChanged(style, editText)) editText?.inputType = style.inputTextConfig.inputTextType.toAndroidInputType()
 
                 if(((style.inputTextConfig.maxLines > 1) or (style.inputTextConfig.lines > 1))){
-                    editText?.inputType = style.inputTextConfig.inputTextType.toAndroidInputType() or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    editText?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                 }
                 // Listen for new values:
 
