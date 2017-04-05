@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1"
             tools:text="Value"/>
     </android.support.design.widget.TextInputLayout>
 </android.support.constraint.ConstraintLayout>
