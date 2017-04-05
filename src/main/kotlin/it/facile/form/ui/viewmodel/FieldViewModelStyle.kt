@@ -1,5 +1,6 @@
 package it.facile.form.ui.viewmodel
 
+import it.facile.form.model.InputTextConfig
 import it.facile.form.model.InputTextType
 import it.facile.form.storage.DescribableWithKey
 import it.facile.form.ui.ViewTypeFactory
@@ -20,7 +21,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
         override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
     }
 
-    class InputText(val text: String, val inputTextType: InputTextType) : FieldViewModelStyle(text) {
+    class InputText(val text: String, val inputTextConfig: InputTextConfig) : FieldViewModelStyle(text) {
         override fun viewType(viewTypeFactory: ViewTypeFactory) = viewTypeFactory.viewType(this)
     }
 
@@ -61,7 +62,7 @@ sealed class FieldViewModelStyle(val textDescription: String) : Visitable {
             is ExceptionText -> other is ExceptionText
             is SimpleText -> other is SimpleText && other.text == text
             is InputText -> other is InputText && other.text == text
-                    && other.inputTextType == inputTextType
+                    && other.inputTextConfig == inputTextConfig
             is Checkbox -> other is Checkbox && other.bool == bool
             is Toggle -> other is Toggle && other.bool == bool
             is CustomPicker -> other is CustomPicker

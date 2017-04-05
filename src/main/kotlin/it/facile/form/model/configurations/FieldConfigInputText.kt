@@ -11,7 +11,10 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 
 class FieldConfigInputText(label: String,
                            override val rules: (FormStorageApi) -> List<FieldRule> = { emptyList() },
-                           override val inputTextType: InputTextType = InputTextType.TEXT) : FieldConfig(label), FieldRulesValidator, FieldInputMode {
+                           override val inputTextConfig: InputTextConfig = InputTextConfig(inputTextType = InputTextType.TEXT,
+                                                                                            lines = 1,
+                                                                                            maxLines = 1))
+                            : FieldConfig(label), FieldRulesValidator, FieldInputMode {
 
     override fun getViewModel(key: String, storage: FormStorageApi): FieldViewModel {
         val value = storage.getValue(key)
@@ -27,8 +30,8 @@ class FieldConfigInputText(label: String,
     override fun getViewModelStyle(key: String, storage: FormStorageApi): FieldViewModelStyle {
         val value = storage.getValue(key)
         return when (value) {
-            is Text -> InputText(value.text, inputTextType)
-            is Missing -> InputText("", inputTextType)
+            is Text -> InputText(value.text, inputTextConfig)
+            is Missing -> InputText("", inputTextConfig)
             else -> ExceptionText(FieldViewModelStyle.INVALID_TYPE)
         }
     }

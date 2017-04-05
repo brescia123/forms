@@ -55,7 +55,7 @@ interface FieldRule {
 }
 
 interface FieldInputMode {
-    val inputTextType: InputTextType
+    val inputTextConfig: InputTextConfig
 }
 
 data class InputTextConfig (val inputTextType: InputTextType, val lines: Int, val maxLines: Int)
