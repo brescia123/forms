@@ -140,7 +140,7 @@ fun SectionModel.deferred(key: String, init: FieldDeferredBuilder.() -> Unit): F
 class FieldInputTextBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var inputTextConfig: InputTextConfig = InputTextConfig(inputTextType = InputTextType.TEXT, lines = 1, maxLines = 1)
+    var inputTextConfig: InputTextConfig = InputTextConfig(inputTextType = InputTextType.Text)
     var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
             FieldModel(key, representation, FieldConfigInputText(label, rules, inputTextConfig))
