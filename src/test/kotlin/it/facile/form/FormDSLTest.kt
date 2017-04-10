@@ -55,7 +55,7 @@ class FormDSLTest : ShouldSpec() {
                 }
                 input(FIELDKEY3) {
                     label = "Input Text Field Label"
-                    inputTextType = InputTextType.EMAIL
+                    inputTextConfig = InputTextConfig(InputTextType.Email)
                     rules = { listOf(IsEmail()) }
 
                 }

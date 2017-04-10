@@ -200,13 +200,13 @@ class TestForm {
                     section("Section3 (Position 13)") {
                         input(TestForm.INPUT_TEXT_1_G1) {
                             label = "Input (Position 14)"
-                            inputTextType = InputTextType.CAP_WORDS
+                            inputTextConfig = InputTextConfig(InputTextType.CapWords)
                             rules = { listOf(NotMissing(MISSING_TEXT + label), IsName(INVALID_FIELD)) }
                             representation = FieldRepresentationRule.IF_VISIBLE representAs SIMPLE_KEY_TO_VALUE
                         }
                         input(TestForm.INPUT_TEXT_2_G1) {
                             label = "Input (Position 15)"
-                            inputTextType = InputTextType.CAP_WORDS
+                            inputTextConfig = InputTextConfig(InputTextType.CapWords)
                             rules = { listOf(NotMissing(MISSING_TEXT + label), IsName(INVALID_FIELD)) }
                             representation = FieldRepresentationRule.IF_VISIBLE representAs SIMPLE_KEY_TO_VALUE
                         }
@@ -219,20 +219,20 @@ class TestForm {
 
                         input(TestForm.INPUT_TEXT_1_G2) {
                             label = "Input (Position 17)"
-                            inputTextType = InputTextType.CAP_WORDS
+                            inputTextConfig = InputTextConfig(InputTextType.CapWords)
                             rules = { listOf(NotMissing(MISSING_TEXT + label)) }
                             representation = FieldRepresentationRule.IF_VISIBLE representAs SIMPLE_KEY_TO_VALUE
                         }
 
                         input(TestForm.INPUT_TEXT_1_COMMON) {
                             label = "Input (Position 18)"
-                            inputTextType = InputTextType.PHONE
+                            inputTextConfig = InputTextConfig(InputTextType.Phone)
                             rules = { listOf(NotMissing(MISSING_TEXT + label), IsCellularPhone(INVALID_FIELD)) }
                             representation = FieldRepresentationRule.IF_VISIBLE representAs SIMPLE_KEY_TO_VALUE
                         }
                         input(TestForm.INPUT_TEXT_2_COMMON) {
                             label = "Input (Position 19)"
-                            inputTextType = InputTextType.EMAIL
+                            inputTextConfig = InputTextConfig(InputTextType.Email)
                             rules = { listOf(NotMissing(MISSING_TEXT + label), IsEmail(INVALID_FIELD)) }
                             representation = FieldRepresentationRule.IF_VISIBLE representAs SIMPLE_KEY_TO_VALUE
                         }

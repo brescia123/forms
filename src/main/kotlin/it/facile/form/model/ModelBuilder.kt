@@ -140,10 +140,10 @@ fun SectionModel.deferred(key: String, init: FieldDeferredBuilder.() -> Unit): F
 class FieldInputTextBuilder(private val key: String) : FieldBuilder {
     var label: String = ""
     var rules: (FormStorageApi) -> List<FieldRule> = { emptyList() }
-    var inputTextType: InputTextType = InputTextType.TEXT
+    var inputTextConfig: InputTextConfig = InputTextConfig(inputTextType = InputTextType.Text)
     var representation: FieldRepresentation = FieldRepresentation(NEVER)
     override fun build() =
-            FieldModel(key, representation, FieldConfigInputText(label, rules, inputTextType))
+            FieldModel(key, representation, FieldConfigInputText(label, rules, inputTextConfig))
 }
 
 /** Type-safe builder method to add an input text field */

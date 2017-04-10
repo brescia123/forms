@@ -55,15 +55,18 @@ interface FieldRule {
 }
 
 interface FieldInputMode {
-    val inputTextType: InputTextType
+    val inputTextConfig: InputTextConfig
 }
 
-enum class InputTextType {
-    TEXT,
-    CAP_WORDS,
-    EMAIL,
-    PHONE,
-    NUMBER
+data class InputTextConfig (val inputTextType: InputTextType)
+
+sealed class InputTextType {
+    object Text: InputTextType()
+    object CapWords: InputTextType()
+    object Email: InputTextType()
+    object Phone: InputTextType()
+    object Number: InputTextType()
+    data class Multiline(val minLines: Int, val maxLines: Int): InputTextType()
 }
 
 interface WithKey {

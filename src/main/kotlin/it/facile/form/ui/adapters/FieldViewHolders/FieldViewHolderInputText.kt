@@ -10,7 +10,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import it.facile.form.*
+import it.facile.form.model.InputTextConfig
 import it.facile.form.model.InputTextType
+import it.facile.form.model.InputTextType.*
 import it.facile.form.storage.FieldValue
 import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.CanBeHidden
@@ -67,7 +69,15 @@ class FieldViewHolderInputText(itemView: View,
         subscription?.unsubscribe()
         when (style) {
             is InputText -> {
-                if (isInputTypeChanged(style, editText)) editText?.inputType = style.inputTextType.toAndroidInputType()
+
+                if (isInputTextTypeChanged(style.inputTextConfig.inputTextType, editText)) {
+                    editText?.inputType = style.inputTextConfig.inputTextType.toAndroidInputType()
+
+                    (style.inputTextConfig.inputTextType as? InputTextType.Multiline)?.let {
+                        editText?.minLines = it.minLines
+                        editText?.maxLines = it.maxLines
+                    }
+                }
                 // Listen for new values:
 
                 // If ENTER on keyboard tapped notify new value
@@ -104,8 +114,15 @@ class FieldViewHolderInputText(itemView: View,
     private fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
             viewModel.style.textDescription != editText?.text.toString()
 
-    private fun isInputTypeChanged(style: InputText, editText: EditText?) =
-            editText?.inputType != style.inputTextType.toAndroidInputType()
+    private fun isInputTextTypeChanged(type: InputTextType, editText: EditText?): Boolean = when(type){
+        Text, CapWords, Email, Phone, Number -> editText?.inputType != type.toAndroidInputType()
+        is InputTextType.Multiline -> {
+            editText?.inputType != type.toAndroidInputType()
+                    || editText.minLines == type.minLines
+                    || editText.maxLines == type.maxLines
+        }
+    }
+
 
     private val hasInputValue by lazy { itemView.findViewById(R.id.inputValue) != null }
     private val hasErrorTextView by lazy { itemView.findViewById(R.id.inputErrorText) != null }
@@ -135,10 +152,11 @@ class FieldViewHolderInputText(itemView: View,
     }
 
     fun InputTextType.toAndroidInputType() = when (this) {
-        InputTextType.TEXT -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-        InputTextType.CAP_WORDS -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-        InputTextType.EMAIL -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        InputTextType.PHONE -> InputType.TYPE_CLASS_PHONE
-        InputTextType.NUMBER -> InputType.TYPE_CLASS_NUMBER
+        InputTextType.Text -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+        InputTextType.CapWords -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+        InputTextType.Email -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        InputTextType.Phone -> InputType.TYPE_CLASS_PHONE
+        InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
+        is InputTextType.Multiline -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
     }
 }
