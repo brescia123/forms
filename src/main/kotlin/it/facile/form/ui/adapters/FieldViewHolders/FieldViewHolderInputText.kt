@@ -142,7 +142,10 @@ class FieldViewHolderInputText(itemView: View,
     }
 
     private fun setErrorText(error: String?) {
-        if (hasInputValue) inputValue.error = error
+        if (hasInputValue) {
+            inputValue.error = error
+            inputValue.isErrorEnabled = error != null
+        }
         else errorTextView.text = error
     }
 
