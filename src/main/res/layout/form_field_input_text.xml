@@ -5,6 +5,7 @@
                                              android:background="@drawable/form_field_background"
                                              android:layout_width="match_parent"
                                              android:layout_height="wrap_content"
+                                             android:minHeight="@dimen/field_height_big"
                                              android:orientation="vertical">
 
 

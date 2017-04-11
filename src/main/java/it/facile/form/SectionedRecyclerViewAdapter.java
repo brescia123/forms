@@ -186,8 +186,8 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter implement
         }
 
         public int getHeight() {
-            return (int) (titleTextView.getText().length() == 0
-                                ? itemView.getResources().getDimension(R.dimen.section_height_small)
+            return (int) (titleTextView.getText().toString().trim().isEmpty()
+                                ? 0
                                 : getOriginalHeight());
         }
     }
