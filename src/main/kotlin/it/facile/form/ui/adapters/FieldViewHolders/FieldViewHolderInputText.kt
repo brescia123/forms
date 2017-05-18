@@ -88,8 +88,10 @@ class FieldViewHolderInputText(itemView: View,
                 editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
                 // If new char typed notify new value
-                if (not(disabled)) subscription = rxEditText(editText)?.subscribe(
-                        { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
+                if (not(disabled)) subscription = rxEditText(editText, inputTextType = style.inputTextConfig.inputTextType)?.subscribe(
+                        { charSequence ->
+                            notifyNewValue(position, FieldValue.Text(editText?.text.toString()))
+                        },
                         { logE(it) })
 
             }
@@ -145,8 +147,7 @@ class FieldViewHolderInputText(itemView: View,
         if (hasInputValue) {
             inputValue.error = error
             inputValue.isErrorEnabled = error != null
-        }
-        else errorTextView.text = error
+        } else errorTextView.text = error
     }
 
     private fun showErrorImage(show: Boolean) {
