@@ -159,7 +159,7 @@ class FieldViewHolderInputText(itemView: View,
         InputTextType.CapWords -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         InputTextType.Email -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         InputTextType.Phone -> InputType.TYPE_CLASS_PHONE
-        InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
+        is InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
         is InputTextType.Multiline -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
     }
 }
