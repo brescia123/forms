@@ -1,5 +1,6 @@
 package it.facile.form
 
+import it.facile.form.model.InputTextType
 import it.facile.form.storage.FieldValue
 import rx.Single
 import rx.Subscription
@@ -89,3 +90,7 @@ fun FieldValue.asDate() = this as? FieldValue.DateValue
 fun FieldValue.asText() = this as? FieldValue.Text
 fun FieldValue.asBool() = this as? FieldValue.Bool
 fun FieldValue.asBoolOrFalse() = (this as? FieldValue.Bool)?.bool ?: false
+
+fun InputTextType.isFormattable(): Boolean {
+    return (this is InputTextType.Number && this.groupingSeparator != null)
+}
