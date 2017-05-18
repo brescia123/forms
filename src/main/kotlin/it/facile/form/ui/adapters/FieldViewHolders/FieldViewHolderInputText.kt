@@ -10,7 +10,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import it.facile.form.*
-import it.facile.form.model.InputTextConfig
 import it.facile.form.model.InputTextType
 import it.facile.form.model.InputTextType.*
 import it.facile.form.storage.FieldValue
@@ -54,7 +53,7 @@ class FieldViewHolderInputText(itemView: View,
         }
     }
 
-    private fun rxEditText(editText: EditText?) = editText?.wrap(false)
+    private fun rxEditText(editText: EditText?, inputTextType: InputTextType? = null) = editText?.wrap(false, inputTextType)
             ?.debounce(300, TimeUnit.MILLISECONDS)
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
@@ -114,8 +113,9 @@ class FieldViewHolderInputText(itemView: View,
     private fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
             viewModel.style.textDescription != editText?.text.toString()
 
-    private fun isInputTextTypeChanged(type: InputTextType, editText: EditText?): Boolean = when(type){
-        Text, CapWords, Email, Phone, Number -> editText?.inputType != type.toAndroidInputType()
+    private fun isInputTextTypeChanged(type: InputTextType, editText: EditText?): Boolean = when (type) {
+        CapWords, Email, Phone, Text -> editText?.inputType != type.toAndroidInputType()
+        is InputTextType.Number -> editText?.inputType != type.toAndroidInputType()
         is InputTextType.Multiline -> {
             editText?.inputType != type.toAndroidInputType()
                     || editText.minLines == type.minLines

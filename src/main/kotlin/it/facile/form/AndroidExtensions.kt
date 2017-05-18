@@ -12,6 +12,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
+import it.facile.form.model.InputTextType
 import it.facile.form.ui.utils.EditTextOnSubscribe
 import rx.Observable
 
@@ -93,7 +94,7 @@ fun View.gone(animate: Boolean = false,
     else visibility = View.GONE
 }
 
-fun EditText.wrap(initialVal: Boolean = true): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal))
+fun EditText.wrap(initialVal: Boolean = true, inputTextType: InputTextType? = null): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal, inputTextType))
 
 fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
                                                  top: Drawable? = null,
