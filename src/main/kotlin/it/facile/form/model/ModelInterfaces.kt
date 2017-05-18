@@ -13,6 +13,7 @@ import it.facile.form.ui.viewmodel.FieldViewModelStyle
 interface FieldConfigApi : ViewModelGenerator, ViewModelStyleGenerator {
     val label: String
 }
+
 abstract class FieldConfig(override val label: String) : FieldConfigApi
 
 interface FieldsContainer {
@@ -58,15 +59,15 @@ interface FieldInputMode {
     val inputTextConfig: InputTextConfig
 }
 
-data class InputTextConfig (val inputTextType: InputTextType)
+data class InputTextConfig(val inputTextType: InputTextType)
 
 sealed class InputTextType {
-    object Text: InputTextType()
-    object CapWords: InputTextType()
-    object Email: InputTextType()
-    object Phone: InputTextType()
-    object Number: InputTextType()
-    data class Multiline(val minLines: Int, val maxLines: Int): InputTextType()
+    object Text : InputTextType()
+    object CapWords : InputTextType()
+    object Email : InputTextType()
+    object Phone : InputTextType()
+    data class Number(val groupingSeparator: Char? = null) : InputTextType()
+    data class Multiline(val minLines: Int, val maxLines: Int) : InputTextType()
 }
 
 interface WithKey {
