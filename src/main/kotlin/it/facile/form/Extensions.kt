@@ -1,6 +1,5 @@
 package it.facile.form
 
-import it.facile.form.model.InputTextType
 import it.facile.form.storage.FieldValue
 import rx.Single
 import rx.Subscription

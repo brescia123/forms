@@ -89,9 +89,7 @@ class FieldViewHolderInputText(itemView: View,
 
                 // If new char typed notify new value
                 if (not(disabled)) subscription = rxEditText(editText, inputTextType = style.inputTextConfig.inputTextType)?.subscribe(
-                        { charSequence ->
-                            notifyNewValue(position, FieldValue.Text(editText?.text.toString()))
-                        },
+                        { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                         { logE(it) })
 
             }
