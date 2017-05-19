@@ -2,20 +2,22 @@ package it.facile.form.ui.utils
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.text.ParseException
 import java.util.*
 
-object Formatter {
 
-    fun getFormatterWithCustomSeparator(groupingSeparator: Char?): DecimalFormat {
-        val otherSymbols = DecimalFormatSymbols(Locale.ITALY)
-        groupingSeparator?.let { otherSymbols.groupingSeparator = it }
-        return DecimalFormat("###,###.###", otherSymbols)
+fun String.formatNumberGrouping(separator: Char): String {
+
+    val symbols = DecimalFormatSymbols(Locale.ITALY).apply { groupingSeparator = separator }
+    val decimalFormat = DecimalFormat("###,###.###", symbols)
+
+    val stringWithoutSeparator = this.replace(separator.toString(), "")
+
+    val number = try {
+        decimalFormat.parse(stringWithoutSeparator)
+    } catch (pe: ParseException) {
+        return this
     }
 
-    fun getFormattedValue(originalText: String, groupingSeparator: Char?): String {
-        val decimalFormat = Formatter.getFormatterWithCustomSeparator(
-                groupingSeparator = groupingSeparator)
-        val unformattedValue = decimalFormat.parse(originalText.replace(groupingSeparator.toString(), "")).toString()
-        return decimalFormat.format(unformattedValue.toLong())
-    }
+    return decimalFormat.format(number)
 }
