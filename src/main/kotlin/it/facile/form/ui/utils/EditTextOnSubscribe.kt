@@ -3,13 +3,13 @@ package it.facile.form.ui.utils
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import it.facile.form.isFormattable
 import it.facile.form.model.InputTextType
 import rx.Observable
 import rx.Subscriber
 import rx.android.MainThreadSubscription
 
-class EditTextOnSubscribe(private val editText: EditText, private val initialVal: Boolean, private val inputTextType: InputTextType?) : Observable.OnSubscribe<CharSequence> {
+class EditTextOnSubscribe
+(private val editText: EditText, private val initialVal: Boolean, private val inputTextType: InputTextType?) : Observable.OnSubscribe<CharSequence> {
 
     override fun call(subscriber: Subscriber<in CharSequence>) {
 
@@ -19,17 +19,13 @@ class EditTextOnSubscribe(private val editText: EditText, private val initialVal
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // If the subscriber is subscribed emit the new text value
-                if (!subscriber.isUnsubscribed) {
+                if (subscriber.isUnsubscribed) return
 
-                    if (s.isNotEmpty() && inputTextType != null && inputTextType.isFormattable()) {
-                        editText.removeTextChangedListener(this)
-                        editText.setText(
-                                Formatter.getFormattedValue(s.toString(),
-                                        groupingSeparator = (inputTextType as InputTextType.Number).groupingSeparator))
-                        editText.setSelection(editText.length())
-                        editText.addTextChangedListener(this)
-                    }
+                (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
+                    editText.removeTextChangedListener(this)
+                    editText.setText(s.toString().formatNumberGrouping(it))
+                    editText.setSelection(editText.length())
+                    editText.addTextChangedListener(this)
                 }
                 subscriber.onNext(editText.text)
             }
