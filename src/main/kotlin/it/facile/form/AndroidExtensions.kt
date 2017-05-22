@@ -8,6 +8,7 @@ import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
+import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -94,7 +95,7 @@ fun View.gone(animate: Boolean = false,
     else visibility = View.GONE
 }
 
-fun EditText.wrap(initialVal: Boolean = true, inputTextType: InputTextType? = null): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal, inputTextType))
+fun EditText.wrap(initialVal: Boolean = true): Observable<Pair<TextWatcher,CharSequence>> = Observable.create(EditTextOnSubscribe(this, initialVal))
 
 fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
                                                  top: Drawable? = null,

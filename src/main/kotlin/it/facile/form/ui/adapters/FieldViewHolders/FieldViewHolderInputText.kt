@@ -17,6 +17,7 @@ import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
+import it.facile.form.ui.utils.formatNumberGrouping
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
@@ -53,7 +54,15 @@ class FieldViewHolderInputText(itemView: View,
         }
     }
 
-    private fun rxEditText(editText: EditText?, inputTextType: InputTextType? = null) = editText?.wrap(false, inputTextType)
+    private fun rxEditText(editText: EditText?, inputTextType: InputTextType) = editText?.wrap(false)
+            ?.doOnNext {
+                val pairEmitted = it
+                (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
+                    editText.removeTextChangedListener(pairEmitted.first)
+                    editText.setText(pairEmitted.second.toString().formatNumberGrouping(it))
+                    editText.setSelection(editText.length())
+                    editText.addTextChangedListener(pairEmitted.first) }
+            }
             ?.debounce(300, TimeUnit.MILLISECONDS)
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
@@ -88,7 +97,7 @@ class FieldViewHolderInputText(itemView: View,
                 editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
                 // If new char typed notify new value
-                if (not(disabled)) subscription = rxEditText(editText, inputTextType = style.inputTextConfig.inputTextType)?.subscribe(
+                if (not(disabled)) subscription = rxEditText(editText, style.inputTextConfig.inputTextType)?.subscribe(
                         { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                         { logE(it) })
 

@@ -3,15 +3,14 @@ package it.facile.form.ui.utils
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import it.facile.form.model.InputTextType
 import rx.Observable
 import rx.Subscriber
 import rx.android.MainThreadSubscription
 
 class EditTextOnSubscribe
-(private val editText: EditText, private val initialVal: Boolean, private val inputTextType: InputTextType?) : Observable.OnSubscribe<CharSequence> {
+(private val editText: EditText, private val initialVal: Boolean) : Observable.OnSubscribe<Pair<TextWatcher, CharSequence>> {
 
-    override fun call(subscriber: Subscriber<in CharSequence>) {
+    override fun call(subscriber: Subscriber<in Pair<TextWatcher, CharSequence>>) {
 
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -21,13 +20,7 @@ class EditTextOnSubscribe
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (subscriber.isUnsubscribed) return
 
-                (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
-                    editText.removeTextChangedListener(this)
-                    editText.setText(s.toString().formatNumberGrouping(it))
-                    editText.setSelection(editText.length())
-                    editText.addTextChangedListener(this)
-                }
-                subscriber.onNext(editText.text)
+                subscriber.onNext(Pair(this, editText.text))
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -44,6 +37,6 @@ class EditTextOnSubscribe
                     }
                 })
 
-        if (initialVal) subscriber.onNext(editText.text)
+        if (initialVal) subscriber.onNext(Pair(watcher, editText.text))
     }
 }
