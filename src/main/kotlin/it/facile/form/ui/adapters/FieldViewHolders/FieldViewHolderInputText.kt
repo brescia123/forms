@@ -1,11 +1,12 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
+import android.animation.LayoutTransition
 import android.support.design.widget.TextInputLayout
 import android.text.InputType
 import android.text.Spanned
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
@@ -163,12 +164,15 @@ class FieldViewHolderInputText(itemView: View,
         if (hasInputValue) {
             inputValue.error = error
             inputValue.isErrorEnabled = error != null
-        } else errorTextView.text = error
+        } else {
+            errorTextView.text = error
+            if (error != null) errorTextView.visible(animate = viewHasNotAppearingTransition()) else errorTextView.gone(animate = viewHasNotDisappearingTransition())
+        }
     }
 
     private fun showErrorImage(show: Boolean) {
-        if (show) errorImageView.visible(true)
-        else errorImageView.invisible(true)
+        if (show) errorImageView.visible(animate = viewHasNotAppearingTransition())
+        else errorImageView.invisible(animate = viewHasNotDisappearingTransition())
     }
 
     fun InputTextType.toAndroidInputType() = when (this) {
@@ -179,4 +183,8 @@ class FieldViewHolderInputText(itemView: View,
         is InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
         is InputTextType.Multiline -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
     }
+
+    fun viewHasNotAppearingTransition() = ((itemView as? ViewGroup)?.layoutTransition?.isTransitionTypeEnabled(LayoutTransition.APPEARING) ?: false) == false
+
+    fun viewHasNotDisappearingTransition() = ((itemView as? ViewGroup)?.layoutTransition?.isTransitionTypeEnabled(LayoutTransition.DISAPPEARING) ?: false) == false
 }
