@@ -95,7 +95,9 @@ fun View.gone(animate: Boolean = false,
     else visibility = View.GONE
 }
 
-fun EditText.wrap(initialVal: Boolean = true): Observable<Pair<TextWatcher,CharSequence>> = Observable.create(EditTextOnSubscribe(this, initialVal))
+fun EditText.observe(initialVal: Boolean = true): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal)).map { it.second }
+
+fun EditText.observeWithWatcher(initialVal: Boolean = true): Observable<Pair<TextWatcher,CharSequence>> = Observable.create(EditTextOnSubscribe(this, initialVal))
 
 fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
                                                  top: Drawable? = null,
