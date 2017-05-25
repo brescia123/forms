@@ -3,6 +3,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 import android.support.design.widget.TextInputLayout
 import android.text.InputType
 import android.text.Spanned
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -21,6 +22,7 @@ import it.facile.form.ui.utils.formatNumberGrouping
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
+import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -52,18 +54,25 @@ class FieldViewHolderInputText(itemView: View,
             logD("Notify position=$position, val=$text cause focus lost")
             notifyNewValue(position, FieldValue.Text(text))
         }
+
+
     }
 
-    private fun rxEditText(editText: EditText?, inputTextType: InputTextType) = editText?.wrap(false)
-            ?.doOnNext {
-                val pairEmitted = it
-                (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
-                    editText.removeTextChangedListener(pairEmitted.first)
-                    editText.setText(pairEmitted.second.toString().formatNumberGrouping(it))
-                    editText.setSelection(editText.length())
-                    editText.addTextChangedListener(pairEmitted.first) }
-            }
-            ?.debounce(300, TimeUnit.MILLISECONDS)
+    private fun rxEditText(editText: EditText?, inputTextType: InputTextType): Observable<CharSequence>? {
+        if (editText == null) return null
+
+        return editText.observeWithWatcher(initialVal = false)
+                .doOnNext { (watcher, charSequence) ->
+                    (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
+                        editText.removeTextChangedListener(watcher)
+                        editText.setText(charSequence.toString().formatNumberGrouping(it))
+                        editText.setSelection(editText.length())
+                        editText.addTextChangedListener(watcher)
+                    }
+                }
+                .map { it.second }
+                .debounce(300, TimeUnit.MILLISECONDS)
+    }
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
