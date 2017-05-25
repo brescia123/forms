@@ -7,8 +7,8 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.MainThreadSubscription
 
-class EditTextOnSubscribe
-(private val editText: EditText, private val initialVal: Boolean) : Observable.OnSubscribe<Pair<TextWatcher, CharSequence>> {
+class EditTextOnSubscribe(private val editText: EditText, private val initialVal: Boolean)
+    : Observable.OnSubscribe<Pair<TextWatcher, CharSequence>> {
 
     override fun call(subscriber: Subscriber<in Pair<TextWatcher, CharSequence>>) {
 
