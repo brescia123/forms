@@ -8,10 +8,12 @@ import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
+import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
+import it.facile.form.model.InputTextType
 import it.facile.form.ui.utils.EditTextOnSubscribe
 import rx.Observable
 
@@ -93,7 +95,9 @@ fun View.gone(animate: Boolean = false,
     else visibility = View.GONE
 }
 
-fun EditText.wrap(initialVal: Boolean = true): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal))
+fun EditText.observe(initialVal: Boolean = true): Observable<CharSequence> = Observable.create(EditTextOnSubscribe(this, initialVal)).map { it.second }
+
+fun EditText.observeWithWatcher(initialVal: Boolean = true): Observable<Pair<TextWatcher,CharSequence>> = Observable.create(EditTextOnSubscribe(this, initialVal))
 
 fun android.widget.TextView.setCompoundDrawables(left: Drawable? = null,
                                                  top: Drawable? = null,

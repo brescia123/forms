@@ -3,6 +3,7 @@ package it.facile.form.ui.adapters.FieldViewHolders
 import android.support.design.widget.TextInputLayout
 import android.text.InputType
 import android.text.Spanned
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -10,7 +11,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import it.facile.form.*
-import it.facile.form.model.InputTextConfig
 import it.facile.form.model.InputTextType
 import it.facile.form.model.InputTextType.*
 import it.facile.form.storage.FieldValue
@@ -18,9 +18,11 @@ import it.facile.form.ui.CanBeDisabled
 import it.facile.form.ui.CanBeHidden
 import it.facile.form.ui.CanNotifyNewValues
 import it.facile.form.ui.CanShowError
+import it.facile.form.ui.utils.formatNumberGrouping
 import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
+import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -52,10 +54,25 @@ class FieldViewHolderInputText(itemView: View,
             logD("Notify position=$position, val=$text cause focus lost")
             notifyNewValue(position, FieldValue.Text(text))
         }
+
+
     }
 
-    private fun rxEditText(editText: EditText?) = editText?.wrap(false)
-            ?.debounce(300, TimeUnit.MILLISECONDS)
+    private fun rxEditText(editText: EditText?, inputTextType: InputTextType): Observable<CharSequence>? {
+        if (editText == null) return null
+
+        return editText.observeWithWatcher(initialVal = false)
+                .doOnNext { (watcher, charSequence) ->
+                    (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
+                        editText.removeTextChangedListener(watcher)
+                        editText.setText(charSequence.toString().formatNumberGrouping(it))
+                        editText.setSelection(editText.length())
+                        editText.addTextChangedListener(watcher)
+                    }
+                }
+                .map { it.second }
+                .debounce(300, TimeUnit.MILLISECONDS)
+    }
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
@@ -89,7 +106,7 @@ class FieldViewHolderInputText(itemView: View,
                 editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
                 // If new char typed notify new value
-                if (not(disabled)) subscription = rxEditText(editText)?.subscribe(
+                if (not(disabled)) subscription = rxEditText(editText, style.inputTextConfig.inputTextType)?.subscribe(
                         { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
                         { logE(it) })
 
@@ -114,8 +131,9 @@ class FieldViewHolderInputText(itemView: View,
     private fun isTextChanged(viewModel: FieldViewModel, editText: EditText?) =
             viewModel.style.textDescription != editText?.text.toString()
 
-    private fun isInputTextTypeChanged(type: InputTextType, editText: EditText?): Boolean = when(type){
-        Text, CapWords, Email, Phone, Number -> editText?.inputType != type.toAndroidInputType()
+    private fun isInputTextTypeChanged(type: InputTextType, editText: EditText?): Boolean = when (type) {
+        CapWords, Email, Phone, Text -> editText?.inputType != type.toAndroidInputType()
+        is InputTextType.Number -> editText?.inputType != type.toAndroidInputType()
         is InputTextType.Multiline -> {
             editText?.inputType != type.toAndroidInputType()
                     || editText.minLines == type.minLines
@@ -145,8 +163,7 @@ class FieldViewHolderInputText(itemView: View,
         if (hasInputValue) {
             inputValue.error = error
             inputValue.isErrorEnabled = error != null
-        }
-        else errorTextView.text = error
+        } else errorTextView.text = error
     }
 
     private fun showErrorImage(show: Boolean) {
@@ -159,7 +176,7 @@ class FieldViewHolderInputText(itemView: View,
         InputTextType.CapWords -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         InputTextType.Email -> InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         InputTextType.Phone -> InputType.TYPE_CLASS_PHONE
-        InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
+        is InputTextType.Number -> InputType.TYPE_CLASS_NUMBER
         is InputTextType.Multiline -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
     }
 }
