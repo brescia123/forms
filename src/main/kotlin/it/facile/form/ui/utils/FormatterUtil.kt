@@ -1,5 +1,7 @@
 package it.facile.form.ui.utils
 
+import it.facile.form.asText
+import it.facile.form.storage.FieldValue
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
@@ -20,4 +22,8 @@ fun String.formatNumberGrouping(separator: Char): String {
     }
 
     return decimalFormat.format(number)
+}
+
+fun FieldValue.formatNumberGrouping(separator: Char): String {
+    return this.asText()?.text?.let { formatNumberGrouping(separator) } ?: throw IllegalArgumentException("Cannot evaluate this 'FieldValue' as text")
 }
