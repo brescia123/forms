@@ -23,4 +23,19 @@ fun String.formatNumberGrouping(separator: Char): String {
     return decimalFormat.format(number)
 }
 
-fun FieldValue.Text.formatNumberGrouping(separator: Char): String = text.formatNumberGrouping(separator)
+fun FieldValue.Text.formatNumberGrouping(separator: Char) = text.formatNumberGrouping(separator)
+
+fun String.getUnformattedNumberWithGrouping(separator: Char): Number? {
+    val symbols = DecimalFormatSymbols(Locale.ITALY).apply { groupingSeparator = separator }
+    val decimalFormat = DecimalFormat("###,###.###", symbols)
+
+    val stringWithoutSeparator = this.replace(separator.toString(), "")
+
+    return try {
+        decimalFormat.parse(stringWithoutSeparator)
+    } catch (pe: ParseException) {
+        return null
+    }
+}
+
+fun FieldValue.Text.getUnformattedNumberWithGrouping(separator: Char) = text.getUnformattedNumberWithGrouping(separator)
