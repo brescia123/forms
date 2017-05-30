@@ -64,8 +64,10 @@ class FieldViewHolderInputText(itemView: View,
 
         return editText.observeWithWatcher(initialVal = false, nonObservedChanges = { edit ->
             (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
-                edit.setText(edit.text.toString().formatNumberGrouping(it))
-                edit.setSelection(edit.length())
+                if(edit.text.toString().formatNumberGrouping(it) != edit.text.toString()) {
+                    edit.setText(edit.text.toString().formatNumberGrouping(it))
+                    edit.setSelection(edit.length())
+                }
             }
         })
                 .debounce(300, TimeUnit.MILLISECONDS)
