@@ -62,16 +62,12 @@ class FieldViewHolderInputText(itemView: View,
     private fun rxEditText(editText: EditText?, inputTextType: InputTextType): Observable<CharSequence>? {
         if (editText == null) return null
 
-        return editText.observeWithWatcher(initialVal = false)
-                .doOnNext { (watcher, charSequence) ->
-                    (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
-                        editText.removeTextChangedListener(watcher)
-                        editText.setText(charSequence.toString().formatNumberGrouping(it))
-                        editText.setSelection(editText.length())
-                        editText.addTextChangedListener(watcher)
-                    }
-                }
-                .map { it.second }
+        return editText.observeWithWatcher(initialVal = false, nonObservedChanges = { edit ->
+            (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
+                edit.setText(edit.text.toString().formatNumberGrouping(it))
+                edit.setSelection(edit.length())
+            }
+        })
                 .debounce(300, TimeUnit.MILLISECONDS)
     }
 

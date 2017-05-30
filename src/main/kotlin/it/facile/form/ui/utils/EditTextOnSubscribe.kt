@@ -7,10 +7,10 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.MainThreadSubscription
 
-class EditTextOnSubscribe(private val editText: EditText, private val initialVal: Boolean)
-    : Observable.OnSubscribe<Pair<TextWatcher, CharSequence>> {
+class EditTextOnSubscribe(private val editText: EditText, private val initialVal: Boolean, val nonObservedChanges: ((EditText) -> Unit)?)
+    : Observable.OnSubscribe<CharSequence> {
 
-    override fun call(subscriber: Subscriber<in Pair<TextWatcher, CharSequence>>) {
+    override fun call(subscriber: Subscriber<in CharSequence>) {
 
         val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -20,7 +20,10 @@ class EditTextOnSubscribe(private val editText: EditText, private val initialVal
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (subscriber.isUnsubscribed) return
 
-                subscriber.onNext(Pair(this, editText.text))
+                subscriber.onNext(editText.text)
+                editText.removeTextChangedListener(this)
+                nonObservedChanges?.invoke(editText)
+                editText.addTextChangedListener(this)
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -37,6 +40,8 @@ class EditTextOnSubscribe(private val editText: EditText, private val initialVal
                     }
                 })
 
-        if (initialVal) subscriber.onNext(Pair(watcher, editText.text))
+        if (initialVal) subscriber.onNext(editText.text)
+
+
     }
 }
