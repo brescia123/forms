@@ -84,7 +84,9 @@ open class FormRecyclerView(context: Context, attrs: AttributeSet? = null) : Rec
 
     fun showFormError(show: Boolean, smoothScrollToFirstError: Boolean = false) {
         (adapter as? SectionsAdapter)?.let {
-            it.showErrors(show)
+            if (it.areErrorsVisible().not() && show == true) it.showErrors(show)
+            if (it.areErrorsVisible() && show == false) it.showErrors(show)
+
             if (smoothScrollToFirstError) smoothScrollToPosition(it.firstErrorPosition())
         }
     }
