@@ -98,7 +98,7 @@ class FieldViewHolderInputText(itemView: View,
                 }
                 // Listen for new values:
 
-                // If ENTER on keyboard tapped notify new value
+                // If ENTER on keyboard and the field is enabled, clear focus
                 editText?.setOnKeyListener(if (disabled) null else (keyListener))
 
                 editText?.setOnEditorActionListener(if (disabled) null else (editorActionListener))
@@ -108,7 +108,7 @@ class FieldViewHolderInputText(itemView: View,
 
                 // If new char typed notify new value
                 if (not(disabled)) subscription = rxEditText(editText, style.inputTextConfig.inputTextType)?.subscribe(
-                        { charSequence -> notifyNewValue(position, FieldValue.Text(editText?.text.toString())) },
+                        { charSequence -> notifyNewValue(position, FieldValue.Text(charSequence.toString())) },
                         { logE(it) })
 
             }
