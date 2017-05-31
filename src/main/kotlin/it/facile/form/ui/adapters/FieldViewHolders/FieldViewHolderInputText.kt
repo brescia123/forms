@@ -1,9 +1,12 @@
 package it.facile.form.ui.adapters.FieldViewHolders
 
 import android.animation.LayoutTransition
+import android.os.Handler
 import android.support.design.widget.TextInputLayout
+import android.text.Editable
 import android.text.InputType
 import android.text.Spanned
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -24,15 +27,12 @@ import it.facile.form.ui.viewmodel.FieldViewModel
 import it.facile.form.ui.viewmodel.FieldViewModelStyle.InputText
 import kotlinx.android.synthetic.main.form_field_input_text.view.*
 import rx.Observable
-import rx.Subscription
 import rx.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class FieldViewHolderInputText(itemView: View,
                                private val valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>) :
         FieldViewHolderBase(itemView), CanBeHidden, CanNotifyNewValues, CanShowError, CanBeDisabled {
-
-    private var subscription: Subscription? = null
 
     private val keyListener: (View, Int, KeyEvent?) -> Boolean = { view, keyCode, event ->
         if (keyCode == KeyEvent.KEYCODE_ENTER && event?.action == KeyEvent.ACTION_UP) {
@@ -59,19 +59,48 @@ class FieldViewHolderInputText(itemView: View,
 
     }
 
-    private fun rxEditText(editText: EditText?, inputTextType: InputTextType): Observable<CharSequence>? {
-        if (editText == null) return null
+    private class PositionTextWatcher : TextWatcher {
 
-        return editText.observeWithWatcher(initialVal = false, nonObservedChanges = { edit ->
-            (inputTextType as? InputTextType.Number)?.groupingSeparator?.let {
-                if(edit.text.toString().formatNumberGrouping(it) != edit.text.toString()) {
-//                    edit.setText(edit.text.toString().formatNumberGrouping(it))
-//                    edit.setSelection(edit.length())
-                }
+        private val debounceHandler = Handler()
+        private val notifyRunnable: Runnable = Runnable {
+            valueChangesSubject?.onNext(position to FieldValue.Text(editText?.text.toString()))
+        }
+
+        var position: Int = -1
+        var editText: EditText? = null
+        var groupingSeparator: Char? = null
+        var valueChangesSubject: PublishSubject<Pair<Int, FieldValue>>? = null
+
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (position == -1) return
+            if (editText == null) return
+            if (groupingSeparator == null) return
+
+
+            debounceHandler.removeCallbacks(notifyRunnable)
+            debounceHandler.postDelayed(notifyRunnable, 300)
+
+
+            if (groupingSeparator == null) return
+
+            val nonNullEditText = editText!!
+
+            if (nonNullEditText.text.toString().formatNumberGrouping(groupingSeparator!!) != nonNullEditText.text.toString()) {
+
+                nonNullEditText.removeTextChangedListener(this)
+                nonNullEditText.setText(nonNullEditText.text.toString().formatNumberGrouping(groupingSeparator!!))
+                nonNullEditText.setSelection(nonNullEditText.length())
+
+                nonNullEditText.addTextChangedListener(this)
             }
-        })
-                .debounce(300, TimeUnit.MILLISECONDS)
+
+        }
+
     }
+
+    private val textWatcher = PositionTextWatcher()
 
     override fun bind(viewModel: FieldViewModel, position: Int, errorsShouldBeVisible: Boolean) {
         super.bind(viewModel, position, errorsShouldBeVisible)
@@ -82,7 +111,7 @@ class FieldViewHolderInputText(itemView: View,
         editText?.onFocusChangeListener = null
         editText?.setOnKeyListener(null)
         editText?.isEnabled = not(disabled)
-        subscription?.unsubscribe()
+        editText?.removeTextChangedListener(textWatcher)
         when (style) {
             is InputText -> {
 
@@ -104,10 +133,15 @@ class FieldViewHolderInputText(itemView: View,
                 // If focus is lost notify new value
                 editText?.setOnFocusChangeListener(if (disabled) null else (focusChangedListener(position)))
 
-                // If new char typed notify new value
-                if (not(disabled)) subscription = rxEditText(editText, style.inputTextConfig.inputTextType)?.subscribe(
-                        { charSequence -> notifyNewValue(position, FieldValue.Text(charSequence.toString())) },
-                        { logE(it) })
+
+
+                if (disabled == false) {
+                    textWatcher.position = position
+                    textWatcher.editText = editText
+                    textWatcher.groupingSeparator = (style.inputTextConfig.inputTextType as? InputTextType.Number)?.groupingSeparator
+                    textWatcher.valueChangesSubject = valueChangesSubject
+                    editText?.addTextChangedListener(textWatcher)
+                }
 
             }
         }
